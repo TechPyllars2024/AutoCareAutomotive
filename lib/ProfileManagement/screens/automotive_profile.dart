@@ -1,4 +1,7 @@
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
+import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
 
 class AutomotiveProfile extends StatefulWidget {
   const AutomotiveProfile({super.key});
@@ -10,9 +13,14 @@ class AutomotiveProfile extends StatefulWidget {
 class _AutomotiveProfileState extends State<AutomotiveProfile> {
   final double coverHeight = 220;
   final double profileHeight = 130;
-
+  void editProfile() {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => AutomotiveEditProfile()));}
   @override
+
   Widget build(BuildContext context) {
+
+
     final double top = coverHeight - profileHeight / 2;
 
     return Scaffold(
@@ -29,25 +37,48 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
         padding: EdgeInsets.zero,
         children: [
           buildTopSection(top),
-          buildContent(),
+          buildShopName(),
+          Button(),
         ],
       ),
     );
   }
 
-  Widget buildContent() => Padding(
-    padding: const EdgeInsets.all(16.0), // Add padding to the container
+
+  Widget Button() => WideButtons(
+      onTap:
+      editProfile,
+      text: 'Edit Profile');
+
+  Widget buildShopName() => Padding(
+    padding: const EdgeInsets.all(16.0),
     child: Align(
       alignment: Alignment.centerLeft,
-      child: Text(
-        'Auto Repair',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Auto Repair',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 5),
+          Row(
+            children: [
+              Icon(Icons.location_on, color: Colors.orange),
+              SizedBox(width: 4),
+              Text('Location details', style: TextStyle(fontSize: 15),),
+            ],
+          ),
+        ],
       ),
     ),
   );
 
 
+
   Widget buildTopSection(double top) {
+    double rating = 3;
+    int numberOfRating = 33;
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -61,6 +92,40 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
           top: top,
           child: buildProfileImage(),
         ),
+
+
+
+
+    Positioned(
+      right: 20,
+      top: coverHeight + 10,
+      child: Row(
+        children: [
+          PannableRatingBar(
+          rate: rating,
+          items: List.generate(5, (index) =>
+          const RatingWidget(
+          selectedColor: Colors.orange,
+          unSelectedColor: Colors.grey,
+          child: Icon(
+          Icons.star,
+          size: 20,
+          ),
+          )),
+          onChanged: (value) { // the rating value is updated on tap or drag.
+          setState(() {
+          rating = value;
+          });
+          },
+          ),
+          SizedBox(width: 5,),
+          Text('${numberOfRating} ratings', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),)
+        ],
+      ),
+    ),
+
+
+
       ],
     );
   }
