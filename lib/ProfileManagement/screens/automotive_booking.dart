@@ -11,7 +11,8 @@ class _AutomotiveBookingState extends State<AutomotiveBooking> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Bookings'),),
+      backgroundColor: Colors.grey.shade300,
+      appBar: AppBar(title: Text('Bookings', style: TextStyle(fontWeight: FontWeight.w900),), backgroundColor: Colors.grey.shade300,),
     );
   }
 }
