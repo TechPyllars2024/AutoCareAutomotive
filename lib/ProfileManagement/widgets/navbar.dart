@@ -31,10 +31,10 @@ class _NavbarState extends State<Navbar> {
         backgroundColor: Colors.grey.shade300,
         key: _bottomNavigationKey,
         items: <Widget>[
-          Icon(Icons.home, size: 30, color: _page == 0 ? Colors.orange : Colors.black),
-          Icon(Icons.calendar_month, size: 30, color: _page == 1 ? Colors.orange : Colors.black),
-          Icon(Icons.directions_car, size: 30, color: _page == 2 ? Colors.orange : Colors.black),
-          Icon(Icons.person, size: 30, color: _page == 3 ? Colors.orange : Colors.black),
+          Icon(Icons.home, size: 35, color: _page == 0 ? Colors.orange : Colors.black),
+          Icon(Icons.calendar_month, size: 35, color: _page == 1 ? Colors.orange : Colors.black),
+          Icon(Icons.directions_car, size: 35, color: _page == 2 ? Colors.orange : Colors.black),
+          Icon(Icons.person, size: 35, color: _page == 3 ? Colors.orange : Colors.black),
 
 
 
