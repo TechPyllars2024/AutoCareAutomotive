@@ -1,5 +1,6 @@
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
 
@@ -13,14 +14,16 @@ class AutomotiveProfile extends StatefulWidget {
 class _AutomotiveProfileState extends State<AutomotiveProfile> {
   final double coverHeight = 220;
   final double profileHeight = 130;
+
   void editProfile() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => AutomotiveEditProfile()));}
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AutomotiveEditProfile()),
+    );
+  }
+
   @override
-
   Widget build(BuildContext context) {
-
-
     final double top = coverHeight - profileHeight / 2;
 
     return Scaffold(
@@ -38,17 +41,17 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
         children: [
           buildTopSection(top),
           buildShopName(),
-          Button(),
+          buildButton(),
+          //ServicesSection(),
         ],
       ),
     );
   }
 
-
-  Widget Button() => WideButtons(
-      onTap:
-      editProfile,
-      text: 'Edit Profile');
+  Widget buildButton() => WideButtons(
+    onTap: editProfile,
+    text: 'Edit Profile',
+  );
 
   Widget buildShopName() => Padding(
     padding: const EdgeInsets.all(16.0),
@@ -66,7 +69,10 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
             children: [
               Icon(Icons.location_on, color: Colors.orange),
               SizedBox(width: 4),
-              Text('Location details', style: TextStyle(fontSize: 15),),
+              Text(
+                'Location details',
+                style: TextStyle(fontSize: 15),
+              ),
             ],
           ),
         ],
@@ -74,11 +80,10 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
     ),
   );
 
-
-
   Widget buildTopSection(double top) {
     double rating = 3;
     int numberOfRating = 33;
+
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -92,40 +97,38 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
           top: top,
           child: buildProfileImage(),
         ),
-
-
-
-
-    Positioned(
-      right: 20,
-      top: coverHeight + 10,
-      child: Row(
-        children: [
-          PannableRatingBar(
-          rate: rating,
-          items: List.generate(5, (index) =>
-          const RatingWidget(
-          selectedColor: Colors.orange,
-          unSelectedColor: Colors.grey,
-          child: Icon(
-          Icons.star,
-          size: 20,
+        Positioned(
+          right: 20,
+          top: coverHeight + 10,
+          child: Row(
+            children: [
+              PannableRatingBar(
+                rate: rating,
+                items: List.generate(
+                  5,
+                      (index) => const RatingWidget(
+                    selectedColor: Colors.orange,
+                    unSelectedColor: Colors.grey,
+                    child: Icon(
+                      Icons.star,
+                      size: 20,
+                    ),
+                  ),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    rating = value;
+                  });
+                },
+              ),
+              SizedBox(width: 5),
+              Text(
+                '$numberOfRating ratings',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              ),
+            ],
           ),
-          )),
-          onChanged: (value) { // the rating value is updated on tap or drag.
-          setState(() {
-          rating = value;
-          });
-          },
-          ),
-          SizedBox(width: 5,),
-          Text('${numberOfRating} ratings', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),)
-        ],
-      ),
-    ),
-
-
-
+        ),
       ],
     );
   }
