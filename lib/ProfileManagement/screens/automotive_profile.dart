@@ -11,7 +11,8 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Profile'),),
+      backgroundColor: Colors.grey.shade300,
+      appBar: AppBar(title: Text('Profile', style: TextStyle(fontWeight: FontWeight.w900),), backgroundColor: Colors.grey.shade300,),
     );
   }
 }
