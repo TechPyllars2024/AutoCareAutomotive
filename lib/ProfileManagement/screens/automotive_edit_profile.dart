@@ -61,8 +61,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
 
 
   Widget buildTopSection(double top) {
-    double rating = 3;
-    int numberOfRating = 33;
+
 
     return Stack(
       clipBehavior: Clip.none,
@@ -215,8 +214,8 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
 Widget FeedbackSection() => Column(
   crossAxisAlignment: CrossAxisAlignment.start,
   children: [
-    Padding(
-      padding: const EdgeInsets.all(8.0),
+    const Padding(
+      padding: EdgeInsets.all(8.0),
       child: Text('Feedbacks', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
     ),
     Container(
@@ -225,14 +224,14 @@ Widget FeedbackSection() => Column(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16), // Curved edges
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
+      child: const Padding(
+        padding: EdgeInsets.all(18.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the left
           children: [
             Text('Paul Vincent Lerado', style: TextStyle(fontWeight: FontWeight.bold),),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
               child: Text('I was impressed with the professionalism and efficiency of your team during my recent oil change and brake inspection. '
                   'However, the service took longer than expected, so providing more accurate time estimates would be helpful.'),
             ),
