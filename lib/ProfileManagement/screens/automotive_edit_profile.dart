@@ -1,3 +1,5 @@
+import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
+import 'package:autocare_automotiveshops/ProfileManagement/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 
 
@@ -26,7 +28,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Edit Profile',
           style: TextStyle(fontWeight: FontWeight.w900),
         ),
@@ -40,10 +42,12 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
             padding: EdgeInsets.zero,
             children: [
               buildTopSection(top),
-
+              SizedBox(height: 20),
+              buildInputs(),
 
               ServicesCarousel(),
               FeedbackSection(),
+
 
               //ServicesSection(),
             ],
@@ -74,9 +78,32 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
           child: buildProfileImage(),
         ),
 
+
       ],
     );
   }
+
+
+  Widget buildInputs() => const Column(
+    children: [
+      TextFieldInput(
+        //icon: Icons.email,
+        //textEditingController: emailController,
+        hintText: 'Name',
+        textInputType: TextInputType.emailAddress,
+      ),
+      TextFieldInput(
+        //icon: Icons.email,
+        //textEditingController: emailController,
+        hintText: 'Location',
+        textInputType: TextInputType.emailAddress,
+      ),
+
+
+
+
+    ],
+  );
 
   Widget buildCoverImage() => Container(
     color: Colors.grey,
@@ -114,12 +141,12 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          Text(
+          const Text(
 
             'Services',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          Spacer(),
+          const Spacer(),
           IconButton(
 
               onPressed: () {}, icon: Icon(Icons.add))
