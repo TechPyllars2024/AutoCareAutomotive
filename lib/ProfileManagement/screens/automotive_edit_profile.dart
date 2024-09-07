@@ -1,4 +1,4 @@
-import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
+
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   void editProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AutomotiveEditProfile()),
+      MaterialPageRoute(builder: (context) => const AutomotiveEditProfile()),
     );
   }
 
@@ -42,11 +42,11 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
             padding: EdgeInsets.zero,
             children: [
               buildTopSection(top),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               buildInputs(),
 
-              ServicesCarousel(),
-              FeedbackSection(),
+              servicesCarousel(),
+              feedbackSection(),
 
 
               //ServicesSection(),
@@ -134,7 +134,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
 
 
 
-  Widget ServicesCarousel() => Column(
+  Widget servicesCarousel() => Column(
   children: [
     Padding(
       padding: const EdgeInsets.all(8.0),
@@ -148,7 +148,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
           const Spacer(),
           IconButton(
 
-              onPressed: () {}, icon: Icon(Icons.add))
+              onPressed: () {}, icon: const Icon(Icons.add))
         ],
       ),
     ),
@@ -158,13 +158,14 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
         itemExtent: 280,
         children: List.generate(10, (int index) {
           return Container(
+            color: Colors.orangeAccent.shade100,
             child: Stack(
               children: [
                 // ClipRRect to add curved corners and crop the bottom
                 Container(
-                  margin: EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(8),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20), // Curve on the left
                       topRight: Radius.circular(20), // Curve on the right
                     ),
@@ -189,8 +190,8 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                   child: Container(
                     height: 50, // Allocating 25% space for text
 
-                    padding: EdgeInsets.all(10),
-                    child: Text(
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
                       textAlign: TextAlign.center,
                       'Car Wash',
                       style: TextStyle(
@@ -203,7 +204,6 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                 ),
               ],
             ),
-            color: Colors.orangeAccent.shade100,
           );
         }),
       ),
@@ -211,7 +211,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   ],
 );
 
-Widget FeedbackSection() => Column(
+Widget feedbackSection() => Column(
   crossAxisAlignment: CrossAxisAlignment.start,
   children: [
     const Padding(
@@ -219,7 +219,7 @@ Widget FeedbackSection() => Column(
       child: Text('Feedbacks', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
     ),
     Container(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16), // Curved edges
