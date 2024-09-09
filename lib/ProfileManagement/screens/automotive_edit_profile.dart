@@ -46,7 +46,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
               buildInputs(),
 
               servicesCarousel(),
-              feedbackSection(),
+
 
 
               //ServicesSection(),
@@ -175,7 +175,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                       alignment: Alignment.topCenter,
                       // Align top portion
                       child: Image.network(
-                        'https://soaphandcarwash.com/wp-content/uploads/2019/08/Soap-Hand-Car-Wash-13.jpg',
+                        'https://wallpapers.com/images/featured/blank-white-7sn5o1woonmklx1h.jpg',
                         fit: BoxFit.cover,
                         width: double.infinity,
                       ),
@@ -193,7 +193,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                     padding: const EdgeInsets.all(10),
                     child: const Text(
                       textAlign: TextAlign.center,
-                      'Car Wash',
+                      'Service',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 18,
@@ -210,34 +210,5 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     ),
   ],
 );
+}
 
-Widget feedbackSection() => Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    const Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Text('Feedbacks', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-    ),
-    Container(
-      margin: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16), // Curved edges
-      ),
-      child: const Padding(
-        padding: EdgeInsets.all(18.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the left
-          children: [
-            Text('Paul Vincent Lerado', style: TextStyle(fontWeight: FontWeight.bold),),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-              child: Text('I was impressed with the professionalism and efficiency of your team during my recent oil change and brake inspection. '
-                  'However, the service took longer than expected, so providing more accurate time estimates would be helpful.'),
-            ),
-          ],
-        ),
-      ),
-    ),
-  ],
-);}
