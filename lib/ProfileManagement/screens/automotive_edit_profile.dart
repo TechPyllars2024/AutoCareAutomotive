@@ -134,81 +134,107 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
 
 
 
-  Widget servicesCarousel() => Column(
-  children: [
-    Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
+  Widget servicesCarousel() =>
+      Column(
         children: [
-          const Text(
-
-            'Services',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const Spacer(),
-          IconButton(
-
-              onPressed: () {}, icon: const Icon(Icons.add))
-        ],
-      ),
-    ),
-    SizedBox(
-      height: 220,
-      child: CarouselView(
-        itemExtent: 280,
-        children: List.generate(10, (int index) {
-          return Container(
-            color: Colors.orangeAccent.shade100,
-            child: Stack(
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
               children: [
-                // ClipRRect to add curved corners and crop the bottom
-                Container(
-                  margin: const EdgeInsets.all(8),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20), // Curve on the left
-                      topRight: Radius.circular(20), // Curve on the right
-                    ),
-                    child: FractionallySizedBox(
-                      heightFactor: 0.80,
-                      // Crop to 75% height of the container
-                      alignment: Alignment.topCenter,
-                      // Align top portion
-                      child: Image.network(
-                        'https://wallpapers.com/images/featured/blank-white-7sn5o1woonmklx1h.jpg',
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
-                    ),
-                  ),
+                const Text(
+                  'Services',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                // Overlay Text in the bottom 25% space
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 50, // Allocating 25% space for text
-
-                    padding: const EdgeInsets.all(10),
-                    child: const Text(
-                      textAlign: TextAlign.center,
-                      'Service',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                const Spacer(),
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Add Service'),
+                          content: const TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Enter service name',
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close the modal
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                // Handle adding the service logic here
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Add'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(Icons.add),
                 ),
               ],
             ),
-          );
-        }),
-      ),
-    ),
-  ],
-);
+          ),
+          SizedBox(
+            height: 220,
+            child: CarouselView(
+              itemExtent: 280,
+              children: List.generate(10, (int index) {
+                return Container(
+                  color: Colors.orangeAccent.shade100,
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.all(8),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                          child: FractionallySizedBox(
+                            heightFactor: 0.80,
+                            alignment: Alignment.topCenter,
+                            child: Image.network(
+                              'https://wallpapers.com/images/featured/blank-white-7sn5o1woonmklx1h.jpg',
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          height: 50,
+                          padding: const EdgeInsets.all(10),
+                          child: const Text(
+                            textAlign: TextAlign.center,
+                            'Service',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      );
+
 }
 
