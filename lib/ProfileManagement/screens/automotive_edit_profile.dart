@@ -104,29 +104,83 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     ],
   );
 
-  Widget buildCoverImage() => Container(
-    color: Colors.grey,
-    width: double.infinity,
-    height: coverHeight,
 
-  );
 
-  Widget buildProfileImage() => Stack(
+  Widget buildCoverImage() => Stack(
     children: [
-      CircleAvatar(
-        radius: profileHeight / 2,
-        backgroundColor: Colors.grey.shade800,
-        child: ClipOval(
-          child: Icon(
-            Icons.person,
-            size: profileHeight,
-            color: Colors.white,
-
+      Container(
+        color: Colors.grey.shade600,
+        width: double.infinity,
+        height: coverHeight,
+      ),
+      Positioned(
+        bottom: 10, // Positioning from the bottom
+        right: 10, // Positioning from the right
+        child: Container(
+          width: 50, // Width of the circular container
+          height: 50, // Height of the circular container
+          decoration: BoxDecoration(
+            color: Colors.grey, // Background color of the circle
+            shape: BoxShape.circle, // Circular shape
+          ),
+          child: IconButton(
+            icon: const Icon(
+              Icons.camera_alt,
+              color: Colors.white, // Set the color of the icon
+              size: 24, // Size of the icon
+            ),
+            onPressed: () {
+              // Handle camera button press logic
+              print('Camera icon pressed');
+            },
           ),
         ),
       ),
     ],
   );
+
+
+
+  Widget buildProfileImage() => Stack(
+    children: [
+      CircleAvatar(
+        radius: profileHeight / 2,
+        backgroundColor: Colors.grey.shade400,
+        child: ClipOval(
+          child: Icon(
+            Icons.person,
+            size: profileHeight,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      Positioned(
+        bottom: 0, // Move the container slightly outside the profile image's bottom edge
+        right: 0,  // Move the container slightly outside the profile image's right edge
+        child: Container(
+          width: 50, // Match the width of the cover image container
+          height: 50, // Match the height of the cover image container
+          decoration: BoxDecoration(
+            color: Colors.grey, // Background color of the circle
+            shape: BoxShape.circle, // Circular shape
+          ),
+          child: IconButton(
+            icon: const Icon(
+              Icons.camera_alt,
+              color: Colors.white, // Set the color of the icon
+              size: 24, // Adjust the size of the icon to fit well within the container
+            ),
+            onPressed: () {
+              // Handle camera button press logic
+              print('Camera icon pressed for profile image');
+            },
+          ),
+        ),
+      ),
+    ],
+  );
+
+
 
 
 
@@ -183,9 +237,9 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                                   borderRadius: BorderRadius.circular(12.0),
                                   border: Border.all(color: Colors.grey),
                                 ),
-                                child: Column(
+                                child: const Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
+                                  children: [
                                     Icon(Icons.camera_alt, size: 40, color: Colors.grey),
                                     SizedBox(height: 10),
                                     Text('Upload Photo', style: TextStyle(color: Colors.grey)),
