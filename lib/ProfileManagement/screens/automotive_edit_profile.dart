@@ -133,137 +133,168 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
 
 
 
-  Widget servicesCarousel() =>
-      Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                const Text(
-                  'Services',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Dialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ), // Rounded corners
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.8, // Set width to 80% of screen width
-                            padding: const EdgeInsets.all(20.0), // Add some padding inside the modal
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Text(
-                                  'Add Service',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+
+  Widget servicesCarousel() => Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            const Text(
+              'Services',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const Spacer(),
+            IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Dialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ), // Rounded corners
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.8, // Set width to 80% of screen width
+                        padding: const EdgeInsets.all(20.0), // Add some padding inside the modal
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
+                              'Add Service',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+
+                            // Static Upload Photo Option with GestureDetector
+                            GestureDetector(
+                              onTap: () {
+                                // Add your upload photo logic here
+                                print('Upload photo tapped');
+                              },
+                              child: Container(
+                                height: 100,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  border: Border.all(color: Colors.grey),
                                 ),
-                                const SizedBox(height: 20),
-                                const TextField(
-                                  decoration: InputDecoration(
-                                    hintText: 'Service name',
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                const TextField(
-                                  decoration: InputDecoration(
-                                    hintText: 'Starting price',
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop(); // Close the modal
-                                      },
-                                      child: const Text('Cancel'),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    TextButton(
-                                      onPressed: () {
-                                        // Handle adding the service logic here
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text('Add Service'),
-                                    ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Icon(Icons.camera_alt, size: 40, color: Colors.grey),
+                                    SizedBox(height: 10),
+                                    Text('Upload Photo', style: TextStyle(color: Colors.grey)),
                                   ],
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            const TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Service name',
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            const TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Starting price',
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(); // Close the modal
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                const SizedBox(width: 10),
+                                TextButton(
+                                  onPressed: () {
+                                    // Handle adding the service logic here
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Add Service'),
                                 ),
                               ],
                             ),
-                          ),
-                        );
-                      },
+                          ],
+                        ),
+                      ),
                     );
                   },
-                  icon: const Icon(Icons.add),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 220,
-            child: CarouselView(
-              itemExtent: 280,
-              children: List.generate(10, (int index) {
-                return Container(
-                  color: Colors.orangeAccent.shade100,
-                  child: Stack(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                          child: FractionallySizedBox(
-                            heightFactor: 0.80,
-                            alignment: Alignment.topCenter,
-                            child: Image.network(
-                              'https://wallpapers.com/images/featured/blank-white-7sn5o1woonmklx1h.jpg',
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: Container(
-                          height: 50,
-                          padding: const EdgeInsets.all(10),
-                          child: const Text(
-                            textAlign: TextAlign.center,
-                            'Service',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 );
-              }),
+              },
+              icon: const Icon(Icons.add),
             ),
-          ),
-        ],
-      );
+          ],
+        ),
+      ),
+      SizedBox(
+        height: 220,
+        child: CarouselView(
+          itemExtent: 280,
+          children: List.generate(10, (int index) {
+            return Container(
+              color: Colors.orangeAccent.shade100,
+              child: Stack(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.all(8),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                      child: FractionallySizedBox(
+                        heightFactor: 0.80,
+                        alignment: Alignment.topCenter,
+                        child: Image.network(
+                          'https://wallpapers.com/images/featured/blank-white-7sn5o1woonmklx1h.jpg',
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 50,
+                      padding: const EdgeInsets.all(10),
+                      child: const Text(
+                        textAlign: TextAlign.center,
+                        'Service',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
+      ),
+    ],
+  );
+
+
+
 
 
 
