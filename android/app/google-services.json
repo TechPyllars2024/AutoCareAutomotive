@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1000331742478",
+    "project_id": "autocare-63060",
+    "storage_bucket": "autocare-63060.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000331742478:android:96cb788f495e7bfd79db5f",
+        "android_client_info": {
+          "package_name": "com.autocarecarowners.autocare_carowners"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1000331742478-r9l6g5mv8u06s38jm8206ers6ujejngf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autocarecarowners.autocare_carowners",
+            "certificate_hash": "729d12e6bcf988d29c2fdee0f92472f7ad80f711"
+          }
+        },
+        {
+          "client_id": "1000331742478-elnao7phbfskck3fk44pt4344pbajlmj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEhLmgQAH2iqkY3GLd37IB62zCjB-TOVw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000331742478-19ku10bp8qttdim1ghnmgck125jnpg98.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1000331742478-3vp6gndo3ejh6hqbfrgntqort844lolc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.autocarecarowners.autocareCarowners"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
