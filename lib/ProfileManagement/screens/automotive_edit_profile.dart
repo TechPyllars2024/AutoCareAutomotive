@@ -133,7 +133,6 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
 
 
 
-
   Widget servicesCarousel() =>
       Column(
         children: [
@@ -151,28 +150,58 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Add Service'),
-                          content: const TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Enter service name',
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ), // Rounded corners
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.8, // Set width to 80% of screen width
+                            padding: const EdgeInsets.all(20.0), // Add some padding inside the modal
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  'Add Service',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                const TextField(
+                                  decoration: InputDecoration(
+                                    hintText: 'Service name',
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                const TextField(
+                                  decoration: InputDecoration(
+                                    hintText: 'Starting price',
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // Close the modal
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    TextButton(
+                                      onPressed: () {
+                                        // Handle adding the service logic here
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Add Service'),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(); // Close the modal
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                // Handle adding the service logic here
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Add'),
-                            ),
-                          ],
                         );
                       },
                     );
@@ -235,6 +264,8 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
           ),
         ],
       );
+
+
 
 }
 
