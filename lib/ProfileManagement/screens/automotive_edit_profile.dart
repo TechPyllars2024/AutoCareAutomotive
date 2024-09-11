@@ -19,7 +19,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   final DropdownController controller = Get.put(DropdownController());
 
 
-  TimeOfDay _timeOfDay = TimeOfDay.now();
+ // TimeOfDay _timeOfDay = TimeOfDay.now();
 
   final double coverHeight = 220;
   final double profileHeight = 130;
