@@ -2,6 +2,7 @@
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/text_field.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
+import 'package:autocare_automotiveshops/ProfileManagement/widgets/daysOftheWeek.dart';
 import 'package:get/get.dart'; // Import GetX for state management
 
 
@@ -16,7 +17,8 @@ class AutomotiveEditProfile extends StatefulWidget {
 }
 
 class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
-  final DropdownController controller = Get.put(DropdownController());
+  final DropdownController dropdownController = Get.put(DropdownController());
+  final DaysOfTheWeekController daysOfTheWeekController = Get.put(DaysOfTheWeekController());
 
 
  // TimeOfDay _timeOfDay = TimeOfDay.now();
@@ -54,6 +56,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
               buildTopSection(top),
               const SizedBox(height: 20),
               buildInputs(),
+              DayOfTheWeekSelection(),
               TimeSelection(),
               servicesCarousel(),
               ServiceSpecialization(),
@@ -419,17 +422,62 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
 
 
 
-  Widget ServiceSpecialization() => Container(
-    child: CustomDropdown(
-      options: ['Electrical Works', 'Mechanical Works', 'Air-conditioninf', 'Paint and Body Works', 'Car Wash and Auto-Detailing'],
-      hintText: 'Service Specialization',
-      controller: controller,
-      onSelectionChanged: (selectedOptions) {
-        print('Selected Options: $selectedOptions');
-      },
-    ),
+  Widget ServiceSpecialization() => Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Select Service Specialization', style: TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),),
+        Container(
+          child: CustomDropdown(
+            options: ['Electrical Works', 'Mechanical Works', 'Air-conditioninf', 'Paint and Body Works', 'Car Wash and Auto-Detailing'],
+            hintText: 'Service Specialization',
+            controller: dropdownController,
+            onSelectionChanged: (selectedOptions) {
+              print('Selected Options: $selectedOptions');
+            },
+          ),
 
+        ),
+      ],
+    ),
   );
+
+
+
+
+  Widget DayOfTheWeekSelection() => Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Select Days of the Week',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        DayOfTheWeek(
+          options: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+          hintText: 'Select Days',
+          controller: daysOfTheWeekController,
+          onSelectionChanged: (selectedOptions) {
+            print('Selected Options: $selectedOptions');
+          },
+        ),
+      ],
+    ),
+  );
+
+
+
+
 
 
 
