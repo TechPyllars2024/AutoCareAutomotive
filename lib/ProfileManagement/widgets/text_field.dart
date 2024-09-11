@@ -23,7 +23,11 @@ class TextFieldInput extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 20.0),
       child: Container(
-        color: Colors.grey[100],
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(15),
+        ),
+
         child: TextField(
           style: const TextStyle(fontSize: 20),
          // controller: textEditingController,
@@ -34,14 +38,17 @@ class TextFieldInput extends StatelessWidget {
             //     ? Icon(icon, color: Colors.black45, size: 24)
             //     : null,
             labelStyle: const TextStyle(color: Color.fromARGB(255, 77, 76, 76)),
-            border: const OutlineInputBorder(
+            border:  OutlineInputBorder(
               borderSide: BorderSide(color: Colors.grey),
+              borderRadius: BorderRadius.circular(15),
             ),
-            enabledBorder: const OutlineInputBorder(
+            enabledBorder:  OutlineInputBorder(
               borderSide: BorderSide(color: Colors.grey),
+              borderRadius: BorderRadius.circular(15),
             ),
-            focusedBorder: const OutlineInputBorder(
+            focusedBorder:  OutlineInputBorder(
               borderSide: BorderSide(color: Colors.grey),
+              borderRadius: BorderRadius.circular(15),
             ),
           ),
           keyboardType: textInputType,
