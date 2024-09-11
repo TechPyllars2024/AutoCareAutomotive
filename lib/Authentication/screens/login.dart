@@ -1,11 +1,9 @@
-
-import 'package:autocare_automotiveshops/Authentication/screens/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
-
 import 'package:flutter_animate/flutter_animate.dart';
+
+import 'package:autocare_automotiveshops/Authentication/screens/signup.dart';
 import '../Widgets/button.dart';
 import '../Widgets/snackBar.dart';
 import '../Widgets/text_field.dart';
@@ -18,10 +16,7 @@ import 'forgotPassword.dart';
 import 'homeScreen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({
-    super.key,
-    this.child
-  });
+  const LoginScreen({super.key, this.child});
 
   final Widget? child;
 
@@ -30,7 +25,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
@@ -78,28 +72,26 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // Handles Google authentication
+  // Handles Google Log-In in the UI
   Future<void> logInWithGoogle() async {
     setState(() {
       isLoading = true;
     });
 
-    String res = await AuthenticationMethod().signInWithGoogle();
+    String res = await AuthenticationMethod().logInWithGoogle();
 
-    if (res == "SUCCESS") {
-      setState(() {
-        isLoading = false;
-      });
+    setState(() {
+      isLoading = false;
+    });
 
+    if (res == "Service Provider") {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
+          builder: (context) =>
+              const HomeScreen(),
         ),
       );
     } else {
-      setState(() {
-        isLoading = false;
-      });
       Utils.showSnackBar(res);
     }
   }
@@ -129,11 +121,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       TextSpan(
-                        text: "Care",
+                        text: "Care+",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 50,
-                          color: Colors.orange, // Different color
+                          color: Colors.orange,
                         ),
                       ),
                     ],
@@ -142,7 +134,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
 
               // Sign Up Image
-              const CarImageWidget(imagePath: 'lib/Authentication/assets/images/car.png').animate()
+              const CarImageWidget(
+                      imagePath: 'lib/Authentication/assets/images/car.png')
+                  .animate()
                   .fadeIn(duration: const Duration(seconds: 1)),
               // Sign Up Form
               Container(
@@ -154,15 +148,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   children: <Widget>[
                     TextFieldInput(
-                        icon: Icons.email,
-                        textEditingController: emailController,
-                        hintText: 'Enter your Email',
-                        textInputType: TextInputType.text),
+                      icon: Icons.email,
+                      textEditingController: emailController,
+                      hintText: 'Enter your Email',
+                      textInputType: TextInputType.text,
+                      validator: (value) {
+                        final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter an email';
+                        } else if (!emailRegex.hasMatch(value)) {
+                          return 'Please enter a valid email address';
+                        }
+                        return null;
+                      },
+                    ),
                     TextFieldPassword(
                       icon: Icons.lock,
                       textEditingController: passwordController,
                       hintText: 'Enter your Password',
                       textInputType: TextInputType.text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your password';
+                        }
+                        return null;
+                      },
                       isPass: true,
                     ),
 
@@ -180,7 +190,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => const ForgotPasswordScreen(),
+                              builder: (context) =>
+                                  const ForgotPasswordScreen(),
                             ),
                           ),
                         ),
@@ -223,7 +234,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   // Navigate to LoginScreen
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => const SignupScreen()),
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SignupScreen()),
                                   );
                                 },
                             ),
@@ -233,8 +246,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-              ).animate()
-                  .slide(duration: const Duration(milliseconds: 500),
+              ).animate().slide(
+                  duration: const Duration(milliseconds: 500),
                   curve: Curves.easeInOut,
                   begin: const Offset(0, 1),
                   end: const Offset(0, 0))
