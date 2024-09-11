@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Import GetX for state management
 
+// Controller for managing selected days
 class DaysOfTheWeekController extends GetxController {
   var selectedOptionList = <String>[].obs;
   var selectedOption = ''.obs;
 
-  // Update selected option based on conditions
+  // Update selected option based on selected days
   void updateSelectedOption() {
-    Set<String> selectedDays = selectedOptionList.toSet(); // Convert list to set
+    final selectedDays = selectedOptionList.toSet(); // Convert list to set
 
     if (selectedDays.length == 7) {
       selectedOption.value = 'Everyday';
     } else if (selectedDays.containsAll([
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday'
+      'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'
     ]) &&
         !selectedDays.contains('Saturday') &&
         !selectedDays.contains('Sunday')) {
@@ -27,6 +24,7 @@ class DaysOfTheWeekController extends GetxController {
   }
 }
 
+// Widget for selecting days of the week
 class DayOfTheWeek extends StatefulWidget {
   final List<String> options;
   final String hintText;
@@ -54,26 +52,30 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
-            onTap: () => _showMultiSelectDialog(),
+            onTap: _showMultiSelectDialog,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
+                  border: Border.all(color: Colors.grey[600]!),
                   borderRadius: BorderRadius.circular(8),
-                  color: Colors.grey[100],
+                  color: Colors.grey[100], // Light grey background
                 ),
-                child: Obx(() => widget.controller.selectedOptionList.isEmpty
-                    ? Text(
-                  widget.hintText,
-                  style: const TextStyle(color: Colors.grey, fontSize: 16),
-                )
-                    : Text(
-                  widget.controller.selectedOption.value,
-                  style: const TextStyle(color: Colors.black, fontSize: 16),
-                )),
+                child: Obx(
+                      () => Text(
+                    widget.controller.selectedOptionList.isEmpty
+                        ? widget.hintText
+                        : widget.controller.selectedOption.value,
+                    style: TextStyle(
+                      color: widget.controller.selectedOptionList.isEmpty
+                          ? Colors.grey[700]
+                          : Colors.grey[900],
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -87,32 +89,44 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Select Options'),
+          title: Text(
+            'Select Options',
+            style: TextStyle(color: Colors.grey[800]), // Dark grey text
+          ),
+          backgroundColor: Colors.grey[200], // Very light grey background
           content: SingleChildScrollView(
             child: ListBody(
               children: widget.options.map((option) {
-                return Obx(() => CheckboxListTile(
-                  title: Text(option),
-                  value: widget.controller.selectedOptionList.contains(option),
-                  onChanged: (bool? value) {
-                    if (value == true) {
-                      widget.controller.selectedOptionList.add(option);
-                    } else {
-                      widget.controller.selectedOptionList.remove(option);
-                    }
-                    widget.controller.updateSelectedOption(); // Update selected options
-                    if (widget.onSelectionChanged != null) {
-                      widget.onSelectionChanged!(widget.controller.selectedOptionList);
-                    }
-                  },
-                  controlAffinity: ListTileControlAffinity.leading,
-                ));
+                return Obx(
+                      () => CheckboxListTile(
+                    title: Text(
+                      option,
+                      style: TextStyle(color: Colors.grey[800]), // Dark grey text
+                    ),
+                    value: widget.controller.selectedOptionList.contains(option),
+                    onChanged: (bool? value) {
+                      if (value == true) {
+                        widget.controller.selectedOptionList.add(option);
+                      } else {
+                        widget.controller.selectedOptionList.remove(option);
+                      }
+                      widget.controller.updateSelectedOption(); // Update selected options
+                      widget.onSelectionChanged?.call(widget.controller.selectedOptionList);
+                    },
+                    controlAffinity: ListTileControlAffinity.leading,
+                    activeColor: Colors.grey[600], // Color for the checkbox when selected
+                    checkColor: Colors.white, // Color for the check mark
+                  ),
+                );
               }).toList(),
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Close'),
+              child: Text(
+                'Close',
+                style: TextStyle(color: Colors.grey[800]), // Dark grey text
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
