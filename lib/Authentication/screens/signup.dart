@@ -1,11 +1,8 @@
-
-import 'package:autocare_automotiveshops/Authentication/screens/verifyEmail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_animate/flutter_animate.dart';
+
 import '../Widgets/button.dart';
 import '../Widgets/snackBar.dart';
 import '../Widgets/text_field.dart';
@@ -14,14 +11,13 @@ import '../widgets/carImage.dart';
 import '../widgets/googleButton.dart';
 import '../widgets/or.dart';
 import '../widgets/texfieldPassword.dart';
+import '../widgets/validator.dart';
 import 'homeScreen.dart';
 import 'login.dart';
+import 'package:autocare_automotiveshops/Authentication/screens/verifyEmail.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({
-    super.key,
-    this.child
-  });
+  const SignupScreen({super.key, this.child});
 
   final Widget? child;
 
@@ -33,7 +29,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   bool isLoading = false;
 
   @override
@@ -59,7 +56,7 @@ class _SignupScreenState extends State<SignupScreen> {
       return;
     }
 
-    String res = await AuthenticationMethod().signupUser(
+    String res = await AuthenticationMethod().signupServiceProvider(
       email: emailController.text,
       password: passwordController.text,
       name: nameController.text,
@@ -149,11 +146,11 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                       TextSpan(
-                        text: "Care",
+                        text: "Care+",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 50,
-                          color: Colors.orange, // Different color
+                          color: Colors.orange,
                         ),
                       ),
                     ],
@@ -162,7 +159,9 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
 
               // Sign Up Image
-              const CarImageWidget(imagePath: 'lib/Authentication/assets/images/car.png').animate()
+              const CarImageWidget(
+                      imagePath: 'lib/Authentication/assets/images/car.png')
+                  .animate()
                   .fadeIn(duration: const Duration(seconds: 1)),
               // Sign Up Form
               Container(
@@ -174,20 +173,38 @@ class _SignupScreenState extends State<SignupScreen> {
                 child: Column(
                   children: <Widget>[
                     TextFieldInput(
-                        icon: Icons.person,
-                        textEditingController: nameController,
-                        hintText: 'Enter your Name',
-                        textInputType: TextInputType.text),
+                      icon: Icons.person,
+                      textEditingController: nameController,
+                      hintText: 'Enter your Name',
+                      textInputType: TextInputType.text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a name';
+                        }
+                        return null;
+                      },
+                    ),
                     TextFieldInput(
-                        icon: Icons.email,
-                        textEditingController: emailController,
-                        hintText: 'Enter your Email',
-                        textInputType: TextInputType.text),
+                      icon: Icons.email,
+                      textEditingController: emailController,
+                      hintText: 'Enter your Email',
+                      textInputType: TextInputType.text,
+                      validator: (value) {
+                        final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter an email';
+                        } else if (!emailRegex.hasMatch(value)) {
+                          return 'Please enter a valid email address';
+                        }
+                        return null;
+                      },
+                    ),
                     TextFieldPassword(
                       icon: Icons.lock,
                       textEditingController: passwordController,
                       hintText: 'Enter your Password',
                       textInputType: TextInputType.text,
+                      validator: passwordValidator,
                       isPass: true,
                     ),
                     TextFieldPassword(
@@ -195,6 +212,12 @@ class _SignupScreenState extends State<SignupScreen> {
                       textEditingController: confirmPasswordController,
                       hintText: 'Confirm your Password',
                       textInputType: TextInputType.text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your password';
+                        }
+                        return null;
+                      },
                       isPass: true,
                     ),
 
@@ -233,7 +256,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                   // Navigate to LoginScreen
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginScreen()),
                                   );
                                 },
                             ),
@@ -243,8 +268,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ],
                 ),
-              ).animate()
-                  .slide(duration: const Duration(milliseconds: 500),
+              ).animate().slide(
+                  duration: const Duration(milliseconds: 500),
                   curve: Curves.easeInOut,
                   begin: const Offset(0, 1),
                   end: const Offset(0, 0)),
