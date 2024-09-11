@@ -458,7 +458,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
         const Text(
           'Select Days of the Week',
           style: TextStyle(
-            color: Colors.black,
+
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
