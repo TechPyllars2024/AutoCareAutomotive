@@ -35,19 +35,19 @@ class _CustomDropdownState extends State<CustomDropdown> {
           GestureDetector(
             onTap: () => _showMultiSelectDialog(),
             child: Padding(
-              padding: const EdgeInsets.all(8.0), // Set padding of 10 on all sides
+              padding: const EdgeInsets.all(8.0),
               child: Container(
-                width: double.infinity, // Full width of the screen
+                width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
+                  border: Border.all(color: Colors.grey[600]!),
                   borderRadius: BorderRadius.circular(8),
                   color: Colors.grey[100], // Light grey background
                 ),
                 child: Obx(() => widget.controller.selectedOptionList.isEmpty
                     ? Text(
                   widget.hintText,
-                  style: const TextStyle(color: Colors.grey, fontSize: 16),
+                  style: TextStyle(color: Colors.grey[700], fontSize: 16), // Grey text
                 )
                     : Wrap(
                   spacing: 8.0,
@@ -56,9 +56,9 @@ class _CustomDropdownState extends State<CustomDropdown> {
                     return Chip(
                       label: Text(
                         option,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white), // White text
                       ),
-                      backgroundColor: Colors.grey[700], // Dark grey background for selected options
+                      backgroundColor: Colors.grey[600], // Darker grey background for selected options
                       deleteIconColor: Colors.white, // White delete icon
                       onDeleted: () {
                         widget.controller.selectedOptionList.remove(option);
@@ -84,12 +84,19 @@ class _CustomDropdownState extends State<CustomDropdown> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Select Options'),
+          title: Text(
+            'Select Options',
+            style: TextStyle(color: Colors.grey[800]), // Dark grey text
+          ),
+          backgroundColor: Colors.grey[200], // Very light grey background
           content: SingleChildScrollView(
             child: ListBody(
               children: widget.options.map((option) {
                 return Obx(() => CheckboxListTile(
-                  title: Text(option),
+                  title: Text(
+                    option,
+                    style: TextStyle(color: Colors.grey[800]), // Dark grey text
+                  ),
                   value: widget.controller.selectedOptionList.contains(option),
                   onChanged: (bool? value) {
                     if (value == true) {
@@ -104,13 +111,18 @@ class _CustomDropdownState extends State<CustomDropdown> {
                     }
                   },
                   controlAffinity: ListTileControlAffinity.leading,
+                  activeColor: Colors.grey[600], // Color for the checkbox when selected
+                  checkColor: Colors.white, // Color for the check mark
                 ));
               }).toList(),
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Close'),
+              child: Text(
+                'Close',
+                style: TextStyle(color: Colors.grey[800]), // Dark grey text
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
