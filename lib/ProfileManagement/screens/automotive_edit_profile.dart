@@ -87,13 +87,13 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
             //icon: Icons.email,
             //textEditingController: emailController,
             hintText: 'Name',
-            textInputType: TextInputType.emailAddress,
+            textInputType: TextInputType.text,
           ),
           TextFieldInput(
             //icon: Icons.email,
             //textEditingController: emailController,
             hintText: 'Location',
-            textInputType: TextInputType.emailAddress,
+            textInputType: TextInputType.text,
           ),
         ],
       );
