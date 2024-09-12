@@ -61,12 +61,12 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
                 textInputType: TextInputType.text,
                // controller: _nameController,
               ),
-              // SizedBox(height: 8.0),
-              // TextFieldInput(
-              //   hintText: 'Starting Price',
-              //   textInputType: TextInputType.number,
-              //  // controller: _priceController,
-              // ),
+              SizedBox(height: 8.0),
+              TextFieldInput(
+                hintText: 'Starting Price',
+                textInputType: TextInputType.number,
+               // controller: _priceController,
+              ),
             ],
           ),
         ),
