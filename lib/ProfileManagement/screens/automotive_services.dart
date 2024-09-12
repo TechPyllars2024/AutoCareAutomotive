@@ -165,12 +165,12 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
         // ),
         // backgroundColor: Colors.grey.shade300,
         // elevation: 0,
-        // actions: [
-        //   IconButton(
-        //     icon: Icon(Icons.add, color: Colors.grey[800]),
-        //     onPressed: _addNewService,
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add, color: Colors.grey[800]),
+            onPressed: _addNewService,
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
