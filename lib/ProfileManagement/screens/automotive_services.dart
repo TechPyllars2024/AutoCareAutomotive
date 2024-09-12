@@ -213,14 +213,14 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Text(
-                            //   services[index].name,
-                            //   style: TextStyle(
-                            //     fontSize: 25,
-                            //     fontWeight: FontWeight.bold,
-                            //     color: Colors.grey[800],
-                            //   ),
-                            // ),
+                            Text(
+                              services[index].name,
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[800],
+                              ),
+                            ),
                             // SizedBox(height: 8.0),
                             // Text(
                             //   'Starting Price: \$${services[index].startingPrice.toStringAsFixed(2)}', // Display price
