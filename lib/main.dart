@@ -1,4 +1,3 @@
-import 'package:autocare_automotiveshops/ProfileManagement/widgets/navbar.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,10 +10,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return
-        MaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: Navbar()
+    return MaterialApp(
+      title: 'AutoCare Automotive Shops',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('AutoCare Automotive Shops'),
+        ),
+        body: Center(
+          child: Text('Welcome to AutoCare Automotive Shops!'),
+        ),
+      ),
     );
   }
 }
