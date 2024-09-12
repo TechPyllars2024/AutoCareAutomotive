@@ -159,12 +159,12 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
-        // title: Text(
-        //   'Services',
-        //   style: TextStyle(fontWeight: FontWeight.w900, color: Colors.grey[800]),
-        // ),
-        // backgroundColor: Colors.grey.shade300,
-        // elevation: 0,
+        title: Text(
+          'Services',
+          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.grey[800]),
+        ),
+        backgroundColor: Colors.grey.shade300,
+        elevation: 0,
         actions: [
           IconButton(
             icon: Icon(Icons.add, color: Colors.grey[800]),
