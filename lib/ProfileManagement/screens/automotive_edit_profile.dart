@@ -422,7 +422,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
               options: const [
                 'Electrical Works',
                 'Mechanical Works',
-                'Air-conditioninf',
+                'Air-conditioning',
                 'Paint and Body Works',
                 'Car Wash and Auto-Detailing'
               ],
