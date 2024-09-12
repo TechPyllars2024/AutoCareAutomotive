@@ -184,7 +184,7 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
             ),
             itemCount: services.length,
             itemBuilder: (context, index) => GestureDetector(
-             // onTap: () => _showServiceDetails(services[index]),
+              onTap: () => _showServiceDetails(services[index]),
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0),
