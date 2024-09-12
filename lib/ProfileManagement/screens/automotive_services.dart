@@ -27,61 +27,61 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
 
-  // void _showServiceDetails(Service service) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       backgroundColor: Colors.grey.shade200,
-  //       title: Text(
-  //         service.name,
-  //         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),
-  //       ),
-  //       content: Container(
-  //         color: Colors.grey[200],
-  //         padding: EdgeInsets.all(8.0),
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             ClipRRect(
-  //               borderRadius: BorderRadius.circular(15.0),
-  //               child: Image.network(
-  //                 service.imageUrl,
-  //                 fit: BoxFit.cover,
-  //                 width: MediaQuery.of(context).size.width * 0.8,
-  //               ),
-  //             ),
-  //             SizedBox(height: 10.0),
-  //             Text(
-  //               'Details about ${service.name}',
-  //               style: TextStyle(color: Colors.grey[700]),
-  //             ),
-  //             SizedBox(height: 8.0),
-  //             TextFieldInput(
-  //               hintText: 'Service Name',
-  //               textInputType: TextInputType.text,
-  //              // controller: _nameController,
-  //             ),
-  //             SizedBox(height: 8.0),
-  //             TextFieldInput(
-  //               hintText: 'Starting Price',
-  //               textInputType: TextInputType.number,
-  //              // controller: _priceController,
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Navigator.of(context).pop(),
-  //           child: Text(
-  //             'Save',
-  //             style: TextStyle(color: Colors.grey[800]),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  void _showServiceDetails(Service service) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey.shade200,
+        title: Text(
+          service.name,
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),
+        ),
+        content: Container(
+          color: Colors.grey[200],
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15.0),
+                child: Image.network(
+                  service.imageUrl,
+                  fit: BoxFit.cover,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                ),
+              ),
+              SizedBox(height: 10.0),
+              Text(
+                'Details about ${service.name}',
+                style: TextStyle(color: Colors.grey[700]),
+              ),
+              SizedBox(height: 8.0),
+              TextFieldInput(
+                hintText: 'Service Name',
+                textInputType: TextInputType.text,
+               // controller: _nameController,
+              ),
+              SizedBox(height: 8.0),
+              TextFieldInput(
+                hintText: 'Starting Price',
+                textInputType: TextInputType.number,
+               // controller: _priceController,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'Save',
+              style: TextStyle(color: Colors.grey[800]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   void _addNewService() {
     showDialog(
