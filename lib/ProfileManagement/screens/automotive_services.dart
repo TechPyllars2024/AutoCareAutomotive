@@ -55,12 +55,12 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
                 'Details about ${service.name}',
                 style: TextStyle(color: Colors.grey[700]),
               ),
-              // SizedBox(height: 8.0),
-              // TextFieldInput(
-              //   hintText: 'Service Name',
-              //   textInputType: TextInputType.text,
-              //  // controller: _nameController,
-              // ),
+              SizedBox(height: 8.0),
+              TextFieldInput(
+                hintText: 'Service Name',
+                textInputType: TextInputType.text,
+               // controller: _nameController,
+              ),
               // SizedBox(height: 8.0),
               // TextFieldInput(
               //   hintText: 'Starting Price',
