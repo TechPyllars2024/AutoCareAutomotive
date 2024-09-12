@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1000331742478-3vp6gndo3ejh6hqbfrgntqort844lolc.apps.googleusercontent.com</string>
+	<string>1000331742478-k77i92ripj8nn51o3thtld952s935ind.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1000331742478-3vp6gndo3ejh6hqbfrgntqort844lolc</string>
+	<string>com.googleusercontent.apps.1000331742478-k77i92ripj8nn51o3thtld952s935ind</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>1000331742478-r9l6g5mv8u06s38jm8206ers6ujejngf.apps.googleusercontent.com</string>
+	<string>1000331742478-o2kk17g9s0bfj2solg2n1a1gpcr0h7h1.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyApydhn1Dkgdu7WpoN6_yKh7StwAQBQdNs</string>
 	<key>GCM_SENDER_ID</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.autocarecarowners.autocareCarowners</string>
+	<string>com.autocare.automotive.shops.autocareAutomotiveshops</string>
 	<key>PROJECT_ID</key>
 	<string>autocare-63060</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1000331742478:ios:1024c3b7e249da7579db5f</string>
+	<string>1:1000331742478:ios:c173e04a63688bbe79db5f</string>
 </dict>
 </plist>
