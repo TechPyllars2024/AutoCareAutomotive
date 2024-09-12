@@ -191,20 +191,20 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
                 ),
                 child: Row(
                   children: [
-                    // Expanded(
-                    //   flex: 1,
-                    //   child: ClipRRect(
-                    //     borderRadius: BorderRadius.only(
-                    //       topLeft: Radius.circular(16.0),
-                    //       bottomLeft: Radius.circular(16.0),
-                    //     ),
-                    //     child: Image.network(
-                    //       services[index].imageUrl,
-                    //       height: double.infinity,
-                    //       fit: BoxFit.cover,
-                    //     ),
-                    //   ),
-                    // ),
+                    Expanded(
+                      flex: 1,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16.0),
+                          bottomLeft: Radius.circular(16.0),
+                        ),
+                        child: Image.network(
+                          services[index].imageUrl,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                     Expanded(
                       flex: 1,
                       child: Padding(
