@@ -205,34 +205,34 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
                     //     ),
                     //   ),
                     // ),
-                    // Expanded(
-                    //   flex: 1,
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(8.0),
-                    //     child: Column(
-                    //       mainAxisAlignment: MainAxisAlignment.center,
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: [
-                    //         Text(
-                    //           services[index].name,
-                    //           style: TextStyle(
-                    //             fontSize: 25,
-                    //             fontWeight: FontWeight.bold,
-                    //             color: Colors.grey[800],
-                    //           ),
-                    //         ),
-                    //         SizedBox(height: 8.0),
-                    //         Text(
-                    //           'Starting Price: \$${services[index].startingPrice.toStringAsFixed(2)}', // Display price
-                    //           style: TextStyle(
-                    //             fontSize: 18,
-                    //             color: Colors.grey[600],
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Text(
+                            //   services[index].name,
+                            //   style: TextStyle(
+                            //     fontSize: 25,
+                            //     fontWeight: FontWeight.bold,
+                            //     color: Colors.grey[800],
+                            //   ),
+                            // ),
+                            // SizedBox(height: 8.0),
+                            // Text(
+                            //   'Starting Price: \$${services[index].startingPrice.toStringAsFixed(2)}', // Display price
+                            //   style: TextStyle(
+                            //     fontSize: 18,
+                            //     color: Colors.grey[600],
+                            //   ),
+                            // ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
