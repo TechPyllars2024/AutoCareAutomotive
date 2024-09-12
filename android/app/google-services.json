@@ -7,6 +7,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:1000331742478:android:8014f4261fe6063c79db5f",
+        "android_client_info": {
+          "package_name": "com.autocare.automotive.shops.autocare_automotiveshops"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1000331742478-elnao7phbfskck3fk44pt4344pbajlmj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEhLmgQAH2iqkY3GLd37IB62zCjB-TOVw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000331742478-19ku10bp8qttdim1ghnmgck125jnpg98.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1000331742478-3vp6gndo3ejh6hqbfrgntqort844lolc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.autocarecarowners.autocareCarowners"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:1000331742478:android:96cb788f495e7bfd79db5f",
         "android_client_info": {
           "package_name": "com.autocarecarowners.autocare_carowners"
