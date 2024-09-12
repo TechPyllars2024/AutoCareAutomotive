@@ -18,10 +18,10 @@ class AutomotiveServices extends StatefulWidget {
 
 class _AutomotiveServicesState extends State<AutomotiveServices> {
   List<Service> services = [
-    Service('Car Wash', 'https://cardetailexpress.net/cdn/shop/articles/Man_Cleaning_a_Car.jpg', 15.0),
-    Service('Oil Change', 'https://parkers-images.bauersecure.com/wp-images/177357/gettyimages-adding-engine-oil.jpg', 25.0),
-    Service('Tire Service', 'https://tyretreaders.co.uk/wp-content/uploads/2022/02/tyre-fitting.jpg', 35.0),
-    Service('Battery Check', 'https://tontio.com/wp-content/uploads/2019/03/car-battery-testing-multimeter_M.jpg', 20.0),
+    Service('Car Wash', 'https://cardetailexpress.net/cdn/shop/articles/Man_Cleaning_a_Car.jpg', 200.0),
+    Service('Oil Change', 'https://parkers-images.bauersecure.com/wp-images/177357/gettyimages-adding-engine-oil.jpg', 1500.0),
+    Service('Tire Service', 'https://tyretreaders.co.uk/wp-content/uploads/2022/02/tyre-fitting.jpg', 5000.0),
+    Service('Battery Check', 'https://tontio.com/wp-content/uploads/2019/03/car-battery-testing-multimeter_M.jpg', 800.0),
   ];
 
   final TextEditingController _nameController = TextEditingController();
@@ -223,7 +223,7 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
                             ),
                             SizedBox(height: 8.0),
                             Text(
-                              'Starting Price: \$${services[index].startingPrice.toStringAsFixed(2)}', // Display price
+                              'Starting Price: \P${services[index].startingPrice.toStringAsFixed(2)}', // Display price
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.grey[600],
