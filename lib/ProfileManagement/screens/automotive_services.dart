@@ -221,14 +221,14 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
                                 color: Colors.grey[800],
                               ),
                             ),
-                            // SizedBox(height: 8.0),
-                            // Text(
-                            //   'Starting Price: \$${services[index].startingPrice.toStringAsFixed(2)}', // Display price
-                            //   style: TextStyle(
-                            //     fontSize: 18,
-                            //     color: Colors.grey[600],
-                            //   ),
-                            // ),
+                            SizedBox(height: 8.0),
+                            Text(
+                              'Starting Price: \$${services[index].startingPrice.toStringAsFixed(2)}', // Display price
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey[600],
+                              ),
+                            ),
                           ],
                         ),
                       ),
