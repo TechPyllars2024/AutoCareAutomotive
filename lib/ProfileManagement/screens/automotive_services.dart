@@ -130,26 +130,26 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
           //   ],
           // ),
         ),
-        // actions: [
-        //   TextButton(
-        //     onPressed: () {
-        //       // Handle the save action to add the new service
-        //       double price = double.tryParse(_priceController.text) ?? 0.0;
-        //       setState(() {
-        //         services.add(Service(
-        //           _nameController.text,
-        //           'https://example.com/default_image.jpg', // Placeholder image URL
-        //           price,
-        //         ));
-        //       });
-        //       Navigator.of(context).pop();
-        //     },
-        //     child: Text(
-        //       'Add',
-        //       style: TextStyle(color: Colors.grey[800]),
-        //     ),
-        //   ),
-        // ],
+        actions: [
+          TextButton(
+            onPressed: () {
+              // Handle the save action to add the new service
+              double price = double.tryParse(_priceController.text) ?? 0.0;
+              setState(() {
+                services.add(Service(
+                  _nameController.text,
+                  'https://example.com/default_image.jpg', // Placeholder image URL
+                  price,
+                ));
+              });
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Add',
+              style: TextStyle(color: Colors.grey[800]),
+            ),
+          ),
+        ],
       ),
     );
   }
