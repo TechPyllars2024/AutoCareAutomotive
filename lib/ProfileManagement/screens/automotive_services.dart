@@ -95,40 +95,40 @@ class _AutomotiveServicesState extends State<AutomotiveServices> {
         content: Container(
           color: Colors.grey[200],
           padding: EdgeInsets.all(8.0),
-          // child: Column(
-          //   mainAxisSize: MainAxisSize.min,
-          //   children: [
-          //     GestureDetector(
-          //       onTap: () {
-          //         // Handle image upload
-          //       },
-          //       child: Container(
-          //         width: MediaQuery.of(context).size.width * 0.8,
-          //         height: 150,
-          //         decoration: BoxDecoration(
-          //           color: Colors.grey[300],
-          //           borderRadius: BorderRadius.circular(15),
-          //           border: Border.all(color: Colors.grey),
-          //         ),
-          //         child: Center(
-          //           child: Icon(Icons.camera_alt, size: 50, color: Colors.grey[600]),
-          //         ),
-          //       ),
-          //     ),
-          //     SizedBox(height: 10.0),
-          //     TextFieldInput(
-          //       hintText: 'Service Name',
-          //       textInputType: TextInputType.text,
-          //      // controller: _nameController,
-          //     ),
-          //     SizedBox(height: 8.0),
-          //     TextFieldInput(
-          //       hintText: 'Starting Price',
-          //       textInputType: TextInputType.number,
-          //      // controller: _priceController,
-          //     ),
-          //   ],
-          // ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  // Handle image upload
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: Center(
+                    child: Icon(Icons.camera_alt, size: 50, color: Colors.grey[600]),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.0),
+              TextFieldInput(
+                hintText: 'Service Name',
+                textInputType: TextInputType.text,
+               // controller: _nameController,
+              ),
+              SizedBox(height: 8.0),
+              TextFieldInput(
+                hintText: 'Starting Price',
+                textInputType: TextInputType.number,
+               // controller: _priceController,
+              ),
+            ],
+          ),
         ),
         actions: [
           TextButton(
