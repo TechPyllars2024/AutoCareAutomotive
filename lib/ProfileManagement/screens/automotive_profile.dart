@@ -178,7 +178,7 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
   }
 
   Widget buildCoverImage() => Container(
-        color: Colors.grey.shade600,
+        color: Colors.grey.shade700,
         width: double.infinity,
         height: coverHeight,
         child: _coverImage != null
@@ -191,7 +191,7 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
 
   Widget buildProfileImage() => CircleAvatar(
         radius: profileHeight / 2,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.grey.shade600,
         child: _profileImage != null
             ? ClipOval(
                 child: Image.file(

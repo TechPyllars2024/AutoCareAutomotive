@@ -398,7 +398,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                           border:
                               Border.all(color: Colors.grey), // Border color
                         ),
-                        child: TimePickerDisplay(initialTime: TimeOfDay.now()),
+                        child: const TimePickerDisplay(initialTime: TimeOfDay(hour: 0, minute: 0)),
                       ),
                     ],
                   ),
@@ -420,7 +420,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                           border:
                               Border.all(color: Colors.grey), // Border color
                         ),
-                        child: TimePickerDisplay(initialTime: TimeOfDay.now()),
+                        child: const TimePickerDisplay(initialTime: TimeOfDay(hour: 12, minute: 0)),
                       ),
                     ],
                   ),
