@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
 
@@ -12,8 +14,18 @@ class AutomotiveProfile extends StatefulWidget {
 }
 
 class _AutomotiveProfileState extends State<AutomotiveProfile> {
+  File? _coverImage;
+  File? _profileImage;
+
   final double coverHeight = 220;
   final double profileHeight = 130;
+
+  void _updateImages(File? coverImage, File? profileImage) {
+    setState(() {
+      _coverImage = coverImage;
+      _profileImage = profileImage;
+    });
+  }
 
   void editProfile() {
     Navigator.push(
@@ -83,6 +95,30 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
                   ),
                 ],
               ),
+
+              const SizedBox(height: 5),
+              Row(
+                children: [
+                  Icon(Icons.calendar_month, color: Colors.orange),
+                  SizedBox(width: 4),
+                  Text(
+                    'Days of the Week',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 5),
+              Row(
+                children: [
+                  Icon(Icons.schedule, color: Colors.orange),
+                  SizedBox(width: 4),
+                  Text(
+                    'Operating Hours',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -142,21 +178,34 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
   }
 
   Widget buildCoverImage() => Container(
-        color: Colors.grey,
-        child: Image.network(
-          'https://www.erieinsurance.com/-/media/images/blog/articlephotos/2018/rentalcarlg.ashx?h=529&w=1100&la=en&hash=B6312A1CFBB03D75789956B399BF6B91E7980061',
-          width: double.infinity,
-          height: coverHeight,
-          fit: BoxFit.cover,
-        ),
+        color: Colors.grey.shade600,
+        width: double.infinity,
+        height: coverHeight,
+        child: _coverImage != null
+            ? Image.file(
+                _coverImage!,
+                fit: BoxFit.cover,
+              )
+            : Container(),
       );
 
   Widget buildProfileImage() => CircleAvatar(
         radius: profileHeight / 2,
-        backgroundColor: Colors.grey.shade800,
-        backgroundImage: NetworkImage(
-          'https://cdn.vectorstock.com/i/500p/57/48/auto-repair-service-logo-badge-emblem-template-vector-49765748.jpg',
-        ),
+        backgroundColor: Colors.black,
+        child: _profileImage != null
+            ? ClipOval(
+                child: Image.file(
+                  _profileImage!,
+                  fit: BoxFit.cover,
+                  width: 100,
+                  height: 100,
+                ),
+              )
+            : const Icon(
+                Icons.person,
+                size: 100,
+                color: Colors.white,
+              ),
       );
 }
 

@@ -126,7 +126,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   Widget buildCoverImage() => Stack(
         children: [
           Container(
-            color: Colors.grey.shade600,
+            color: Colors.grey.shade700,
             width: double.infinity,
             height: coverHeight,
             child: _coverImage != null
@@ -155,48 +155,6 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
           ),
         ],
       );
-
-  // Widget buildProfileImage() => Stack(
-  //       children: [
-  //         CircleAvatar(
-  //           radius: profileHeight / 2,
-  //           backgroundColor: Colors.grey.shade400,
-  //           child: const ClipOval(
-  //             child: Icon(
-  //               Icons.person,
-  //               size: 100,
-  //               color: Colors.white,
-  //             ),
-  //           ),
-  //         ),
-  //         Positioned(
-  //           bottom: 0,
-  //           // Move the container slightly outside the profile image's bottom edge
-  //           right: 0,
-  //           // Move the container slightly outside the profile image's right edge
-  //           child: Container(
-  //             width: 50, // Match the width of the cover image container
-  //             height: 50, // Match the height of the cover image container
-  //             decoration: const BoxDecoration(
-  //               color: Colors.grey, // Background color of the circle
-  //               shape: BoxShape.circle, // Circular shape
-  //             ),
-  //             child: IconButton(
-  //               icon: const Icon(
-  //                 Icons.camera_alt,
-  //                 color: Colors.white, // Set the color of the icon
-  //                 size:
-  //                     24, // Adjust the size of the icon to fit well within the container
-  //               ),
-  //               onPressed: () {
-  //                 // Handle camera button press logic
-  //                 print('Camera icon pressed for profile image');
-  //               },
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     );
 
    Widget buildProfileImage() => Stack(
         children: [
@@ -450,7 +408,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text('Save'),
+                      const Text('Close'),
                       const SizedBox(height: 5),
                       // Add some space between the text and container
                       Container(
