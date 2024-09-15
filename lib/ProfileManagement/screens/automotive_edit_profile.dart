@@ -1,8 +1,11 @@
+import 'dart:io';
+
+import 'package:autocare_automotiveshops/ProfileManagement/services/automotive_shop_edit_profile_services.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/text_field.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/daysOftheWeek.dart';
-import 'package:get/get.dart'; // Import GetX for state management
+import 'package:get/get.dart'; 
 
 import 'package:flutter/material.dart';
 
@@ -18,6 +21,10 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   final DaysOfTheWeekController daysOfTheWeekController =
       Get.put(DaysOfTheWeekController());
 
+  File? _coverImage;
+  File? _profileImage;
+  final AutomotiveShopEditProfileServices _automotiveShopEditProfileServices = AutomotiveShopEditProfileServices();
+
   final double coverHeight = 220;
   final double profileHeight = 130;
 
@@ -26,6 +33,24 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
       context,
       MaterialPageRoute(builder: (context) => const AutomotiveEditProfile()),
     );
+  }
+
+  Future<void> _pickCoverImage() async {
+    final image = await _automotiveShopEditProfileServices.pickCoverImage();
+    if (image != null) {
+      setState(() {
+        _coverImage = image;
+      });
+    }
+  }
+
+  Future<void> _pickProfileImage() async {
+    final image = await _automotiveShopEditProfileServices.pickProfileImage();
+    if (image != null) {
+      setState(() {
+        _profileImage = image;
+      });
+    }
   }
 
   @override
@@ -104,69 +129,112 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
             color: Colors.grey.shade600,
             width: double.infinity,
             height: coverHeight,
+            child: _coverImage != null
+                ? Image.file(_coverImage!, fit: BoxFit.cover)
+                : null,
           ),
           Positioned(
-            bottom: 10, // Positioning from the bottom
-            right: 10, // Positioning from the right
+            bottom: 10,
+            right: 10,
             child: Container(
-              width: 50, // Width of the circular container
-              height: 50, // Height of the circular container
+              width: 50,
+              height: 50,
               decoration: const BoxDecoration(
-                color: Colors.grey, // Background color of the circle
-                shape: BoxShape.circle, // Circular shape
+                color: Colors.grey,
+                shape: BoxShape.circle,
               ),
               child: IconButton(
                 icon: const Icon(
                   Icons.camera_alt,
-                  color: Colors.white, // Set the color of the icon
-                  size: 24, // Size of the icon
+                  color: Colors.white,
+                  size: 24,
                 ),
-                onPressed: () {
-                  // Handle camera button press logic
-                  print('Camera icon pressed');
-                },
+                onPressed: _pickCoverImage,
               ),
             ),
           ),
         ],
       );
 
-  Widget buildProfileImage() => Stack(
+  // Widget buildProfileImage() => Stack(
+  //       children: [
+  //         CircleAvatar(
+  //           radius: profileHeight / 2,
+  //           backgroundColor: Colors.grey.shade400,
+  //           child: const ClipOval(
+  //             child: Icon(
+  //               Icons.person,
+  //               size: 100,
+  //               color: Colors.white,
+  //             ),
+  //           ),
+  //         ),
+  //         Positioned(
+  //           bottom: 0,
+  //           // Move the container slightly outside the profile image's bottom edge
+  //           right: 0,
+  //           // Move the container slightly outside the profile image's right edge
+  //           child: Container(
+  //             width: 50, // Match the width of the cover image container
+  //             height: 50, // Match the height of the cover image container
+  //             decoration: const BoxDecoration(
+  //               color: Colors.grey, // Background color of the circle
+  //               shape: BoxShape.circle, // Circular shape
+  //             ),
+  //             child: IconButton(
+  //               icon: const Icon(
+  //                 Icons.camera_alt,
+  //                 color: Colors.white, // Set the color of the icon
+  //                 size:
+  //                     24, // Adjust the size of the icon to fit well within the container
+  //               ),
+  //               onPressed: () {
+  //                 // Handle camera button press logic
+  //                 print('Camera icon pressed for profile image');
+  //               },
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     );
+
+   Widget buildProfileImage() => Stack(
         children: [
           CircleAvatar(
             radius: profileHeight / 2,
-            backgroundColor: Colors.grey.shade400,
-            child: ClipOval(
-              child: Icon(
-                Icons.person,
-                size: profileHeight,
-                color: Colors.white,
-              ),
-            ),
+            backgroundColor: Colors.grey.shade600,
+            child: _profileImage != null
+                ? ClipOval(
+                    child: Image.file(
+                      _profileImage!,
+                      fit: BoxFit.cover,
+                      width: 130,
+                      height: 130,
+                    ),
+                  )
+                : const Icon(
+                    Icons.person,
+                    size: 100,
+                    color: Colors.white,
+                  ),
           ),
           Positioned(
             bottom: 0,
-            // Move the container slightly outside the profile image's bottom edge
             right: 0,
-            // Move the container slightly outside the profile image's right edge
             child: Container(
-              width: 50, // Match the width of the cover image container
-              height: 50, // Match the height of the cover image container
+              width: 50,
+              height: 50,
               decoration: const BoxDecoration(
-                color: Colors.grey, // Background color of the circle
-                shape: BoxShape.circle, // Circular shape
+                color: Colors.grey,
+                shape: BoxShape.circle,
               ),
               child: IconButton(
                 icon: const Icon(
                   Icons.camera_alt,
-                  color: Colors.white, // Set the color of the icon
-                  size:
-                      24, // Adjust the size of the icon to fit well within the container
+                  color: Colors.white,
+                  size: 24,
                 ),
-                onPressed: () {
-                  // Handle camera button press logic
-                  print('Camera icon pressed for profile image');
-                },
+                onPressed: _pickProfileImage,
               ),
             ),
           ),
