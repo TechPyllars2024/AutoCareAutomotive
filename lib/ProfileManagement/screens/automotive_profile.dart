@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
@@ -19,6 +20,17 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
 
   final double coverHeight = 220;
   final double profileHeight = 130;
+
+  // Future<void> _fetchProfileData() async {
+  //   final doc = await FirebaseFirestore.instance.collection('users').doc(widget.userId).get();
+  //   if (doc.exists) {
+  //     setState(() {
+  //       _coverImage = doc['coverImageUrl'] != null ? File(doc['coverImageUrl']) : null;
+  //       _profileImage = doc['profileImageUrl'] != null ? File(doc['profileImageUrl']) : null;
+  //       _operatingHours = Map<String, Map<String, String>>.from(doc['operatingHours']);
+  //     });
+  //   }
+  // }
 
   void _updateImages(File? coverImage, File? profileImage) {
     setState(() {
@@ -81,7 +93,7 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Auto Repair',
+                'Shop name',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 5),
@@ -114,7 +126,7 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
                   Icon(Icons.schedule, color: Colors.orange),
                   SizedBox(width: 4),
                   Text(
-                    'Operating Hours',
+                    '00:00 AM - 00:00 PM',
                     style: TextStyle(fontSize: 15),
                   ),
                 ],

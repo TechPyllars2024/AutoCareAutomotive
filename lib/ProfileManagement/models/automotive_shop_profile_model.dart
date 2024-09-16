@@ -1,4 +1,5 @@
-class AutomotiveShopProfile {
+class AutomotiveShopProfileModel {
+  String uid;
   String backgroundImage;
   String profileImage;
   String shopName;
@@ -6,7 +7,8 @@ class AutomotiveShopProfile {
   List<String> daysOfWeek;
   Map<String, String> operatingHours;
 
-  AutomotiveShopProfile({
+  AutomotiveShopProfileModel({
+    required this.uid,
     required this.backgroundImage,
     required this.profileImage,
     required this.shopName,
@@ -18,6 +20,7 @@ class AutomotiveShopProfile {
   // Convert AutomotiveShopProfile to a Map
   Map<String, dynamic> toMap() {
     return {
+      'uid': uid,
       'backgroundImage': backgroundImage,
       'profileImage': profileImage,
       'shopName': shopName,
@@ -28,8 +31,9 @@ class AutomotiveShopProfile {
   }
 
   // Create AutomotiveShopProfile from a Map
-  factory AutomotiveShopProfile.fromMap(Map<String, dynamic> map) {
-    return AutomotiveShopProfile(
+  factory AutomotiveShopProfileModel.fromMap(Map<String, dynamic> map) {
+    return AutomotiveShopProfileModel(
+      uid: map['uid'] ?? '',
       backgroundImage: map['backgroundImage'] ?? '',
       profileImage: map['profileImage'] ?? '',
       shopName: map['shopName'] ?? '',

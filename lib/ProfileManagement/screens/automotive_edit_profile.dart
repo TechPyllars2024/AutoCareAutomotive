@@ -53,6 +53,13 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     }
   }
 
+  // for saving the images
+  // Future<void> _saveImages() async {
+  //   await _automotiveShopEditProfileServices.updateProfileImages(_coverImage, _profileImage, widget.userId);
+  //   widget.onImagesUpdated(_coverImage, _profileImage);
+  //   Navigator.pop(context);
+  // }
+
   @override
   Widget build(BuildContext context) {
     final double top = coverHeight - profileHeight / 2;
@@ -114,6 +121,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
             hintText: 'Name',
             textInputType: TextInputType.text,
           ),
+          SizedBox(height: 10),
           TextFieldInput(
             //icon: Icons.email,
             //textEditingController: emailController,

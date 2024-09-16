@@ -47,6 +47,7 @@ dependencies:
   image_picker: ^1.1.2
   curved_navigation_bar: ^1.0.6
   flutter_pannable_rating_bar: ^2.7.2+1
+  firebase_storage: ^12.3.0
 
 
 dev_dependencies:
