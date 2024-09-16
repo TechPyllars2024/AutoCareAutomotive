@@ -1,13 +1,14 @@
-import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_booking.dart';
+import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
-import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_home.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_profile.dart';
-import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_services.dart';
+import 'package:autocare_automotiveshops/Service%20Management/screens/manage_services.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class Navbar extends StatefulWidget {
-  const Navbar({super.key});
+  const Navbar({super.key, this.child});
+
+  final Widget? child;
 
   @override
   State<Navbar> createState() => _NavbarState();
@@ -16,21 +17,18 @@ class Navbar extends StatefulWidget {
 class _NavbarState extends State<Navbar> {
 
   int _page = 0;
-  GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
   final List<Widget> _screens = [
-    const AutomotiveHome(),
-    const AutomotiveBooking(),
-    const AutomotiveServices(),
-    const AutomotiveProfile(),
+    const AutomotiveBookingScreen(),
+    const ServiceManagementScreen(),
+    const AutomotiveProfileScreen(),
     const AutomotiveEditProfile(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.grey.shade300, // Ensure CurvedNavigationBar background is also transparent
 
