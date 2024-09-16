@@ -4,14 +4,16 @@ import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
 
-class AutomotiveProfile extends StatefulWidget {
-  const AutomotiveProfile({super.key});
+class AutomotiveProfileScreen extends StatefulWidget {
+  const AutomotiveProfileScreen({super.key, this.child});
+
+  final Widget? child;
 
   @override
-  State<AutomotiveProfile> createState() => _AutomotiveProfileState();
+  State<AutomotiveProfileScreen> createState() => _AutomotiveProfileScreenState();
 }
 
-class _AutomotiveProfileState extends State<AutomotiveProfile> {
+class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
   final double coverHeight = 220;
   final double profileHeight = 130;
 
@@ -61,8 +63,8 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
         text: 'Edit Profile',
       );
 
-  Widget buildShopName() => Padding(
-        padding: const EdgeInsets.all(16.0),
+  Widget buildShopName() => const Padding(
+        padding: EdgeInsets.all(16.0),
         child: Align(
           alignment: Alignment.centerLeft,
           child: Column(
@@ -129,10 +131,11 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
                   });
                 },
               ),
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               Text(
                 '$numberOfRating ratings',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
             ],
           ),
@@ -154,7 +157,7 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
   Widget buildProfileImage() => CircleAvatar(
         radius: profileHeight / 2,
         backgroundColor: Colors.grey.shade800,
-        backgroundImage: NetworkImage(
+        backgroundImage: const NetworkImage(
           'https://cdn.vectorstock.com/i/500p/57/48/auto-repair-service-logo-badge-emblem-template-vector-49765748.jpg',
         ),
       );
@@ -166,15 +169,12 @@ Widget ServicesCarousel() => Column(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              Text(
-
+              const Text(
                 'Services',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-             Spacer(),
-             IconButton(
-
-                 onPressed: () {}, icon: Icon(Icons.add))
+              const Spacer(),
+              IconButton(onPressed: () {}, icon: Icon(Icons.add))
             ],
           ),
         ),
@@ -184,6 +184,7 @@ Widget ServicesCarousel() => Column(
             itemExtent: 280,
             children: List.generate(10, (int index) {
               return Container(
+                color: Colors.orangeAccent.shade100,
                 child: Stack(
                   children: [
                     // ClipRRect to add curved corners and crop the bottom
@@ -215,8 +216,8 @@ Widget ServicesCarousel() => Column(
                       child: Container(
                         height: 50, // Allocating 25% space for text
 
-                        padding: EdgeInsets.all(10),
-                        child: Text(
+                        padding: const EdgeInsets.all(10),
+                        child: const Text(
                           textAlign: TextAlign.center,
                           'Car Wash',
                           style: TextStyle(
@@ -229,7 +230,6 @@ Widget ServicesCarousel() => Column(
                     ),
                   ],
                 ),
-                color: Colors.orangeAccent.shade100,
               );
             }),
           ),
@@ -238,37 +238,40 @@ Widget ServicesCarousel() => Column(
     );
 
 Widget FeedbackSection() => Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text('Feedbacks', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-    ),
-    Container(
-      margin: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16), // Curved edges
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the left
-          children: [
-            Text('Paul Vincent Lerado', style: TextStyle(fontWeight: FontWeight.bold),),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-              child: Text('I was impressed with the professionalism and efficiency of your team during my recent oil change and brake inspection. '
-                  'However, the service took longer than expected, so providing more accurate time estimates would be helpful.'),
-            ),
-          ],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            'Feedbacks',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
-    ),
-  ],
-);
-
-
-
-
-
+        Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16), // Curved edges
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(18.0),
+            child: Column(
+              crossAxisAlignment:
+                  CrossAxisAlignment.start, // Aligns the text to the left
+              children: [
+                Text(
+                  'Paul Vincent Lerado',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                  child: Text(
+                      'I was impressed with the professionalism and efficiency of your team during my recent oil change and brake inspection. '
+                      'However, the service took longer than expected, so providing more accurate time estimates would be helpful.'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
