@@ -53,12 +53,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     }
   }
 
-  // for saving the images
-  // Future<void> _saveImages() async {
-  //   await _automotiveShopEditProfileServices.updateProfileImages(_coverImage, _profileImage, widget.userId);
-  //   widget.onImagesUpdated(_coverImage, _profileImage);
-  //   Navigator.pop(context);
-  // }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +89,13 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
       ),
     );
   }
+
+  Widget buildButton() => ElevatedButton(
+        onPressed: () {
+          // Implement save changes logic here
+        }, 
+        child: const Text('Save Changes'),
+      );
 
   Widget buildTopSection(double top) {
     return Stack(
