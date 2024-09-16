@@ -1,3 +1,5 @@
+import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
+import 'package:autocare_automotiveshops/Service%20Management/screens/manage_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,6 @@ import '../widgets/googleButton.dart';
 import '../widgets/or.dart';
 import '../widgets/texfieldPassword.dart';
 import 'forgotPassword.dart';
-import 'homeScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, this.child});
@@ -28,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
+  final user = FirebaseAuth.instance.currentUser;
 
   @override
   void dispose() {
@@ -54,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // Navigate to the home screen if email is verified
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
+            builder: (context) => const AutomotiveBookingScreen(),
           ),
         );
       } else {
@@ -85,12 +87,17 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (res == "Service Provider") {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) =>
-              const HomeScreen(),
-        ),
-      );
+      if (user?.uid != null) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) =>
+                const AutomotiveBookingScreen(),
+          ),
+        );
+      } else {
+        // Handle null UID case (e.g., show a message or navigate elsewhere)
+        Utils.showSnackBar("User ID is null.");
+      }
     } else {
       Utils.showSnackBar(res);
     }

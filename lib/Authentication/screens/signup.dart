@@ -1,3 +1,4 @@
+import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,6 @@ import '../widgets/googleButton.dart';
 import '../widgets/or.dart';
 import '../widgets/texfieldPassword.dart';
 import '../widgets/validator.dart';
-import 'homeScreen.dart';
 import 'login.dart';
 import 'package:autocare_automotiveshops/Authentication/screens/verifyEmail.dart';
 
@@ -110,7 +110,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
+          builder: (context) => const AutomotiveBookingScreen(),
         ),
       );
     } else {
