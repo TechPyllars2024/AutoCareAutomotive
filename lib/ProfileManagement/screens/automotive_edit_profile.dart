@@ -1,12 +1,16 @@
 import 'dart:io';
 
-import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_profile.dart';
+import 'package:autocare_automotiveshops/ProfileManagement/models/automotive_shop_profile_model.dart';
+// import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_profile.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/services/automotive_shop_edit_profile_services.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
 // import 'package:autocare_automotiveshops/ProfileManagement/widgets/text_field.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/daysOftheWeek.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart'; 
 
 import 'package:flutter/material.dart';
@@ -23,6 +27,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   final DaysOfTheWeekController daysOfTheWeekController =
       Get.put(DaysOfTheWeekController());
 
+
   File? _coverImage;
   File? _profileImage;
   final TextEditingController _shopNameController = TextEditingController();
@@ -32,11 +37,22 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   final double coverHeight = 220;
   final double profileHeight = 130;
 
-  void profile() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const AutomotiveProfile()),
-    );
+  String? uid;
+  AutomotiveProfileModel? automotiveProfileModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentUser();
+  }
+
+  Future<void> _getCurrentUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        uid = user.uid;
+      });
+    }
   }
 
   Future<void> _pickCoverImage() async {
@@ -57,7 +73,38 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     }
   }
 
-  
+  // Future<void> _updateUserProfile(AutomotiveProfileModel profile) async {
+  //   await FirebaseFirestore.instance.collection('automotiveShops_profile').doc(profile.uid).update(profile.toMap());
+  // }
+
+  Future<String> _uploadImage(File image, String path) async {
+    final ref = FirebaseStorage.instance.ref().child(path);
+    await ref.putFile(image);
+    return await ref.getDownloadURL();
+  }
+
+  Future<void> _saveProfile() async {
+    if (_coverImage != null && _profileImage != null && uid != null) {
+      final coverImageUrl = await _uploadImage(_coverImage!, 'coverImages/$uid.jpg');
+      final profileImageUrl = await _uploadImage(_profileImage!, 'profileImages/$uid.jpg');
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        AutomotiveProfileModel updatedProfile = AutomotiveProfileModel(
+          uid: user.uid,
+          coverImage: coverImageUrl,
+          profileImage: profileImageUrl,
+          shopName: _shopNameController.text,
+          location: _locationController.text,
+        );
+
+        await FirebaseFirestore.instance.collection('automotiveShops_profile').doc(user.uid).set(updatedProfile.toMap());
+        Navigator.pop(context, updatedProfile);
+      }
+    } else {
+      print('User ID is null or images are not selected');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +143,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   }
 
   Widget buildSaveButton() => WideButtons(
-        onTap: profile,
+        onTap: _saveProfile,
         text: 'Save Changes',
       );
 
