@@ -1,9 +1,9 @@
+import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import '../Widgets/snackBar.dart';
-import 'homeScreen.dart';
 
 class VerifyEmailScreen extends StatefulWidget {
   const VerifyEmailScreen({super.key, this.child});
@@ -108,7 +108,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   @override
   Widget build(BuildContext context) {
     return isEmailVerified
-        ? const HomeScreen()
+        ? const AutomotiveBookingScreen()
         : Scaffold(
             appBar: AppBar(
               title: const Text('Verify Email'),

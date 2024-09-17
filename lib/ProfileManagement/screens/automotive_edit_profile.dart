@@ -7,7 +7,9 @@ import 'package:get/get.dart'; // Import GetX for state management
 import 'package:flutter/material.dart';
 
 class AutomotiveEditProfile extends StatefulWidget {
-  const AutomotiveEditProfile({super.key});
+  const AutomotiveEditProfile({super.key, this.child});
+
+  final Widget? child;
 
   @override
   State<AutomotiveEditProfile> createState() => _AutomotiveEditProfileState();
@@ -436,39 +438,35 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
         ),
       );
 
-
-
   Widget dayOfTheWeekSelection() => Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Select Days of the Week',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        DayOfTheWeek(
-          options: const [
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-            'Sunday'
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Select Days of the Week',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            DayOfTheWeek(
+              options: const [
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday',
+                'Sunday'
+              ],
+              hintText: 'Select Days',
+              controller: daysOfTheWeekController,
+              onSelectionChanged: (selectedOptions) {
+                print('Selected Options: $selectedOptions');
+              },
+            ),
           ],
-          hintText: 'Select Days',
-          controller: daysOfTheWeekController,
-          onSelectionChanged: (selectedOptions) {
-            print('Selected Options: $selectedOptions');
-          },
-
         ),
-      ],
-    ),
-  );
-
+      );
 }
