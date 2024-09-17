@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_get_verified.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -21,28 +22,18 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
   final double coverHeight = 220;
   final double profileHeight = 130;
 
-  // Future<void> _fetchProfileData() async {
-  //   final doc = await FirebaseFirestore.instance.collection('users').doc(widget.userId).get();
-  //   if (doc.exists) {
-  //     setState(() {
-  //       _coverImage = doc['coverImageUrl'] != null ? File(doc['coverImageUrl']) : null;
-  //       _profileImage = doc['profileImageUrl'] != null ? File(doc['profileImageUrl']) : null;
-  //       _operatingHours = Map<String, Map<String, String>>.from(doc['operatingHours']);
-  //     });
-  //   }
-  // }
-
-  void _updateImages(File? coverImage, File? profileImage) {
-    setState(() {
-      _coverImage = coverImage;
-      _profileImage = profileImage;
-    });
-  }
 
   void editProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AutomotiveEditProfile()),
+      MaterialPageRoute(builder: (context) => const AutomotiveEditProfile()),
+    );
+  }
+
+  void getVerified() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AutomotiveGetVerified()),
     );
   }
 
@@ -69,6 +60,7 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
               buildTopSection(top),
               buildShopName(),
               buildButton(),
+              buildGetVerified(),
               ServicesCarousel(),
               FeedbackSection(),
 
@@ -83,6 +75,11 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
   Widget buildButton() => WideButtons(
         onTap: editProfile,
         text: 'Edit Profile',
+      );
+
+  Widget buildGetVerified() => WideButtons(
+        onTap: getVerified,
+        text: 'Get Verified',
       );
 
   Widget buildShopName() => Padding(
