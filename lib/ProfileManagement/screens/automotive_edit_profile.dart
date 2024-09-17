@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_profile.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/services/automotive_shop_edit_profile_services.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
-import 'package:autocare_automotiveshops/ProfileManagement/widgets/text_field.dart';
+// import 'package:autocare_automotiveshops/ProfileManagement/widgets/text_field.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/daysOftheWeek.dart';
@@ -25,6 +25,8 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
 
   File? _coverImage;
   File? _profileImage;
+  final TextEditingController _shopNameController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
   final AutomotiveShopEditProfileServices _automotiveShopEditProfileServices = AutomotiveShopEditProfileServices();
 
   final double coverHeight = 220;
@@ -116,20 +118,20 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     );
   }
 
-  Widget buildInputs() => const Column(
+  Widget buildInputs() => Column(
         children: [
-          TextFieldInput(
-            //icon: Icons.email,
-            //textEditingController: emailController,
-            hintText: 'Name',
-            textInputType: TextInputType.text,
+          TextField(
+            controller: _shopNameController,
+            decoration: const InputDecoration(
+              hintText: 'Shop Name',
+            ),
           ),
-          SizedBox(height: 10),
-          TextFieldInput(
-            //icon: Icons.email,
-            //textEditingController: emailController,
-            hintText: 'Location',
-            textInputType: TextInputType.text,
+          const SizedBox(height: 10),
+          TextField(
+            controller: _locationController,
+            decoration: const InputDecoration(
+              hintText: 'Location',
+            ),
           ),
         ],
       );
