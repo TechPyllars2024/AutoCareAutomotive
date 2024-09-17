@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_profile.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/services/automotive_shop_edit_profile_services.dart';
+import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/text_field.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
@@ -28,10 +30,10 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   final double coverHeight = 220;
   final double profileHeight = 130;
 
-  void editProfile() {
+  void profile() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const AutomotiveEditProfile()),
+      MaterialPageRoute(builder: (context) => const AutomotiveProfile()),
     );
   }
 
@@ -80,6 +82,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
               buildInputs(),
               dayOfTheWeekSelection(),
               timeSelection(),
+              buildSaveButton(),
               servicesCarousel(),
               serviceSpecialization(),
               //ServicesSection(),
@@ -90,11 +93,9 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     );
   }
 
-  Widget buildButton() => ElevatedButton(
-        onPressed: () {
-          // Implement save changes logic here
-        }, 
-        child: const Text('Save Changes'),
+  Widget buildSaveButton() => WideButtons(
+        onTap: profile,
+        text: 'Save Changes',
       );
 
   Widget buildTopSection(double top) {
