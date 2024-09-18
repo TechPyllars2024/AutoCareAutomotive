@@ -30,6 +30,8 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
 
   File? _coverImage;
   File? _profileImage;
+  String? _coverImageUrl;
+  String? _profileImageUrl;
   final TextEditingController _shopNameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final AutomotiveShopEditProfileServices _automotiveShopEditProfileServices = AutomotiveShopEditProfileServices();
@@ -38,12 +40,42 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   final double profileHeight = 130;
 
   String? uid;
-  AutomotiveProfileModel? automotiveProfileModel;
+  AutomotiveProfileModel? editProfile;
 
   @override
   void initState() {
     super.initState();
     _getCurrentUser();
+    _loadProfileData();
+  }
+
+  Future<AutomotiveProfileModel?> fetchProfileData(String uid) async {
+    final doc = await FirebaseFirestore.instance
+        .collection('automotiveShops_profile')
+        .doc(uid)
+        .get();
+
+    if (doc.exists) {
+      return AutomotiveProfileModel.fromDocument(doc.data() as Map<String, dynamic>, doc.id);
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> _loadProfileData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final fetchedProfile = await fetchProfileData(user.uid);
+      setState(() {
+        editProfile = fetchedProfile;
+        if (editProfile != null) {
+          _coverImageUrl = editProfile!.coverImage;
+          _profileImageUrl = editProfile!.profileImage;
+          _shopNameController.text = editProfile!.shopName;
+          _locationController.text = editProfile!.location;
+        }
+      });
+    }
   }
 
   Future<void> _getCurrentUser() async {
@@ -184,80 +216,91 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
       );
 
   Widget buildCoverImage() => Stack(
-        children: [
-          Container(
-            color: Colors.grey.shade700,
-            width: double.infinity,
-            height: coverHeight,
-            child: _coverImage != null
-                ? Image.file(_coverImage!, fit: BoxFit.cover)
-                : null,
-          ),
-          Positioned(
-            bottom: 10,
-            right: 10,
-            child: Container(
-              width: 50,
-              height: 50,
-              decoration: const BoxDecoration(
-                color: Colors.grey,
-                shape: BoxShape.circle,
+      children: [
+        Container(
+          color: Colors.grey.shade700,
+          width: double.infinity,
+          height: coverHeight,
+          child: _coverImage != null
+              ? Image.file(_coverImage!, fit: BoxFit.cover)
+              : (_coverImageUrl != null && _coverImageUrl!.isNotEmpty)
+                  ? Image.network(_coverImageUrl!, fit: BoxFit.cover)
+                  : null,
+        ),
+        Positioned(
+          bottom: 10,
+          right: 10,
+          child: Container(
+            width: 50,
+            height: 50,
+            decoration: const BoxDecoration(
+              color: Colors.grey,
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: const Icon(
+                Icons.camera_alt,
+                color: Colors.white,
+                size: 24,
               ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.camera_alt,
-                  color: Colors.white,
-                  size: 24,
-                ),
-                onPressed: _pickCoverImage,
-              ),
+              onPressed: _pickCoverImage,
             ),
           ),
-        ],
-      );
+        ),
+      ],
+    );
 
-   Widget buildProfileImage() => Stack(
-        children: [
-          CircleAvatar(
-            radius: profileHeight / 2,
-            backgroundColor: Colors.grey.shade600,
-            child: _profileImage != null
-                ? ClipOval(
-                    child: Image.file(
-                      _profileImage!,
-                      fit: BoxFit.cover,
-                      width: 130,
-                      height: 130,
-                    ),
-                  )
-                : const Icon(
-                    Icons.person,
-                    size: 100,
-                    color: Colors.white,
+  Widget buildProfileImage() => Stack(
+      children: [
+        CircleAvatar(
+          radius: profileHeight / 2,
+          backgroundColor: Colors.grey.shade600,
+          child: _profileImage != null
+              ? ClipOval(
+                  child: Image.file(
+                    _profileImage!,
+                    fit: BoxFit.cover,
+                    width: 130,
+                    height: 130,
                   ),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: Container(
-              width: 50,
-              height: 50,
-              decoration: const BoxDecoration(
-                color: Colors.grey,
-                shape: BoxShape.circle,
+                )
+              : (_profileImageUrl != null && _profileImageUrl!.isNotEmpty)
+                  ? ClipOval(
+                      child: Image.network(
+                        _profileImageUrl!,
+                        fit: BoxFit.cover,
+                        width: 130,
+                        height: 130,
+                      ),
+                    )
+                  : const Icon(
+                      Icons.person,
+                      size: 100,
+                      color: Colors.white,
+                    ),
+        ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: Container(
+            width: 50,
+            height: 50,
+            decoration: const BoxDecoration(
+              color: Colors.grey,
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: const Icon(
+                Icons.camera_alt,
+                color: Colors.white,
+                size: 24,
               ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.camera_alt,
-                  color: Colors.white,
-                  size: 24,
-                ),
-                onPressed: _pickProfileImage,
-              ),
+              onPressed: _pickProfileImage,
             ),
           ),
-        ],
-      );
+        ),
+      ],
+    );
 
   Widget servicesCarousel() => Column(
         children: [

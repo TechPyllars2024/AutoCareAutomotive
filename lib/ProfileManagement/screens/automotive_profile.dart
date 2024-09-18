@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:autocare_automotiveshops/ProfileManagement/models/automotive_shop_profile_model.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_get_verified.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
@@ -16,19 +18,58 @@ class AutomotiveProfile extends StatefulWidget {
 }
 
 class _AutomotiveProfileState extends State<AutomotiveProfile> {
+  AutomotiveProfileModel? profile;
   File? _coverImage;
   File? _profileImage;
 
   final double coverHeight = 220;
   final double profileHeight = 130;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileData();
+  }
+
+  Future<AutomotiveProfileModel?> fetchProfileData(String uid) async {
+    final doc = await FirebaseFirestore.instance
+        .collection('automotiveShops_profile')
+        .doc(uid)
+        .get();
+
+    if (doc.exists) {
+      return AutomotiveProfileModel.fromDocument(doc.data() as Map<String, dynamic>, doc.id);
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> _loadProfileData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final fetchedProfile = await fetchProfileData(user.uid);
+      setState(() {
+        profile = fetchedProfile;
+      });
+    }
+  }
 
   void editProfile() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AutomotiveEditProfile()),
-    );
+    ).then((_) {
+      // Reload profile data after returning from the edit profile screen
+      _loadProfileData();
+    });
   }
+
+  // void editProfile() {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const AutomotiveEditProfile()),
+  //   );
+  // }
 
   void getVerified() {
     Navigator.push(
@@ -82,31 +123,31 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
         text: 'Get Verified',
       );
 
-  Widget buildShopName() => const Padding(
-        padding: EdgeInsets.all(16.0),
+  Widget buildShopName() => Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Align(
           alignment: Alignment.centerLeft,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Shop name',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                profile?.shopName ?? 'Shop Name',
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Row(
                 children: [
-                  Icon(Icons.location_on, color: Colors.orange),
-                  SizedBox(width: 4),
+                  const Icon(Icons.location_on, color: Colors.orange),
+                  const SizedBox(width: 4),
                   Text(
-                    'Location details',
-                    style: TextStyle(fontSize: 15),
+                    profile?.location ?? 'Location',
+                    style: const TextStyle(fontSize: 15),
                   ),
                 ],
               ),
 
-              SizedBox(height: 5),
-              Row(
+              const SizedBox(height: 5),
+              const Row(
                 children: [
                   Icon(Icons.calendar_month, color: Colors.orange),
                   SizedBox(width: 4),
@@ -117,8 +158,8 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
                 ],
               ),
 
-              SizedBox(height: 5),
-              Row(
+              const SizedBox(height: 5),
+              const Row(
                 children: [
                   Icon(Icons.schedule, color: Colors.orange),
                   SizedBox(width: 4),
@@ -143,12 +184,12 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
       children: [
         Container(
           margin: EdgeInsets.only(bottom: profileHeight / 2),
-          child: buildCoverImage(),
+          child: buildCoverImage(profile),
         ),
         Positioned(
           left: 20,
           top: top,
-          child: buildProfileImage(),
+          child: buildProfileImage(profile),
         ),
         Positioned(
           right: 20,
@@ -186,36 +227,51 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
     );
   }
 
-  Widget buildCoverImage() => Container(
-        color: Colors.grey.shade700,
-        width: double.infinity,
-        height: coverHeight,
-        child: _coverImage != null
-            ? Image.file(
-                _coverImage!,
-                fit: BoxFit.cover,
-              )
-            : Container(),
-      );
-
-  Widget buildProfileImage() => CircleAvatar(
-        radius: profileHeight / 2,
-        backgroundColor: Colors.grey.shade600,
-        child: _profileImage != null
-            ? ClipOval(
-                child: Image.file(
-                  _profileImage!,
+  Widget buildCoverImage(AutomotiveProfileModel? profile) => Container(
+      color: Colors.grey.shade700,
+      width: double.infinity,
+      height: coverHeight,
+      child: _coverImage != null
+          ? Image.file(
+              _coverImage!,
+              fit: BoxFit.cover,
+            )
+          : (profile != null && profile.coverImage.isNotEmpty)
+              ? Image.network(
+                  profile.coverImage,
                   fit: BoxFit.cover,
-                  width: 100,
-                  height: 100,
-                ),
-              )
-            : const Icon(
-                Icons.person,
-                size: 100,
-                color: Colors.white,
+                )
+              : Container(),
+    );
+
+  
+  Widget buildProfileImage(AutomotiveProfileModel? profile) => CircleAvatar(
+      radius: profileHeight / 2,
+      backgroundColor: Colors.grey.shade600,
+      child: _profileImage != null
+          ? ClipOval(
+              child: Image.file(
+                _profileImage!,
+                fit: BoxFit.cover,
+                width: 130,
+                height: 130,
               ),
-      );
+            )
+          : (profile != null && profile.profileImage.isNotEmpty)
+              ? ClipOval(
+                  child: Image.network(
+                    profile.profileImage,
+                    fit: BoxFit.cover,
+                    width: 130,
+                    height: 130,
+                  ),
+                )
+              : const Icon(
+                  Icons.person,
+                  size: 100,
+                  color: Colors.white,
+                ),
+    );
 }
 
 Widget ServicesCarousel() => Column(

@@ -1,45 +1,40 @@
-class AutomotiveShopProfileModel {
-  String uid;
-  String backgroundImage;
-  String profileImage;
-  String shopName;
-  String location;
-  List<String> daysOfWeek;
-  Map<String, String> operatingHours;
+class AutomotiveProfileModel {
+  final String uid;
+  final String shopName;
+  final String location;
+  final String coverImage;
+  final String profileImage;
+  // final List<String> dayOfTheWeek;
 
-  AutomotiveShopProfileModel({
+  AutomotiveProfileModel({
     required this.uid,
-    required this.backgroundImage,
-    required this.profileImage,
     required this.shopName,
     required this.location,
-    required this.daysOfWeek,
-    required this.operatingHours,
+    required this.coverImage,
+    required this.profileImage,
+    // required this.dayOfTheWeek,
   });
 
-  // Convert AutomotiveShopProfile to a Map
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
-      'backgroundImage': backgroundImage,
-      'profileImage': profileImage,
       'shopName': shopName,
       'location': location,
-      'daysOfWeek': daysOfWeek,
-      'operatingHours': operatingHours,
+      'coverImage': coverImage,
+      'profileImage': profileImage,
+      // 'dayOfTheWeek': dayOfTheWeek,
     };
   }
-
-  // Create AutomotiveShopProfile from a Map
-  factory AutomotiveShopProfileModel.fromMap(Map<String, dynamic> map) {
-    return AutomotiveShopProfileModel(
-      uid: map['uid'] ?? '',
-      backgroundImage: map['backgroundImage'] ?? '',
-      profileImage: map['profileImage'] ?? '',
-      shopName: map['shopName'] ?? '',
-      location: map['location'] ?? '',
-      daysOfWeek: List<String>.from(map['daysOfWeek'] ?? []),
-      operatingHours: Map<String, String>.from(map['operatingHours'] ?? {}),
+  
+  factory AutomotiveProfileModel.fromDocument(Map<String, dynamic> doc, String uid) {
+    return AutomotiveProfileModel(
+      uid: uid,
+      shopName: doc['shopName'] ?? '',
+      location: doc['location'] ?? '',
+      coverImage: doc['coverImage'] ?? '',
+      profileImage: doc['profileImage'] ?? '',
+      // dayOfTheWeek: List<String>.from(doc['dayOfTheWeek'] ?? []),
     );
   }
 }
+
