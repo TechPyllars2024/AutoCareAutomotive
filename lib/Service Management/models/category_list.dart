@@ -4,9 +4,10 @@ class CategoryList {
     'Electrical Works',
     'Mechanical Works',
     'Paint and Body Works',
-    'Air-conditioning Works',
-    'Installation of Accessories',
+    'Air-conditioning Services',
+    'Installation of Accessories Services',
     'Car Wash',
     'Auto Detailing Services',
+    'Roadside Assistance Services'
   ];
 }
