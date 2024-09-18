@@ -105,10 +105,6 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     }
   }
 
-  // Future<void> _updateUserProfile(AutomotiveProfileModel profile) async {
-  //   await FirebaseFirestore.instance.collection('automotiveShops_profile').doc(profile.uid).update(profile.toMap());
-  // }
-
   Future<String> _uploadImage(File image, String path) async {
     final ref = FirebaseStorage.instance.ref().child(path);
     await ref.putFile(image);
@@ -116,22 +112,49 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   }
 
   Future<void> _saveProfile() async {
-    if (_coverImage != null && _profileImage != null && uid != null) {
-      final coverImageUrl = await _uploadImage(_coverImage!, 'coverImages/$uid.jpg');
-      final profileImageUrl = await _uploadImage(_profileImage!, 'profileImages/$uid.jpg');
-      final user = FirebaseAuth.instance.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
 
-      if (user != null) {
-        AutomotiveProfileModel updatedProfile = AutomotiveProfileModel(
-          uid: user.uid,
-          coverImage: coverImageUrl,
-          profileImage: profileImageUrl,
-          shopName: _shopNameController.text,
-          location: _locationController.text,
+    if (user != null && uid != null) {
+      List<String> emptyFields = [];
+
+      if (_shopNameController.text.isEmpty) {
+        emptyFields.add('Shop Name');
+      }
+
+      if (_locationController.text.isEmpty) {
+        emptyFields.add('Location');
+      }
+
+      if (emptyFields.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('The following fields are empty: ${emptyFields.join(', ')}'),
+            backgroundColor: Colors.red,
+          ),
         );
+        return; // Prevent saving changes if there are empty fields
+      }
 
-        await FirebaseFirestore.instance.collection('automotiveShops_profile').doc(user.uid).set(updatedProfile.toMap());
-        Navigator.pop(context, updatedProfile);
+      Map<String, dynamic> updatedData = {};
+
+      if (_coverImage != null) {
+        final coverImageUrl = await _uploadImage(_coverImage!, 'coverImages/$uid.jpg');
+        updatedData['coverImage'] = coverImageUrl;
+      }
+
+      if (_profileImage != null) {
+        final profileImageUrl = await _uploadImage(_profileImage!, 'profileImages/$uid.jpg');
+        updatedData['profileImage'] = profileImageUrl;
+      }
+
+      updatedData['shopName'] = _shopNameController.text;
+      updatedData['location'] = _locationController.text;
+
+      if (updatedData.isNotEmpty) {
+        await FirebaseFirestore.instance.collection('automotiveShops_profile').doc(user.uid).update(updatedData);
+        Navigator.pop(context, updatedData);
+      } else {
+        print('No data to update');
       }
     } else {
       print('User ID is null or images are not selected');
