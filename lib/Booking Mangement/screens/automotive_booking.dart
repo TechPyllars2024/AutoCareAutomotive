@@ -32,33 +32,29 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
             // The first tab content
-            Padding(
-              padding: EdgeInsets.all(16.0), // Adjust padding as needed
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.topLeft, // Align text to the left
-                    child: Text(
-                      'May 17, 2025',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            Center(
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1, // Number of columns
+                  crossAxisSpacing: 10.0, // Horizontal spacing
+                  mainAxisSpacing: 10.0, // Vertical spacing
+                ),
+                itemCount: 10, // Number of items in the grid
+                itemBuilder: (context, index) {
+                  return Card(
+                    color: Colors.white,
+                    child: Center(
+                      child: Text('Item $index'),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.circle, color: Colors.orange,),
-                      Text('Change Oil', style: TextStyle(fontSize: 15),)
-
-                    ],
-                  ),
-                ],
+                  );
+                },
               ),
             ),
             // The second tab content
-            Center(child: Text('Booking History')),
+            const Center(child: Text('Booking History')),
           ],
         ),
       ),
