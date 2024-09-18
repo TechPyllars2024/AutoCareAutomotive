@@ -1,3 +1,5 @@
+import 'package:autocare_automotiveshops/ProfileManagement/models/automotive_shop_profile_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -10,11 +12,11 @@ class AutomotiveShopEditProfileServices {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-   Future<File?> pickImage() async {
+  Future<File?> pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       return File(pickedFile.path);
-    }
+  }
     return null;
   }
 
@@ -26,75 +28,69 @@ class AutomotiveShopEditProfileServices {
     return await pickImage();
   }
 
-  Future<String?> uploadImage(File image, String path) async {
-    try {
-      final ref = _storage.ref().child(path);
-      final uploadTask = await ref.putFile(image);
-      final downloadUrl = await uploadTask.ref.getDownloadURL();
-      return downloadUrl;
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
-
-  Future<void> updateProfileImages(File? coverImage, File? profileImage, String userId) async {
-    String? coverImageUrl;
-    String? profileImageUrl;
-
-    if (coverImage != null) {
-      coverImageUrl = await uploadImage(coverImage, 'users/$userId/cover.jpg');
-    }
-
-    if (profileImage != null) {
-      profileImageUrl = await uploadImage(profileImage, 'users/$userId/profile.jpg');
-    }
-
-    await _firestore.collection('profile').doc(userId).update({
-      if (coverImageUrl != null) 'coverImageUrl': coverImageUrl,
-      if (profileImageUrl != null) 'profileImageUrl': profileImageUrl,
-    });
-  }
-
-  // Future<void> updateOperatingHours(Map<String, Map<String, String>> operatingHours, String userId) async {
-  //   await _firestore.collection('users').doc(userId).update({
-  //     'operatingHours': operatingHours,
-  //   });
+  // Future<String> _uploadImage(File image, String path) async {
+  //   final ref = FirebaseStorage.instance.ref().child(path);
+  //   await ref.putFile(image);
+  //   return await ref.getDownloadURL();
   // }
 
-  Future<void> updateSelectedDays(Map<String, bool> selectedDays, String userId) async {
-    await _firestore.collection('profile').doc(userId).update({
-      'selectedDays': selectedDays,
-    });
-  }
+  // Future<void> saveProfile({
+  //   required String uid,
+  //   required TextEditingController shopNameController,
+  //   required TextEditingController locationController,
+  //   required File? coverImage,
+  //   required File? profileImage,
+  //   required BuildContext context,
+  // }) async {
+  //   final user = FirebaseAuth.instance.currentUser;
 
-  Future<List<String>> fetchSelectedDays(String userId) async {
-    final doc = await _firestore.collection('profile').doc(userId).get();
-    if (doc.exists && doc.data()!.containsKey('selectedDays')) {
-      return List<String>.from(doc['selectedDays']);
-    }
-    return [];
-  }
+  //   if (user != null) {
+  //     List<String> emptyFields = [];
 
-  // Future<void> updateOperatingHours(Map<String, Map<String, TimeOfDay>> operatingHours, String userId) async {
-  //   final Map<String, Map<String, String>> formattedHours = operatingHours.map((day, hours) {
-  //     return MapEntry(day, {
-  //       'open': hours['open']!.format12Hour(),
-  //       'close': hours['close']!.format12Hour(),
-  //     });
-  //   });
+  //     if (shopNameController.text.isEmpty) {
+  //       emptyFields.add('Shop Name');
+  //     }
 
-  //   await _firestore.collection('users').doc(userId).update({
-  //     'operatingHours': formattedHours,
-  //   });
+  //     if (locationController.text.isEmpty) {
+  //       emptyFields.add('Location');
+  //     }
+
+  //     if (emptyFields.isNotEmpty) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('The following fields are empty: ${emptyFields.join(', ')}'),
+  //           backgroundColor: Colors.red,
+  //         ),
+  //       );
+  //       return;
+  //     }
+
+  //     Map<String, dynamic> updatedData = {};
+
+  //     if (coverImage != null) {
+  //       final coverImageUrl = await _uploadImage(coverImage, 'coverImages/$uid.jpg');
+  //       updatedData['coverImage'] = coverImageUrl;
+  //     }
+
+  //     if (profileImage != null) {
+  //       final profileImageUrl = await _uploadImage(profileImage, 'profileImages/$uid.jpg');
+  //       updatedData['profileImage'] = profileImageUrl;
+  //     }
+
+  //     updatedData['shopName'] = shopNameController.text;
+  //     updatedData['location'] = locationController.text;
+
+  //     if (coverImage != null) {
+  //       final coverImageUrl = await _uploadImage(coverImage, 'coverImages/$uid.jpg');
+  //       updatedData['coverImage'] = coverImageUrl;
+  //     }
+
+  //     if (profileImage != null) {
+  //       final profileImageUrl = await _uploadImage(profileImage, 'profileImages/$uid.jpg');
+  //       updatedData['profileImage'] = profileImageUrl;
+  //     }
+  //   } else {
+  //     print('User ID is null or images are not selected');
+  //   }
   // }
 }
-
-// extension TimeOfDayExtension on TimeOfDay {
-//   String format12Hour() {
-//     final hour = this.hourOfPeriod == 0 ? 12 : this.hourOfPeriod;
-//     final minute = this.minute.toString().padLeft(2, '0');
-//     final period = this.period == DayPeriod.am ? 'AM' : 'PM';
-//     return '$hour:$minute $period';
-//   }
-// }
