@@ -1,4 +1,5 @@
 import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
+import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -108,7 +109,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   @override
   Widget build(BuildContext context) {
     return isEmailVerified
-        ? const AutomotiveBookingScreen()
+        ? const Navbar()
         : Scaffold(
             appBar: AppBar(
               title: const Text('Verify Email'),
