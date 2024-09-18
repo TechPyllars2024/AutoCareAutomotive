@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:autocare_automotiveshops/Booking%20Mangement/widgets/acceptButton.dart';
 
 class AutomotiveBookingScreen extends StatefulWidget {
   const AutomotiveBookingScreen({super.key, this.child});
@@ -49,23 +50,37 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     ),
                   ),
                 ),
-                // Replace GridView with a Container
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    height: 100, // Adjust the height as needed
+                    height: 150, // Adjust the height as needed
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16.0), // Circular edges
                     ),
-                    child: Center(
-                      child: Text(
-                        'Booking Details',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Text(
+                            'Booking Details',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 8.0), // Add spacing between text and button
+                        AcceptButton(
+                          text: 'Another Button',
+                          color: Colors.blue,
+                          padding: 30.0,
+                          onTap: () {
+                            // Handle tap
+                            print('Another button clicked!');
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
