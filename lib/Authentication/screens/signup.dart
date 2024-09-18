@@ -1,4 +1,5 @@
 import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
+import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -110,7 +111,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const AutomotiveBookingScreen(),
+          builder: (context) => const Navbar(),
         ),
       );
     } else {

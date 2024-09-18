@@ -16,7 +16,7 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
       backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
         title: const Text(
-          'Bookings',
+          'Messages',
           style: TextStyle(fontWeight: FontWeight.w900),
         ),
         backgroundColor: Colors.grey.shade300,

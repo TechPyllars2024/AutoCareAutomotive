@@ -1,4 +1,5 @@
 import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
+import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:autocare_automotiveshops/Service%20Management/screens/manage_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -56,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // Navigate to the home screen if email is verified
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const AutomotiveBookingScreen(),
+            builder: (context) => const Navbar(),
           ),
         );
       } else {
@@ -91,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) =>
-                const AutomotiveBookingScreen(),
+                const Navbar(),
           ),
         );
       } else {
