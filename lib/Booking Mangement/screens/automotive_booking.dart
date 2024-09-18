@@ -43,16 +43,19 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     alignment: Alignment.topLeft, // Align text to the left
                     child: Text(
                       'May 17, 2025',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                   ),
                   Row(
-                    
-                    children: [Text('data')],
+                    children: [
+                      Icon(Icons.circle, color: Colors.orange,),
+                      Text('Change Oil', style: TextStyle(fontSize: 15),)
+
+                    ],
                   ),
                 ],
               ),
-              
             ),
             // The second tab content
             Center(child: Text('Booking History')),
