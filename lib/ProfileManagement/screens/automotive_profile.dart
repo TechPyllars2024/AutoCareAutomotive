@@ -44,7 +44,7 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Profile',
           style: TextStyle(fontWeight: FontWeight.w900),
         ),
@@ -82,8 +82,8 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
         text: 'Get Verified',
       );
 
-  Widget buildShopName() => Padding(
-        padding: const EdgeInsets.all(16.0),
+  Widget buildShopName() => const Padding(
+        padding: EdgeInsets.all(16.0),
         child: Align(
           alignment: Alignment.centerLeft,
           child: Column(
@@ -105,7 +105,7 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
                 ],
               ),
 
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Row(
                 children: [
                   Icon(Icons.calendar_month, color: Colors.orange),
@@ -117,7 +117,7 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
                 ],
               ),
 
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Row(
                 children: [
                   Icon(Icons.schedule, color: Colors.orange),
@@ -174,10 +174,10 @@ class _AutomotiveProfileState extends State<AutomotiveProfile> {
                   });
                 },
               ),
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               Text(
                 '$numberOfRating ratings',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
             ],
           ),
@@ -224,15 +224,15 @@ Widget ServicesCarousel() => Column(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              Text(
+              const Text(
 
                 'Services',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-             Spacer(),
+             const Spacer(),
              IconButton(
 
-                 onPressed: () {}, icon: Icon(Icons.add))
+                 onPressed: () {}, icon: const Icon(Icons.add))
             ],
           ),
         ),
