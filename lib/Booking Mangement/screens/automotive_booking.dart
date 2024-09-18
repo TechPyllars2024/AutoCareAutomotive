@@ -35,23 +35,41 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
         body: TabBarView(
           children: [
             // The first tab content
-            Center(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1, // Number of columns
-                  crossAxisSpacing: 10.0, // Horizontal spacing
-                  mainAxisSpacing: 10.0, // Vertical spacing
-                ),
-                itemCount: 10, // Number of items in the grid
-                itemBuilder: (context, index) {
-                  return Card(
-                    color: Colors.white,
-                    child: Center(
-                      child: Text('Item $index'),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'DATEDATE',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
-                  );
-                },
-              ),
+                  ),
+                ),
+                // Replace GridView with a Container
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    height: 100, // Adjust the height as needed
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.0), // Circular edges
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Booking Details',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             // The second tab content
             const Center(child: Text('Booking History')),
