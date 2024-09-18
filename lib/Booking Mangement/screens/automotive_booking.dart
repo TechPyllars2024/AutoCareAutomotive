@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:autocare_automotiveshops/Booking%20Mangement/widgets/acceptButton.dart';
+import 'package:autocare_automotiveshops/Booking%20Mangement/widgets/bookingButton.dart';
 
 class AutomotiveBookingScreen extends StatefulWidget {
   const AutomotiveBookingScreen({super.key, this.child});
@@ -61,24 +61,49 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Center(
-                          child: Text(
-                            'Booking Details',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
+                        Row(
+                          children: [
+                            Text(
+                              'Booking Details',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
+                            Spacer(),
+                            Text(
+                              '10:30 AM',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+
+                          ],
                         ),
                         const SizedBox(height: 8.0), // Add spacing between text and button
-                        AcceptButton(
-                          text: 'Another Button',
-                          color: Colors.blue,
-                          padding: 30.0,
-                          onTap: () {
-                            // Handle tap
-                            print('Another button clicked!');
-                          },
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            BookingButton(
+                              text: 'Decline',
+                              color: Colors.grey,
+                              padding: 10.0,
+                              onTap: () {
+                                // Handle tap
+                                print('declined');
+                              },
+                            ),
+                            BookingButton(
+                              text: 'Accept',
+                              color: Colors.orange,
+                              padding: 10.0,
+                              onTap: () {
+                                // Handle tap
+                                print('accepted');
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),
