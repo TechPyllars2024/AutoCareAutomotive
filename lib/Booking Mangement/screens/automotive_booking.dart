@@ -42,7 +42,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    'DATEDATE',
+                    'September 20, 2024',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -61,25 +61,27 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              'Booking Details',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Booking Details',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                            Spacer(),
-                            Text(
-                              '10:30 AM',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
+                              Spacer(),
+                              Text(
+                                '10:30 AM',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-
-                          ],
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 8.0), // Add spacing between text and button
                         Row(
@@ -112,7 +114,67 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
               ],
             ),
             // The second tab content
-            const Center(child: Text('Booking History')),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'September 15, 2024',
+
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+
+
+
+                Container(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
+                        child: Row(
+                          children: [
+                            Icon(Icons.circle, color: Colors.orange,),
+                            SizedBox(width: 8,),
+                            Text(
+                              'Booking Details',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Spacer(),
+                            Text(
+                              '10:30 AM',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),
+                        child: Divider(
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                ),
+
+
+
+              ],
+            ),
           ],
         ),
       ),
