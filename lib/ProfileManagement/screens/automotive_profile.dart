@@ -1,5 +1,11 @@
+import 'dart:io';
+
+import 'package:autocare_automotiveshops/ProfileManagement/models/automotive_shop_profile_model.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_get_verified.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
@@ -14,13 +20,56 @@ class AutomotiveProfileScreen extends StatefulWidget {
 }
 
 class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
+  AutomotiveProfileModel? profile;
+  File? _coverImage;
+  File? _profileImage;
+
   final double coverHeight = 220;
   final double profileHeight = 130;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileData();
+  }
+
+  Future<AutomotiveProfileModel?> fetchProfileData(String uid) async {
+    final doc = await FirebaseFirestore.instance
+        .collection('automotiveShops_profile')
+        .doc(uid)
+        .get();
+
+    if (doc.exists) {
+      return AutomotiveProfileModel.fromDocument(doc.data() as Map<String, dynamic>, doc.id);
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> _loadProfileData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final fetchedProfile = await fetchProfileData(user.uid);
+      setState(() {
+        profile = fetchedProfile;
+      });
+    }
+  }
 
   void editProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AutomotiveEditProfile()),
+      MaterialPageRoute(builder: (context) => const AutomotiveEditProfile()),
+    ).then((_) {
+      // Reload profile data after returning from the edit profile screen
+      _loadProfileData();
+    });
+  }
+
+  void getVerified() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AutomotiveGetVerified()),
     );
   }
 
@@ -31,7 +80,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Profile',
           style: TextStyle(fontWeight: FontWeight.w900),
         ),
@@ -47,6 +96,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
               buildTopSection(top),
               buildShopName(),
               buildButton(),
+              buildGetVerified(),
               ServicesCarousel(),
               FeedbackSection(),
 
@@ -59,36 +109,65 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
   }
 
   Widget buildButton() => WideButtons(
-        onTap: editProfile,
-        text: 'Edit Profile',
-      );
+    onTap: editProfile,
+    text: 'Edit Profile',
+  );
 
-  Widget buildShopName() => const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+  Widget buildGetVerified() => WideButtons(
+    onTap: getVerified,
+    text: 'Get Verified',
+  );
+
+  Widget buildShopName() => Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Align(
+      alignment: Alignment.centerLeft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            profile?.shopName ?? 'Shop Name',
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 5),
+          Row(
             children: [
+              const Icon(Icons.location_on, color: Colors.orange),
+              const SizedBox(width: 4),
               Text(
-                'Auto Repair',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 5),
-              Row(
-                children: [
-                  Icon(Icons.location_on, color: Colors.orange),
-                  SizedBox(width: 4),
-                  Text(
-                    'Location details',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                ],
+                profile?.location ?? 'Location',
+                style: const TextStyle(fontSize: 15),
               ),
             ],
           ),
-        ),
-      );
+
+          const SizedBox(height: 5),
+          const Row(
+            children: [
+              Icon(Icons.calendar_month, color: Colors.orange),
+              SizedBox(width: 4),
+              Text(
+                'Days of the Week',
+                style: TextStyle(fontSize: 15),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 5),
+          const Row(
+            children: [
+              Icon(Icons.schedule, color: Colors.orange),
+              SizedBox(width: 4),
+              Text(
+                '00:00 AM - 00:00 PM',
+                style: TextStyle(fontSize: 15),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
 
   Widget buildTopSection(double top) {
     double rating = 3;
@@ -100,12 +179,12 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
       children: [
         Container(
           margin: EdgeInsets.only(bottom: profileHeight / 2),
-          child: buildCoverImage(),
+          child: buildCoverImage(profile),
         ),
         Positioned(
           left: 20,
           top: top,
-          child: buildProfileImage(),
+          child: buildProfileImage(profile),
         ),
         Positioned(
           right: 20,
@@ -116,7 +195,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
                 rate: rating,
                 items: List.generate(
                   5,
-                  (index) => const RatingWidget(
+                      (index) => const RatingWidget(
                     selectedColor: Colors.orange,
                     unSelectedColor: Colors.grey,
                     child: Icon(
@@ -134,8 +213,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
               const SizedBox(width: 5),
               Text(
                 '$numberOfRating ratings',
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
             ],
           ),
@@ -144,134 +222,157 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
     );
   }
 
-  Widget buildCoverImage() => Container(
-        color: Colors.grey,
-        child: Image.network(
-          'https://www.erieinsurance.com/-/media/images/blog/articlephotos/2018/rentalcarlg.ashx?h=529&w=1100&la=en&hash=B6312A1CFBB03D75789956B399BF6B91E7980061',
-          width: double.infinity,
-          height: coverHeight,
-          fit: BoxFit.cover,
-        ),
-      );
+  Widget buildCoverImage(AutomotiveProfileModel? profile) => Container(
+    color: Colors.grey.shade700,
+    width: double.infinity,
+    height: coverHeight,
+    child: _coverImage != null
+        ? Image.file(
+      _coverImage!,
+      fit: BoxFit.cover,
+    )
+        : (profile != null && profile.coverImage.isNotEmpty)
+        ? Image.network(
+      profile.coverImage,
+      fit: BoxFit.cover,
+    )
+        : Container(),
+  );
 
-  Widget buildProfileImage() => CircleAvatar(
-        radius: profileHeight / 2,
-        backgroundColor: Colors.grey.shade800,
-        backgroundImage: const NetworkImage(
-          'https://cdn.vectorstock.com/i/500p/57/48/auto-repair-service-logo-badge-emblem-template-vector-49765748.jpg',
-        ),
-      );
+
+  Widget buildProfileImage(AutomotiveProfileModel? profile) => CircleAvatar(
+    radius: profileHeight / 2,
+    backgroundColor: Colors.grey.shade600,
+    child: _profileImage != null
+        ? ClipOval(
+      child: Image.file(
+        _profileImage!,
+        fit: BoxFit.cover,
+        width: 130,
+        height: 130,
+      ),
+    )
+        : (profile != null && profile.profileImage.isNotEmpty)
+        ? ClipOval(
+      child: Image.network(
+        profile.profileImage,
+        fit: BoxFit.cover,
+        width: 130,
+        height: 130,
+      ),
+    )
+        : const Icon(
+      Icons.person,
+      size: 100,
+      color: Colors.white,
+    ),
+  );
 }
 
 Widget ServicesCarousel() => Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              const Text(
-                'Services',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const Spacer(),
-              IconButton(onPressed: () {}, icon: Icon(Icons.add))
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 220,
-          child: CarouselView(
-            itemExtent: 280,
-            children: List.generate(10, (int index) {
-              return Container(
-                color: Colors.orangeAccent.shade100,
-                child: Stack(
-                  children: [
-                    // ClipRRect to add curved corners and crop the bottom
-                    Container(
-                      margin: EdgeInsets.all(8),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20), // Curve on the left
-                          topRight: Radius.circular(20), // Curve on the right
-                        ),
-                        child: FractionallySizedBox(
-                          heightFactor: 0.80,
-                          // Crop to 75% height of the container
-                          alignment: Alignment.topCenter,
-                          // Align top portion
-                          child: Image.network(
-                            'https://soaphandcarwash.com/wp-content/uploads/2019/08/Soap-Hand-Car-Wash-13.jpg',
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Overlay Text in the bottom 25% space
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        height: 50, // Allocating 25% space for text
+  children: [
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          const Text(
 
-                        padding: const EdgeInsets.all(10),
-                        child: const Text(
-                          textAlign: TextAlign.center,
-                          'Car Wash',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-          ),
-        ),
-      ],
-    );
-
-Widget FeedbackSection() => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            'Feedbacks',
+            'Services',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-        ),
-        Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16), // Curved edges
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(18.0),
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // Aligns the text to the left
+          const Spacer(),
+          IconButton(
+
+              onPressed: () {}, icon: const Icon(Icons.add))
+        ],
+      ),
+    ),
+    SizedBox(
+      height: 220,
+      child: CarouselView(
+        itemExtent: 280,
+        children: List.generate(10, (int index) {
+          return Container(
+            child: Stack(
               children: [
-                Text(
-                  'Paul Vincent Lerado',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                // ClipRRect to add curved corners and crop the bottom
+                Container(
+                  margin: EdgeInsets.all(8),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20), // Curve on the left
+                      topRight: Radius.circular(20), // Curve on the right
+                    ),
+                    child: FractionallySizedBox(
+                      heightFactor: 0.80,
+                      // Crop to 75% height of the container
+                      alignment: Alignment.topCenter,
+                      // Align top portion
+                      child: Image.network(
+                        'https://soaphandcarwash.com/wp-content/uploads/2019/08/Soap-Hand-Car-Wash-13.jpg',
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
+                    ),
+                  ),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-                  child: Text(
-                      'I was impressed with the professionalism and efficiency of your team during my recent oil change and brake inspection. '
-                      'However, the service took longer than expected, so providing more accurate time estimates would be helpful.'),
+                // Overlay Text in the bottom 25% space
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: 50, // Allocating 25% space for text
+
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      'Car Wash',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
-          ),
+            color: Colors.orangeAccent.shade100,
+          );
+        }),
+      ),
+    ),
+  ],
+);
+
+Widget FeedbackSection() => Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text('Feedbacks', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+    ),
+    Container(
+      margin: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16), // Curved edges
+      ),
+      child: const Padding(
+        padding: EdgeInsets.all(18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the left
+          children: [
+            Text('Paul Vincent Lerado', style: TextStyle(fontWeight: FontWeight.bold),),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+              child: Text('I was impressed with the professionalism and efficiency of your team during my recent oil change and brake inspection. '
+                  'However, the service took longer than expected, so providing more accurate time estimates would be helpful.'),
+            ),
+          ],
         ),
-      ],
-    );
+      ),
+    ),
+  ],
+);
