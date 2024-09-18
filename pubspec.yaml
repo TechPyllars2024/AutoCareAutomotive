@@ -48,6 +48,7 @@ dependencies:
   curved_navigation_bar: ^1.0.6
   flutter_pannable_rating_bar: ^2.7.2+1
   firebase_storage: ^12.3.0
+  file_picker: ^8.1.2
 
 
 dev_dependencies:

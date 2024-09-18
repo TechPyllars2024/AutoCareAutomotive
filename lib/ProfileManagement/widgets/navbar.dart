@@ -23,7 +23,7 @@ class _NavbarState extends State<Navbar> {
     const AutomotiveBooking(),
     const AutomotiveServices(),
     const AutomotiveProfile(),
-    const AutomotiveEditProfile(),
+    // const AutomotiveEditProfile(),
   ];
 
   @override

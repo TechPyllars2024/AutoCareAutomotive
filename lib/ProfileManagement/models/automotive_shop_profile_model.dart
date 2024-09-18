@@ -5,6 +5,7 @@ class AutomotiveProfileModel {
   final String coverImage;
   final String profileImage;
   // final List<String> dayOfTheWeek;
+  
 
   AutomotiveProfileModel({
     required this.uid,
