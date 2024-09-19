@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // Import GetX for state management
+import 'package:get/get.dart';
 
 class DropdownController extends GetxController {
   var selectedOptionList = <String>[].obs;
@@ -42,13 +42,13 @@ class _CustomDropdownState extends State<CustomDropdown> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(15),
-                  color: Colors.grey[100], // Light grey background
+                  color: Colors.grey[100],
                 ),
                 child: Obx(
                       () => widget.controller.selectedOptionList.isEmpty
                       ? Text(
                     widget.hintText,
-                    style: TextStyle(color: Colors.grey[700], fontSize: 16), // Grey text
+                    style: TextStyle(color: Colors.grey[700], fontSize: 16),
                   )
                       : Wrap(
                     spacing: 8.0,
@@ -57,10 +57,10 @@ class _CustomDropdownState extends State<CustomDropdown> {
                       return Chip(
                         label: Text(
                           option,
-                          style: const TextStyle(color: Colors.white), // White text
+                          style: const TextStyle(color: Colors.white),
                         ),
-                        backgroundColor: Colors.grey[600], // Darker grey background for selected options
-                        deleteIconColor: Colors.white, // White delete icon
+                        backgroundColor: Colors.grey[600],
+                        deleteIconColor: Colors.white,
                         onDeleted: () {
                           widget.controller.selectedOptionList.remove(option);
                           widget.controller.selectedOption.value = widget.controller.selectedOptionList.join(', ');

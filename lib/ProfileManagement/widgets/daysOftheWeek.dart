@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // Import GetX for state management
+import 'package:get/get.dart';
 
 // Controller for managing selected days
 class DaysOfTheWeekController extends GetxController {

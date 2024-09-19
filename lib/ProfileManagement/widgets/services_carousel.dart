@@ -19,7 +19,8 @@ class ServicesCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    final serviceProviderId = user?.uid; // Replace this with the actual service provider ID
+    final serviceProviderId =
+        user?.uid;
 
     return FutureBuilder<List<ServiceModel>>(
       future: _fetchServices(serviceProviderId!),
@@ -35,19 +36,16 @@ class ServicesCarousel extends StatelessWidget {
 
           return Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    const Text(
+                    Text(
                       'Services',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.add),
-                    ),
+                    Spacer(),
                   ],
                 ),
               ),
@@ -73,10 +71,10 @@ class ServicesCarousel extends StatelessWidget {
                                 alignment: Alignment.topCenter,
                                 child: service.servicePicture.isNotEmpty
                                     ? Image.network(
-                                  service.servicePicture,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                )
+                                        service.servicePicture,
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                      )
                                     : const Placeholder(),
                               ),
                             ),
@@ -88,13 +86,27 @@ class ServicesCarousel extends StatelessWidget {
                             child: Container(
                               height: 50,
                               padding: const EdgeInsets.all(10),
-                              child: Text(
+                              child: RichText(
                                 textAlign: TextAlign.center,
-                                service.name,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: service.name,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '  ${service.price} PHP',
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
