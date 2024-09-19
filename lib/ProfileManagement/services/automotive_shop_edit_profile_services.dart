@@ -1,18 +1,15 @@
-import 'package:autocare_automotiveshops/ProfileManagement/models/automotive_shop_profile_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import '../models/automotive_shop_profile_model.dart';
 
 class AutomotiveShopEditProfileServices {
-  final ImagePicker _picker = ImagePicker();
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final ImagePicker _picker = ImagePicker();
 
-  Future<File?> pickImage() async {
+  Future<File?> pickCoverImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       return File(pickedFile.path);
@@ -20,77 +17,63 @@ class AutomotiveShopEditProfileServices {
     return null;
   }
 
-  Future<File?> pickCoverImage() async {
-    return await pickImage();
-  }
-
   Future<File?> pickProfileImage() async {
-    return await pickImage();
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      return File(pickedFile.path);
+    }
+    return null;
   }
 
-// Future<String> _uploadImage(File image, String path) async {
-//   final ref = FirebaseStorage.instance.ref().child(path);
-//   await ref.putFile(image);
-//   return await ref.getDownloadURL();
-// }
+  Future<String> uploadImage(File image, String path) async {
+    final ref = _storage.ref().child(path);
+    await ref.putFile(image);
+    return await ref.getDownloadURL();
+  }
 
-// Future<void> saveProfile({
-//   required String uid,
-//   required TextEditingController shopNameController,
-//   required TextEditingController locationController,
-//   required File? coverImage,
-//   required File? profileImage,
-//   required BuildContext context,
-// }) async {
-//   final user = FirebaseAuth.instance.currentUser;
+  Future<AutomotiveProfileModel?> fetchProfileData(String uid) async {
+    final doc = await _firestore.collection('automotiveShops_profile').doc(uid).get();
+    if (doc.exists) {
+      return AutomotiveProfileModel.fromDocument(doc.data() as Map<String, dynamic>, doc.id);
+    }
+    return null;
+  }
 
-//   if (user != null) {
-//     List<String> emptyFields = [];
+  Future<void> saveProfile({
+    required String uid,
+    required String shopName,
+    required String location,
+    required File? coverImage,
+    required File? profileImage,
+    required List<String> daysOfTheWeek,
+    required String operationTime,
+    required List<String> serviceSpecialization,
+  }) async {
+    final Map<String, dynamic> updatedData = {};
 
-//     if (shopNameController.text.isEmpty) {
-//       emptyFields.add('Shop Name');
-//     }
+    if (coverImage != null) {
+      updatedData['coverImage'] = await uploadImage(coverImage, 'automotiveCoverImages/$uid.jpg');
+    }
 
-//     if (locationController.text.isEmpty) {
-//       emptyFields.add('Location');
-//     }
+    if (profileImage != null) {
+      updatedData['profileImage'] = await uploadImage(profileImage, 'automotiveProfileImages/$uid.jpg');
+    }
 
-//     if (emptyFields.isNotEmpty) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(
-//           content: Text('The following fields are empty: ${emptyFields.join(', ')}'),
-//           backgroundColor: Colors.red,
-//         ),
-//       );
-//       return;
-//     }
+    updatedData['shopName'] = shopName;
+    updatedData['location'] = location;
+    updatedData['daysOfTheWeek'] = daysOfTheWeek;
+    updatedData['operationTime'] = operationTime;
+    updatedData['serviceSpecialization'] = serviceSpecialization;
 
-//     Map<String, dynamic> updatedData = {};
+    final docRef = _firestore.collection('automotiveShops_profile').doc(uid);
+    final doc = await docRef.get();
 
-//     if (coverImage != null) {
-//       final coverImageUrl = await _uploadImage(coverImage, 'coverImages/$uid.jpg');
-//       updatedData['coverImage'] = coverImageUrl;
-//     }
-
-//     if (profileImage != null) {
-//       final profileImageUrl = await _uploadImage(profileImage, 'profileImages/$uid.jpg');
-//       updatedData['profileImage'] = profileImageUrl;
-//     }
-
-//     updatedData['shopName'] = shopNameController.text;
-//     updatedData['location'] = locationController.text;
-
-//     if (coverImage != null) {
-//       final coverImageUrl = await _uploadImage(coverImage, 'coverImages/$uid.jpg');
-//       updatedData['coverImage'] = coverImageUrl;
-//     }
-
-//     if (profileImage != null) {
-//       final profileImageUrl = await _uploadImage(profileImage, 'profileImages/$uid.jpg');
-//       updatedData['profileImage'] = profileImageUrl;
-//     }
-//   } else {
-//     print('User ID is null or images are not selected');
-//   }
-// }
+    if (doc.exists) {
+      // Update the existing document
+      await docRef.update(updatedData);
+    } else {
+      // Create a new document
+      await docRef.set(updatedData);
+    }
+  }
 }
