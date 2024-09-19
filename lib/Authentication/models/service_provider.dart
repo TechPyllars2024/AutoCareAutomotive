@@ -27,7 +27,7 @@ class UserModel {
       uid: map['uid'] ?? '',
       name: map['name'] ?? '',
       email: map['email'] ?? '',
-      roles: List<String>.from(map['roles'] ?? []),
+        roles: List<String>.from(map['roles'] ?? []),
     );
   }
 }

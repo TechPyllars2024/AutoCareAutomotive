@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TextFieldInput extends StatelessWidget {
- // final TextEditingController textEditingController;
+  final TextEditingController textEditingController;
   final bool isPass;
   final String hintText;
   final IconData? icon;
@@ -10,7 +10,7 @@ class TextFieldInput extends StatelessWidget {
 
   const TextFieldInput({
     super.key,
-  //  required this.textEditingController,
+    required this.textEditingController,
     this.isPass = false,
     required this.hintText,
     this.icon,
@@ -30,7 +30,7 @@ class TextFieldInput extends StatelessWidget {
 
         child: TextField(
           style: const TextStyle(fontSize: 20),
-         // controller: textEditingController,
+          controller: textEditingController,
           decoration: InputDecoration(
             labelText: hintText,
 
@@ -39,15 +39,15 @@ class TextFieldInput extends StatelessWidget {
             //     : null,
             labelStyle: const TextStyle(color: Color.fromARGB(255, 77, 76, 76)),
             border:  OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey),
+              borderSide: const BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.circular(15),
             ),
             enabledBorder:  OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey),
+              borderSide: const BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.circular(15),
             ),
             focusedBorder:  OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey),
+              borderSide: const BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.circular(15),
             ),
           ),

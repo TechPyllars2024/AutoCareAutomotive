@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // Import GetX for state management
+import 'package:get/get.dart';
 
 // Controller for managing selected days
 class DaysOfTheWeekController extends GetxController {
@@ -14,9 +14,7 @@ class DaysOfTheWeekController extends GetxController {
       selectedOption.value = 'Everyday';
     } else if (selectedDays.containsAll([
       'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'
-    ]) &&
-        !selectedDays.contains('Saturday') &&
-        !selectedDays.contains('Sunday')) {
+    ]) && !selectedDays.contains('Saturday') && !selectedDays.contains('Sunday')) {
       selectedOption.value = 'Weekdays';
     } else {
       selectedOption.value = selectedOptionList.join(', ');

@@ -2,60 +2,47 @@ import 'package:flutter/material.dart';
 
 class TimePickerDisplay extends StatefulWidget {
   final TimeOfDay initialTime;
-  final TextStyle textStyle;
+  final Function(TimeOfDay)? onTimeSelected;
 
   const TimePickerDisplay({
-    super.key,
+    Key? key,
     required this.initialTime,
-    this.textStyle = const TextStyle(fontSize: 20),
-  });
+    this.onTimeSelected,
+  }) : super(key: key);
 
   @override
-  State<TimePickerDisplay> createState() => _TimePickerDisplayState();
+  _TimePickerDisplayState createState() => _TimePickerDisplayState();
 }
 
 class _TimePickerDisplayState extends State<TimePickerDisplay> {
-  late TimeOfDay _timeOfDay;
+  late TimeOfDay _selectedTime;
 
   @override
   void initState() {
     super.initState();
-    _timeOfDay = widget.initialTime;
+    _selectedTime = widget.initialTime;
+  }
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime,
+    );
+    if (picked != null && picked != _selectedTime) {
+      setState(() {
+        _selectedTime = picked;
+      });
+      if (widget.onTimeSelected != null) {
+        widget.onTimeSelected!(_selectedTime);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _selectTime,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            _formatTime(_timeOfDay),
-            style: widget.textStyle,
-          ),
-        ],
-      ),
+      onTap: () => _selectTime(context),
+      child: Text(_selectedTime.format(context)),
     );
-  }
-
-  String _formatTime(TimeOfDay timeOfDay) {
-    final int hour = timeOfDay.hourOfPeriod;
-    final String period = timeOfDay.period == DayPeriod.am ? 'AM' : 'PM';
-    final String minute = timeOfDay.minute.toString().padLeft(2, '0');
-    return '$hour:$minute $period';
-  }
-
-  Future<void> _selectTime() async {
-    TimeOfDay? pickedTime = await showTimePicker(
-      initialTime: _timeOfDay,
-      context: context,
-    );
-    if (pickedTime != null) {
-      setState(() {
-        _timeOfDay = pickedTime;
-      });
-    }
   }
 }
