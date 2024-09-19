@@ -14,9 +14,7 @@ class DaysOfTheWeekController extends GetxController {
       selectedOption.value = 'Everyday';
     } else if (selectedDays.containsAll([
       'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'
-    ]) &&
-        !selectedDays.contains('Saturday') &&
-        !selectedDays.contains('Sunday')) {
+    ]) && !selectedDays.contains('Saturday') && !selectedDays.contains('Sunday')) {
       selectedOption.value = 'Weekdays';
     } else {
       selectedOption.value = selectedOptionList.join(', ');
