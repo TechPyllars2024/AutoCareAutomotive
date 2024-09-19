@@ -1,84 +1,82 @@
+import 'package:autocare_automotiveshops/ProfileManagement/services/get_verified_services.dart';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'dart:io';
 
-class AutomotiveGetVerified extends StatefulWidget {
+class AutomotiveGetVerifiedScreen extends StatefulWidget {
+  const AutomotiveGetVerifiedScreen({super.key});
+
+
   @override
-  _AutomotiveGetVerifiedState createState() => _AutomotiveGetVerifiedState();
+  State<AutomotiveGetVerifiedScreen> createState() => _AutomotiveGetVerifiedScreenState();
 }
 
-class _AutomotiveGetVerifiedState extends State<AutomotiveGetVerified> {
+class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScreen> {
   bool _isLoading = false;
-  String? _uploadedFileURL;
+  bool _isUploaded = false; // To track if the file was successfully uploaded
 
   Future<void> _pickAndUploadFile() async {
     setState(() {
       _isLoading = true;
+      _isUploaded = false; // Reset the upload status
     });
 
-    // Pick a file
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    try {
+      String? fileUrl = await GetVerifiedServices().pickAndUploadFile();
 
-    if (result != null) {
-      File file = File(result.files.single.path!);
-
-      // Upload the file to Firebase Storage
-      try {
-        String fileName = result.files.single.name;
-        Reference storageRef = FirebaseStorage.instance.ref().child('uploads/$fileName');
-        UploadTask uploadTask = storageRef.putFile(file);
-
-        TaskSnapshot taskSnapshot = await uploadTask;
-        String downloadURL = await taskSnapshot.ref.getDownloadURL();
-
+      if (fileUrl != null) {
         setState(() {
-          _uploadedFileURL = downloadURL;
+          _isUploaded = true; // Mark as uploaded
         });
-
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('File uploaded successfully!')),
+          const SnackBar(content: Text('Successfully uploaded the file!')),
         );
-      } catch (e) {
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to upload file: $e')),
+          const SnackBar(content: Text('No file selected')),
         );
       }
-    } else {
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No file selected')),
+        SnackBar(content: Text('Failed to upload file: $e')),
       );
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide loading indicator
+      });
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Get Verified'),
+        title: const Text('Get Verified'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                _pickAndUploadFile();
-              },
-              child: const Text('Upload File'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // get verified
-              },
-              child: Text('Send'),
-            ),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (_isLoading)
+                const CircularProgressIndicator(), // Show loading spinner during upload
+              if (!_isLoading && _isUploaded)
+                const Text(
+                  'SUCCESSFULLY UPLOADED THE FILE',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green),
+                ), // Show success message
+              ElevatedButton(
+                onPressed: () {
+                  if (!_isLoading) {
+                    _pickAndUploadFile();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: Text(_isLoading ? 'Uploading...' : 'Upload PDF'),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -3,16 +3,16 @@ import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/daysOftheWeek.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../models/automotive_shop_profile_model.dart';
 import '../services/automotive_shop_edit_profile_services.dart';
 
 class AutomotiveEditProfile extends StatefulWidget {
-  const AutomotiveEditProfile({super.key});
+  const AutomotiveEditProfile({super.key, this.child});
+
+  final Widget? child;
 
   @override
   State<AutomotiveEditProfile> createState() => _AutomotiveEditProfileState();
@@ -21,7 +21,7 @@ class AutomotiveEditProfile extends StatefulWidget {
 class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   final DropdownController dropdownController = Get.put(DropdownController());
   final DaysOfTheWeekController daysOfTheWeekController =
-  Get.put(DaysOfTheWeekController());
+      Get.put(DaysOfTheWeekController());
 
   File? _coverImage;
   File? _profileImage;
@@ -29,10 +29,13 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   String? _profileImageUrl;
   final TextEditingController _shopNameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-  final AutomotiveShopEditProfileServices _automotiveShopEditProfileServices = AutomotiveShopEditProfileServices();
+  final AutomotiveShopEditProfileServices _automotiveShopEditProfileServices =
+      AutomotiveShopEditProfileServices();
 
   final double coverHeight = 220;
   final double profileHeight = 130;
+  TimeOfDay? _openingTime;
+  TimeOfDay? _closingTime;
 
   String? uid;
   AutomotiveProfileModel? editProfile;
@@ -44,23 +47,18 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     _loadProfileData();
   }
 
-  Future<AutomotiveProfileModel?> fetchProfileData(String uid) async {
-    final doc = await FirebaseFirestore.instance
-        .collection('automotiveShops_profile')
-        .doc(uid)
-        .get();
-
-    if (doc.exists) {
-      return AutomotiveProfileModel.fromDocument(doc.data() as Map<String, dynamic>, doc.id);
-    } else {
-      return null;
+  Future<void> _getCurrentUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        uid = user.uid;
+      });
     }
   }
 
   Future<void> _loadProfileData() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final fetchedProfile = await fetchProfileData(user.uid);
+    if (uid != null) {
+      final fetchedProfile = await _automotiveShopEditProfileServices.fetchProfileData(uid!);
       setState(() {
         editProfile = fetchedProfile;
         if (editProfile != null) {
@@ -69,15 +67,6 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
           _shopNameController.text = editProfile!.shopName;
           _locationController.text = editProfile!.location;
         }
-      });
-    }
-  }
-
-  Future<void> _getCurrentUser() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      setState(() {
-        uid = user.uid;
       });
     }
   }
@@ -100,16 +89,9 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     }
   }
 
-  Future<String> _uploadImage(File image, String path) async {
-    final ref = FirebaseStorage.instance.ref().child(path);
-    await ref.putFile(image);
-    return await ref.getDownloadURL();
-  }
-
   Future<void> _saveProfile() async {
     final user = FirebaseAuth.instance.currentUser;
-
-    if (user != null && uid != null) {
+    if (user != null) {
       List<String> emptyFields = [];
 
       if (_shopNameController.text.isEmpty) {
@@ -120,39 +102,49 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
         emptyFields.add('Location');
       }
 
+      if (_openingTime == null || _closingTime == null) {
+        emptyFields.add('Operating hours');
+      }
+
       if (emptyFields.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('The following fields are empty: ${emptyFields.join(', ')}'),
+            content: Text(
+                'The following fields are empty: ${emptyFields.join(', ')}'),
             backgroundColor: Colors.red,
           ),
         );
-        return; // Prevent saving changes if there are empty fields
+        return;
       }
 
-      Map<String, dynamic> updatedData = {};
+      try {
+        await _automotiveShopEditProfileServices.saveProfile(
+          uid: user.uid,
+          shopName: _shopNameController.text,
+          location: _locationController.text,
+          coverImage: _coverImage,
+          profileImage: _profileImage,
+          daysOfTheWeek: List<String>.from(daysOfTheWeekController.selectedOptionList),
+          operationTime: '${_openingTime?.format(context)} - ${_closingTime?.format(context)}',
+          serviceSpecialization: List<String>.from(dropdownController.selectedOptionList),
+        );
 
-      if (_coverImage != null) {
-        final coverImageUrl = await _uploadImage(_coverImage!, 'coverImages/$uid.jpg');
-        updatedData['coverImage'] = coverImageUrl;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profile saved successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        Navigator.pop(context); // Return to the previous screen
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to save profile'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
-
-      if (_profileImage != null) {
-        final profileImageUrl = await _uploadImage(_profileImage!, 'profileImages/$uid.jpg');
-        updatedData['profileImage'] = profileImageUrl;
-      }
-
-      updatedData['shopName'] = _shopNameController.text;
-      updatedData['location'] = _locationController.text;
-
-      if (updatedData.isNotEmpty) {
-        await FirebaseFirestore.instance.collection('automotiveShops_profile').doc(user.uid).update(updatedData);
-        Navigator.pop(context, updatedData);
-      } else {
-        print('No data to update');
-      }
-    } else {
-      print('User ID is null or images are not selected');
     }
   }
 
@@ -181,15 +173,15 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
               buildInputs(),
               dayOfTheWeekSelection(),
               timeSelection(),
-              buildSaveButton(),
               serviceSpecialization(),
-              //ServicesSection(),
+              buildSaveButton(),
             ],
           ),
         ),
       ),
     );
   }
+
 
   Widget buildSaveButton() => WideButtons(
     onTap: _saveProfile,
@@ -342,17 +334,22 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                 children: [
                   const Text('Open'),
                   const SizedBox(height: 5),
-                  // Add some space between the text and container
                   Container(
                     padding: const EdgeInsets.symmetric(
                         vertical: 15.0, horizontal: 40),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
-                      border:
-                      Border.all(color: Colors.grey), // Border color
+                      border: Border.all(color: Colors.grey),
                     ),
-                    child: const TimePickerDisplay(initialTime: TimeOfDay(hour: 0, minute: 0)),
+                    child: TimePickerDisplay(
+                      initialTime: TimeOfDay(hour: 9, minute: 0),
+                      onTimeSelected: (selectedTime) {
+                        setState(() {
+                          _openingTime = selectedTime;
+                        });
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -364,17 +361,22 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                 children: [
                   const Text('Close'),
                   const SizedBox(height: 5),
-                  // Add some space between the text and container
                   Container(
                     padding: const EdgeInsets.symmetric(
                         vertical: 15.0, horizontal: 40),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
-                      border:
-                      Border.all(color: Colors.grey), // Border color
+                      border: Border.all(color: Colors.grey),
                     ),
-                    child: const TimePickerDisplay(initialTime: TimeOfDay(hour: 12, minute: 0)),
+                    child: TimePickerDisplay(
+                      initialTime: const TimeOfDay(hour: 17, minute: 0),
+                      onTimeSelected: (selectedTime) {
+                        setState(() {
+                          _closingTime = selectedTime;
+                        });
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -416,8 +418,6 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     ),
   );
 
-
-
   Widget dayOfTheWeekSelection() => Padding(
     padding: const EdgeInsets.all(8.0),
     child: Column(
@@ -445,10 +445,8 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
           onSelectionChanged: (selectedOptions) {
             print('Selected Options: $selectedOptions');
           },
-
         ),
       ],
     ),
   );
-
 }
