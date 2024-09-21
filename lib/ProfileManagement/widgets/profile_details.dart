@@ -36,7 +36,7 @@ class ProfileDetails extends StatelessWidget {
                 const SizedBox(width: 4),
                 // Convert the list to a comma-separated string if it's a list
                 Text(
-                  (profile?.daysOfTheWeek?.join(', ') ?? 'Days of the Week'),
+                  (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
                   style: const TextStyle(fontSize: 15),
                 ),
               ],
@@ -58,7 +58,7 @@ class ProfileDetails extends StatelessWidget {
                 const SizedBox(width: 4),
                 // Ensure operationTime is a String
                 Text(
-                  (profile?.serviceSpecialization?.join(', ') ?? 'Specialization'
+                  (profile?.serviceSpecialization.join(', ') ?? 'Specialization'
                       ''),
                   style: const TextStyle(fontSize: 15),
                 ),

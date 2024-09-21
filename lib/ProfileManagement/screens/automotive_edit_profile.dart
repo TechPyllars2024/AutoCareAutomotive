@@ -3,6 +3,7 @@ import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/daysOftheWeek.dart';
+import 'package:autocare_automotiveshops/Service%20Management/models/category_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -401,17 +402,10 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
           ),
         ),
         CustomDropdown(
-          options: const [
-            'Electrical Works',
-            'Mechanical Works',
-            'Air-conditioning',
-            'Paint and Body Works',
-            'Car Wash and Auto-Detailing'
-          ],
+          options: CategoryList.categories,
           hintText: 'Service Specialization',
           controller: dropdownController,
           onSelectionChanged: (selectedOptions) {
-            print('Selected Options: $selectedOptions');
           },
         ),
       ],
@@ -443,7 +437,6 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
           hintText: 'Select Days',
           controller: daysOfTheWeekController,
           onSelectionChanged: (selectedOptions) {
-            print('Selected Options: $selectedOptions');
           },
         ),
       ],
