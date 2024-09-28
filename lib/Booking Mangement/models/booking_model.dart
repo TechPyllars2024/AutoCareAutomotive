@@ -15,6 +15,9 @@ class BookingModel {
   DateTime createdAt; // Change to DateTime for easier handling
   String bookingDate;
   String? status;
+  String? phoneNumber;
+  String fullName;
+  double totalPrice;
 
   BookingModel({
     required this.carOwnerUid,
@@ -29,7 +32,10 @@ class BookingModel {
     required this.transmission,
     required this.createdAt,
     required this.bookingDate,
-    required this.status
+    required this.status,
+    required this.phoneNumber,
+    required this.fullName,
+    required this.totalPrice
   });
 
   // Create a BookingModel from a map
@@ -55,7 +61,10 @@ class BookingModel {
       transmission: data['transmission'] ?? '',
       createdAt: createdAt,
       bookingDate: data['bookingDate'] ?? '',
-      status: data['status'] ?? ''
+      status: data['status'] ?? '',
+      phoneNumber: data['phoneNumber'] ?? '',
+      totalPrice: (data['totalPrice'] ?? 0).toDouble(),
+      fullName: data['fullName'] ?? '',
     );
   }
 
@@ -74,7 +83,10 @@ class BookingModel {
       'transmission': transmission,
       'createdAt': Timestamp.fromDate(createdAt), // Store as Timestamp
       'bookingDate': bookingDate,
-      'status': status
+      'status': status,
+      'phoneNumber': phoneNumber,
+      'totalPrice': totalPrice,
+      'fullName': fullName
     };
   }
   @override
