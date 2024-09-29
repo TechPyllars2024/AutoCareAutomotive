@@ -762,7 +762,9 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
             ),
             // Progress Tracking Tab (Display the List of Bookings)
             SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0), // Add padding around the scroll view
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start, // Align text to start for consistency
                 children: [
                   // Section for Pending Bookings
                   _buildBookingSection(
@@ -773,6 +775,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     emptyMessage: 'No pending bookings',
                     color: Colors.orange.shade100,
                   ),
+                  const SizedBox(height: 16), // Add spacing between sections
 
                   // Section for Accepted Bookings
                   _buildBookingSection(
@@ -782,8 +785,9 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         .toList(),
                     emptyMessage: 'No accepted bookings',
                     color: Colors.blue.shade100,
-                    isMarkAsDoneEnabled: true,
+                    isMarkAsDoneEnabled: true, // Enable 'Mark as Done' feature for accepted bookings
                   ),
+                  const SizedBox(height: 16), // Add spacing between sections
 
                   // Section for Done Bookings
                   _buildBookingSection(
@@ -794,6 +798,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     emptyMessage: 'No completed bookings',
                     color: Colors.green.shade100,
                   ),
+                  const SizedBox(height: 16), // Add spacing between sections
 
                   // Section for Declined Bookings
                   _buildBookingSection(
