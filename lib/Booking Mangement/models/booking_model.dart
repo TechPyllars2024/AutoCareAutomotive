@@ -18,6 +18,8 @@ class BookingModel {
   String? phoneNumber;
   String fullName;
   double totalPrice;
+  String? shopName;
+  String? shopAddress;
 
   BookingModel({
     required this.carOwnerUid,
@@ -35,7 +37,9 @@ class BookingModel {
     required this.status,
     required this.phoneNumber,
     required this.fullName,
-    required this.totalPrice
+    required this.totalPrice,
+    required this.shopAddress,
+    required this.shopName
   });
 
   // Create a BookingModel from a map
@@ -65,6 +69,8 @@ class BookingModel {
       phoneNumber: data['phoneNumber'] ?? '',
       totalPrice: (data['totalPrice'] ?? 0).toDouble(),
       fullName: data['fullName'] ?? '',
+      shopName: data['shopName'] ?? '',
+      shopAddress: data['shopAddress']
     );
   }
 
@@ -86,7 +92,9 @@ class BookingModel {
       'status': status,
       'phoneNumber': phoneNumber,
       'totalPrice': totalPrice,
-      'fullName': fullName
+      'fullName': fullName,
+      'shopName': shopName,
+      'shopAddress': shopAddress
     };
   }
   @override

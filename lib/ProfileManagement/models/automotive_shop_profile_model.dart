@@ -17,7 +17,7 @@ class AutomotiveProfileModel {
     required this.profileImage,
     required this.daysOfTheWeek,
     required this.operationTime,
-    required this.serviceSpecialization, // Include new field in constructor
+    required this.serviceSpecialization,
   });
 
   // Convert the model to a map for storage or transfer
