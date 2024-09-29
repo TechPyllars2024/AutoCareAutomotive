@@ -36,7 +36,7 @@ class GoogleButton extends StatelessWidget {
               height: 24,
               child: Image.asset('lib/Authentication/assets/images/icons/google.png'),
             ),
-            const SizedBox(width: 8), 
+            const SizedBox(width: 8),
             Text(
               hintText,
               style: const TextStyle(color: Colors.black, fontSize: 16),

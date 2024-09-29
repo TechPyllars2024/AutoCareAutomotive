@@ -44,10 +44,20 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void signupUser() async {
+    final passwordError = passwordValidator(passwordController.text);
+    String? confirmPasswordError;
+
     setState(() {
       isLoading = true;
     });
 
+    if (passwordError != null || confirmPasswordError != null) {
+      setState(() {
+        isLoading = false;
+      });
+      Utils.showSnackBar("Please enter a valid password");
+      return;
+    }
     // Check if passwords match
     if (passwordController.text != confirmPasswordController.text) {
       setState(() {
@@ -60,7 +70,6 @@ class _SignupScreenState extends State<SignupScreen> {
     String res = await AuthenticationMethod().signupServiceProvider(
       email: emailController.text,
       password: passwordController.text,
-      name: nameController.text,
     );
 
     if (res == "SUCCESS") {
