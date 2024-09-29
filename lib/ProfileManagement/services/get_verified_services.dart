@@ -10,38 +10,37 @@ import '../models/automotive_shop_profile_model.dart';
 
 class GetVerifiedServices {
   final ProfileService _profileService = ProfileService();
-  // Method to pick and upload file
-  Future<String?> pickAndUploadFile() async {
-    // Pick a file
+
+  Future<String?> pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'], // Allow only PDF files
     );
 
     if (result != null) {
-      File file = File(result.files.single.path!);
-      String fileName = result.files.single.name;
-
-      // Upload the file to Firebase Storage
-      try {
-        Reference storageRef = FirebaseStorage.instance.ref().child('getVerified/$fileName');
-        UploadTask uploadTask = storageRef.putFile(file);
-
-        TaskSnapshot taskSnapshot = await uploadTask;
-        String downloadURL = await taskSnapshot.ref.getDownloadURL();
-
-        return downloadURL;
-      } catch (e) {
-        throw Exception('Failed to upload file: $e');
-      }
+      return result.files.single.path;
     } else {
       return null; // No file selected
     }
   }
 
+  Future<String?> uploadFile(String filePath) async {
+    File file = File(filePath);
+    String fileName = file.path.split('/').last;
+
+    try {
+      Reference storageRef = FirebaseStorage.instance.ref().child('getVerified/$fileName');
+      UploadTask uploadTask = storageRef.putFile(file);
+
+      TaskSnapshot taskSnapshot = await uploadTask;
+      return await taskSnapshot.ref.getDownloadURL();
+    } catch (e) {
+      throw Exception('Failed to upload file: $e');
+    }
+  }
+
   Future<void> saveVerificationData(String fileUrl) async {
     try {
-      // Fetch the profile data
       AutomotiveProfileModel? profile = await _profileService.fetchProfileData();
 
       if (profile != null) {
@@ -57,7 +56,7 @@ class GetVerifiedServices {
 
         await FirebaseFirestore.instance
             .collection('verificationData')
-            .doc(profile.uid) // Use the user's UID
+            .doc(profile.uid)
             .set(verificationData.toMap());
       } else {
         throw Exception('Profile data not found');
