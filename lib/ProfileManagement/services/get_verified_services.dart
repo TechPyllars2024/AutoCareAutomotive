@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'dart:io';
 
 import '../models/automotive_shop_getVerified_model.dart';
@@ -10,6 +11,7 @@ import '../models/automotive_shop_profile_model.dart';
 
 class GetVerifiedServices {
   final ProfileService _profileService = ProfileService();
+  final Logger logger = Logger();
 
   Future<String?> pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -45,13 +47,13 @@ class GetVerifiedServices {
 
       if (profile != null) {
         final verificationData = VerificationModel(
-          uid: profile.uid,
+          serviceProviderUid: profile.uid,
           shopName: profile.shopName,
           location: profile.location,
           dateSubmitted: DateFormat('yyyy-MM-dd').format(DateTime.now()),
           timeSubmitted: DateFormat('HH:mm').format(DateTime.now()),
           fileUrl: fileUrl,
-          status: 'pending',
+          verificationStatus: 'pending',
         );
 
         await FirebaseFirestore.instance
@@ -62,7 +64,7 @@ class GetVerifiedServices {
         throw Exception('Profile data not found');
       }
     } catch (e) {
-      print('Failed to save verification data: $e');
+      logger.i('Failed to save verification data: $e');
     }
   }
 }

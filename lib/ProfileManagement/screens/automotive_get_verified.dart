@@ -65,7 +65,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VerificationStatusScreen(uid: 'user_uid'),
+            builder: (context) => VerificationStatusScreen(uid: 'user_uid',),
           ),
         );
       } else {
