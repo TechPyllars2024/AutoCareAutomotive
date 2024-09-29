@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-
 import '../Widgets/button.dart';
 import '../Widgets/snackBar.dart';
 import '../Widgets/text_field.dart';
@@ -16,24 +15,19 @@ import '../widgets/texfieldPassword.dart';
 import '../widgets/validator.dart';
 import 'login.dart';
 import 'package:autocare_automotiveshops/Authentication/screens/verifyEmail.dart';
-
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key, this.child});
-
   final Widget? child;
-
   @override
   State<SignupScreen> createState() => _SignupScreenState();
 }
-
 class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
-      TextEditingController();
+  TextEditingController();
   bool isLoading = false;
-
   @override
   void dispose() {
     super.dispose();
@@ -44,10 +38,20 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void signupUser() async {
+    final passwordError = passwordValidator(passwordController.text);
+    String? confirmPasswordError;
+
     setState(() {
       isLoading = true;
     });
 
+    if (passwordError != null || confirmPasswordError != null) {
+      setState(() {
+        isLoading = false;
+      });
+      Utils.showSnackBar("Please enter a valid password");
+      return;
+    }
     // Check if passwords match
     if (passwordController.text != confirmPasswordController.text) {
       setState(() {
@@ -56,11 +60,9 @@ class _SignupScreenState extends State<SignupScreen> {
       Utils.showSnackBar("Passwords do not match.");
       return;
     }
-
     String res = await AuthenticationMethod().signupServiceProvider(
       email: emailController.text,
       password: passwordController.text,
-      name: nameController.text,
     );
 
     if (res == "SUCCESS") {
@@ -71,7 +73,6 @@ class _SignupScreenState extends State<SignupScreen> {
           setState(() {
             isLoading = false;
           });
-
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => const VerifyEmailScreen(),
@@ -96,19 +97,15 @@ class _SignupScreenState extends State<SignupScreen> {
       Utils.showSnackBar(res);
     }
   }
-
   Future<void> signInWithGoogle() async {
     setState(() {
       isLoading = true;
     });
-
     String res = await AuthenticationMethod().signInWithGoogle();
-
     if (res == "SUCCESS") {
       setState(() {
         isLoading = false;
       });
-
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => const Navbar(),
@@ -121,7 +118,6 @@ class _SignupScreenState extends State<SignupScreen> {
       Utils.showSnackBar(res);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -158,10 +154,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ).animate().fadeIn(duration: const Duration(seconds: 3)),
               ),
-
               // Sign Up Image
               const CarImageWidget(
-                      imagePath: 'lib/Authentication/assets/images/car.png')
+                  imagePath: 'lib/Authentication/assets/images/car.png')
                   .animate()
                   .fadeIn(duration: const Duration(seconds: 1)),
               // Sign Up Form
@@ -221,20 +216,16 @@ class _SignupScreenState extends State<SignupScreen> {
                       },
                       isPass: true,
                     ),
-
                     // Sign Up Button
                     MyButtons(onTap: signupUser, text: "Sign Up"),
-
                     // Sign Up OR
                     const Or(),
-
                     // Sign Up with Google
                     SizedBox(height: size.height * 0.01),
                     GoogleButton(
                       onTap: signInWithGoogle,
                       hintText: 'Sign Up with Google',
                     ),
-
                     // Already have an account? Log In
                     const SizedBox(height: 30),
                     TextButton(
@@ -259,7 +250,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const LoginScreen()),
+                                        const LoginScreen()),
                                   );
                                 },
                             ),
