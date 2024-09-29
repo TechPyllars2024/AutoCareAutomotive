@@ -55,15 +55,30 @@ class ProfileDetails extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 5),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 Icon(Icons.check, color: Colors.orange.shade900, size: 15,),
-                const SizedBox(width: 4),
-                // Ensure operationTime is a String
-                Text(
-                  (profile?.serviceSpecialization.join(', ') ?? 'Specialization'
-                      ''),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                     Icon(Icons.check, color: Colors.orange.shade900, size: 15,),
+                    const SizedBox(width: 4),
+                    // Ensure operationTime is a String
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                            (profile?.serviceSpecialization.join(', ') ?? 'Specialization'
+                                ''),
+                            overflow: TextOverflow.visible, // Allow text to wrap
+                            maxLines: 2, // Set max lines if needed
+                            softWrap: true, // Enable soft wrapping
 
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
