@@ -20,7 +20,7 @@ class _NavbarState extends State<Navbar> {
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
   final List<Widget> _screens = [
-    const AutomotiveBookingScreen(),
+    AutomotiveBookingScreen(),
     const AutomotiveMessagesScreen(),
     const ServiceManagementScreen(),
     const AutomotiveProfileScreen(),

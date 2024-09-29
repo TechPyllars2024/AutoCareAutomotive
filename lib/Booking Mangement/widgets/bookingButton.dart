@@ -12,8 +12,8 @@ class BookingButton extends StatelessWidget {
     this.onTap, // Optional onTap callback
     required this.text,
     this.color = Colors.orange,
-    this.padding = 20.0,
-    this.width = 150.0, // Default width value
+    this.padding = 15.0,
+    this.width = 140.0, // Default width value
   });
 
   @override

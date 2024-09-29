@@ -48,6 +48,7 @@ class AutomotiveShopEditProfileServices {
     required List<String> daysOfTheWeek,
     required String operationTime,
     required List<String> serviceSpecialization,
+    required String verificationStatus
   }) async {
     final Map<String, dynamic> updatedData = {};
 
@@ -64,6 +65,7 @@ class AutomotiveShopEditProfileServices {
     updatedData['daysOfTheWeek'] = daysOfTheWeek;
     updatedData['operationTime'] = operationTime;
     updatedData['serviceSpecialization'] = serviceSpecialization;
+    updatedData['verificationStatus'] = verificationStatus;
 
     final docRef = _firestore.collection('automotiveShops_profile').doc(uid);
     final doc = await docRef.get();

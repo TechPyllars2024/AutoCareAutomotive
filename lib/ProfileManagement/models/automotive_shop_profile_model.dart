@@ -6,7 +6,8 @@ class AutomotiveProfileModel {
   final String profileImage;
   final List<String> daysOfTheWeek;
   final String operationTime;
-  final List<String> serviceSpecialization; // New field
+  final List<String> serviceSpecialization;
+  final String verificationStatus;
 
   // Constructor for creating an instance of AutomotiveProfileModel
   AutomotiveProfileModel({
@@ -17,7 +18,8 @@ class AutomotiveProfileModel {
     required this.profileImage,
     required this.daysOfTheWeek,
     required this.operationTime,
-    required this.serviceSpecialization, // Include new field in constructor
+    required this.serviceSpecialization,
+    required this.verificationStatus
   });
 
   // Convert the model to a map for storage or transfer
@@ -30,7 +32,8 @@ class AutomotiveProfileModel {
       'profileImage': profileImage,
       'daysOfTheWeek': daysOfTheWeek,
       'operationTime': operationTime,
-      'serviceSpecialization': serviceSpecialization, // Convert list to map
+      'serviceSpecialization': serviceSpecialization,
+      'verificationStatus': verificationStatus
     };
   }
 
@@ -44,7 +47,8 @@ class AutomotiveProfileModel {
       profileImage: doc['profileImage'] as String? ?? '',
       daysOfTheWeek: List<String>.from(doc['daysOfTheWeek'] ?? []),
       operationTime: doc['operationTime'] as String? ?? '',
-      serviceSpecialization: List<String>.from(doc['serviceSpecialization'] ?? []), // Convert to List<String>
+      serviceSpecialization: List<String>.from(doc['serviceSpecialization'] ?? []),
+      verificationStatus: doc['verificationStatus'] ?? ''
     );
   }
 }
