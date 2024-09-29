@@ -1,11 +1,10 @@
 import 'package:autocare_automotiveshops/ProfileManagement/services/get_verified_services.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'automotive_verification_status.dart';
 
 class AutomotiveGetVerifiedScreen extends StatefulWidget {
   const AutomotiveGetVerifiedScreen({super.key});
-
 
   @override
   State<AutomotiveGetVerifiedScreen> createState() => _AutomotiveGetVerifiedScreenState();
@@ -13,21 +12,52 @@ class AutomotiveGetVerifiedScreen extends StatefulWidget {
 
 class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScreen> {
   bool _isLoading = false;
-  bool _isUploaded = false; // To track if the file was successfully uploaded
+  bool _isUploaded = false;
+  String? _filePath; // To store the selected file path
 
-  Future<void> _pickAndUploadFile() async {
+  Future<void> _pickFile() async {
     setState(() {
       _isLoading = true;
-      _isUploaded = false; // Reset the upload status
+      _isUploaded = false;
     });
 
     try {
-      String? fileUrl = await GetVerifiedServices().pickAndUploadFile();
+      String? filePath = await GetVerifiedServices().pickFile();
+
+      if (filePath != null && filePath.isNotEmpty) {
+        setState(() {
+          _filePath = filePath; // Store the selected file path
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No file selected')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to pick file: $e')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _uploadFile() async {
+    if (_filePath == null) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      String? fileUrl = await GetVerifiedServices().uploadFile(_filePath!);
 
       if (fileUrl != null && fileUrl.isNotEmpty) {
         await GetVerifiedServices().saveVerificationData(fileUrl);
         setState(() {
-          _isUploaded = true; // Mark as uploaded
+          _isUploaded = true;
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully uploaded the file!')),
@@ -35,12 +65,12 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VerificationStatusScreen(uid: 'user_uid',),
+            builder: (context) => VerificationStatusScreen(uid: 'user_uid'),
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No file selected')),
+          const SnackBar(content: Text('Failed to upload file')),
         );
       }
     } catch (e) {
@@ -49,7 +79,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
       );
     } finally {
       setState(() {
-        _isLoading = false; // Hide loading indicator
+        _isLoading = false;
       });
     }
   }
@@ -67,7 +97,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (_isLoading)
-                const CircularProgressIndicator(), // Show loading spinner during upload
+                const CircularProgressIndicator(),
               if (!_isLoading && _isUploaded)
                 const Text(
                   'SUCCESSFULLY UPLOADED THE FILE',
@@ -84,29 +114,38 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
               ElevatedButton(
                 onPressed: () {
                   if (!_isLoading) {
-                    _pickAndUploadFile();
+                    _pickFile();
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
-                child: Text(_isLoading ? 'Uploading...' : 'Upload PDF'),
+                child: Text(_isLoading ? 'Picking...' : 'Pick PDF'),
               ),
-              const SizedBox(height: 16), // Add spacing between buttons
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => VerificationStatusScreen(uid: 'user_uid'),
+              const SizedBox(height: 16),
+              if (_filePath != null)
+                Column(
+                  children: [
+                    Container(
+                      height: 300,
+                      child: PDFView(
+                        filePath: _filePath,
+                      ),
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (!_isLoading) {
+                          _uploadFile();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                      child: Text(_isLoading ? 'Loading...' : 'Submit'),
+                    ),
+                  ],
                 ),
-                child: const Text('Status'),
-              ),
             ],
           ),
         ),
