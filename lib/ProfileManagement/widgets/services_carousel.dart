@@ -19,8 +19,7 @@ class ServicesCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    final serviceProviderId =
-        user?.uid;
+    final serviceProviderId = user?.uid;
 
     return FutureBuilder<List<ServiceModel>>(
       future: _fetchServices(serviceProviderId!),
@@ -42,86 +41,88 @@ class ServicesCarousel extends StatelessWidget {
                   children: [
                     Text(
                       'Services',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18, // Font size adjusted
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Spacer(),
                   ],
                 ),
               ),
               SizedBox(
-                height: 220,
+                height: 220, // Keeps the carousel height consistent
                 child: CarouselSlider.builder(
                   itemCount: services.length,
                   itemBuilder: (context, index, realIndex) {
                     final service = services[index];
                     return Container(
-                      color: Colors.orangeAccent.shade100,
-                      child: Stack(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.all(8),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                              ),
-                              child: FractionallySizedBox(
-                                heightFactor: 0.80,
-                                alignment: Alignment.topCenter,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15), // Border radius
+                        color: Colors.grey.shade200, // Grey background color
+                      ),
+                      margin: const EdgeInsets.all(5),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              flex: 8,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(15),
+                                    topRight: Radius.circular(15),
+                                  ),
+                                  color: Colors.grey.shade300, // Background color for image section
+                                ),
+                                clipBehavior: Clip.antiAlias,
                                 child: service.servicePicture.isNotEmpty
                                     ? Image.network(
-                                        service.servicePicture,
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                      )
+                                  service.servicePicture,
+                                  height: 100,
+                                  width: double.infinity, // Ensure the image fills the container's width
+                                  fit: BoxFit.cover, // Cover ensures the image fills the container
+                                )
                                     : const Placeholder(),
                               ),
                             ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            child: Container(
-                              height: 50,
-                              padding: const EdgeInsets.all(10),
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
+                            Expanded(
+                              flex: 2,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    TextSpan(
-                                      text: service.name,
+                                    Text(
+                                      service.name,
                                       style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
+                                        fontSize: 16, // Font size for service name
                                       ),
                                     ),
-                                    TextSpan(
-                                      text: '  ${service.price} PHP',
+                                    Text(
+                                      'Starts at Php ${service.price}',
                                       style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.normal,
+                                        fontSize: 13, // Font size for price
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
                   options: CarouselOptions(
-                    height: 220,
-                    viewportFraction: 0.8,
+                    height: 220, // Carousel height
+                    viewportFraction: 0.8, // Width of each item relative to the viewport
                     initialPage: 0,
                     enableInfiniteScroll: true,
                     autoPlay: true,
-                    autoPlayInterval: const Duration(seconds: 3),
+                    autoPlayInterval: const Duration(seconds: 3), // Automatic slide interval
                   ),
                 ),
               ),
