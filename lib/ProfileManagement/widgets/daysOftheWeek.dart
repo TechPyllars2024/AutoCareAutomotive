@@ -59,7 +59,7 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(15),
-                  color: Colors.grey[100], // Light grey background
+                  color: Colors.white, // Light grey background
                 ),
                 child: Obx(
                       () => Text(
@@ -112,7 +112,7 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
                       widget.onSelectionChanged?.call(widget.controller.selectedOptionList);
                     },
                     controlAffinity: ListTileControlAffinity.leading,
-                    activeColor: Colors.grey[600], // Color for the checkbox when selected
+                    activeColor: Colors.orange.shade900, // Color for the checkbox when selected
                     checkColor: Colors.white, // Color for the check mark
                   ),
                 );
@@ -123,7 +123,7 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
             TextButton(
               child: Text(
                 'Save',
-                style: TextStyle(color: Colors.grey[800]), // Dark grey text
+                style: TextStyle(color: Colors.orange.shade900), // Dark grey text
               ),
               onPressed: () {
                 Navigator.of(context).pop();
