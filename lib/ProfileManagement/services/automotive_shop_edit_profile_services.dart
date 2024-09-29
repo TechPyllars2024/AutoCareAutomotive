@@ -41,6 +41,7 @@ class AutomotiveShopEditProfileServices {
 
   Future<void> saveProfile({
     required String uid,
+    required String serviceProviderUid,
     required String shopName,
     required String location,
     required File? coverImage,
@@ -60,6 +61,7 @@ class AutomotiveShopEditProfileServices {
       updatedData['profileImage'] = await uploadImage(profileImage, 'automotiveProfileImages/$uid.jpg');
     }
 
+    updatedData['serviceProviderUid'] = serviceProviderUid;
     updatedData['shopName'] = shopName;
     updatedData['location'] = location;
     updatedData['daysOfTheWeek'] = daysOfTheWeek;

@@ -121,6 +121,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
       try {
         await _automotiveShopEditProfileServices.saveProfile(
           uid: user.uid,
+          serviceProviderUid: user.uid,
           shopName: _shopNameController.text,
           location: _locationController.text,
           coverImage: _coverImage,
