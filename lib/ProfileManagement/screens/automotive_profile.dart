@@ -20,8 +20,8 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
   final ProfileService _profileService = ProfileService();
   AutomotiveProfileModel? profile;
 
-  final double coverHeight = 220;
-  final double profileHeight = 130;
+  final double coverHeight = 160;
+  final double profileHeight = 100;
 
   @override
   void initState() {
