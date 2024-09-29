@@ -25,7 +25,7 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final TextEditingController nameController = TextEditingController();
+ // final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
@@ -35,7 +35,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   void dispose() {
     super.dispose();
-    nameController.dispose();
+   // nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
@@ -169,18 +169,18 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ).animate().fadeIn(duration: const Duration(seconds: 3)),
                     ),
-                    TextFieldInput(
-                      icon: Icons.person,
-                      textEditingController: nameController,
-                      hintText: 'Name',
-                      textInputType: TextInputType.text,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a name';
-                        }
-                        return null;
-                      },
-                    ),
+                    // TextFieldInput(
+                    //   icon: Icons.person,
+                    //   textEditingController: nameController,
+                    //   hintText: 'Name',
+                    //   textInputType: TextInputType.text,
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return 'Please enter a name';
+                    //     }
+                    //     return null;
+                    //   },
+                    // ),
                     TextFieldInput(
                       icon: Icons.email,
                       textEditingController: emailController,
@@ -233,12 +233,12 @@ class _SignupScreenState extends State<SignupScreen> {
 
                     // Sign Up OR
                     const Padding(
-                      padding: EdgeInsets.only(top: 8.0),
+                      padding: EdgeInsets.only(top: 12.0),
                       child: Or(),
                     ),
 
                     // Sign Up with Google
-                    SizedBox(height: 6),
+                    SizedBox(height: 12),
                     GoogleButton(
                       onTap: signInWithGoogle,
                       hintText: 'Sign Up with Google',
@@ -246,7 +246,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
 
                     // Already have an account? Log In
-                    SizedBox(height: size.height * 0.02),
+                    SizedBox(height: size.height * 0.08),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
