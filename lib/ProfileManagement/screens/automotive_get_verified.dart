@@ -1,6 +1,8 @@
 import 'package:autocare_automotiveshops/ProfileManagement/services/get_verified_services.dart';
 import 'package:flutter/material.dart';
 
+import 'automotive_verification_status.dart';
+
 class AutomotiveGetVerifiedScreen extends StatefulWidget {
   const AutomotiveGetVerifiedScreen({super.key});
 
@@ -22,12 +24,19 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
     try {
       String? fileUrl = await GetVerifiedServices().pickAndUploadFile();
 
-      if (fileUrl != null) {
+      if (fileUrl != null && fileUrl.isNotEmpty) {
+        await GetVerifiedServices().saveVerificationData(fileUrl);
         setState(() {
           _isUploaded = true; // Mark as uploaded
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully uploaded the file!')),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerificationStatusScreen(uid: 'user_uid',),
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -63,7 +72,15 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                 const Text(
                   'SUCCESSFULLY UPLOADED THE FILE',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green),
-                ), // Show success message
+                ),
+              Image.asset('lib/ProfileManagement/assets/getVerifiedCar.png', height: 200),
+              const SizedBox(height: 16),
+              const Text(
+                'Please upload a PDF file to get verified',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
                   if (!_isLoading) {
@@ -74,6 +91,21 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
                 child: Text(_isLoading ? 'Uploading...' : 'Upload PDF'),
+              ),
+              const SizedBox(height: 16), // Add spacing between buttons
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VerificationStatusScreen(uid: 'user_uid'),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: const Text('Status'),
               ),
             ],
           ),
