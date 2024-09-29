@@ -192,14 +192,15 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
+
         title: Text(
           'Manage Services',
           style:
               TextStyle(fontWeight: FontWeight.w900, color: Colors.grey[800]),
         ),
-        backgroundColor: Colors.grey.shade300,
+        backgroundColor: Colors.grey.shade100,
         elevation: 0,
       ),
       body: StreamBuilder<List<ServiceModel>>(
@@ -304,8 +305,14 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.orange.shade900,
         onPressed: () => _addOrUpdateService(context),
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 30,
+          weight: 20,
+        ),
       ),
     );
   }
