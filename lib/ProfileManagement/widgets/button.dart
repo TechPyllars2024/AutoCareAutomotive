@@ -3,42 +3,34 @@ import 'package:flutter/material.dart';
 class WideButtons extends StatelessWidget {
   final VoidCallback onTap;
   final String text;
-  final Color color;
   final double padding;
 
   const WideButtons({
     super.key,
     required this.onTap,
     required this.text,
-    this.color = Colors.orange,
-    this.padding = 20.0,
+    this.padding = 25.0,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      splashColor: Colors.black26,
-      child: Padding(
-        padding: EdgeInsets.all(padding),
-        child: Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: ShapeDecoration(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(15),
-              ),
-            ),
-            color: color,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: padding),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
           ),
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+          minimumSize: const Size(400, 45),
+          backgroundColor: Colors.deepOrange.shade700, // Applied deep orange shade
+        ),
+        onPressed: onTap,
+        child: Text(
+          text.toUpperCase(),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 15,
           ),
         ),
       ),
