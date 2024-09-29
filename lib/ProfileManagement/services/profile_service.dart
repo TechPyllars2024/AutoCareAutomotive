@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:logger/logger.dart';
 import '../models/automotive_shop_profile_model.dart';
 
 class ProfileService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final Logger logger = Logger();
 
   // Fetch profile data from Firestore
   Future<AutomotiveProfileModel?> fetchProfileData() async {
@@ -26,18 +28,19 @@ class ProfileService {
         // Return a default profile model if no data is found
         return AutomotiveProfileModel(
           uid: user.uid,
-          shopName: 'Shop Name', // Default value
-          location: 'Location', // Default value
-          coverImage: '', // Default value
-          profileImage: '', // Default value
-          daysOfTheWeek: [], // Default empty string
-          operationTime: '', // Default value
-          serviceSpecialization: [], // Default empty list
+          shopName: '',
+          location: '',
+          coverImage: '',
+          profileImage: '',
+          daysOfTheWeek: [],
+          operationTime: '',
+          serviceSpecialization: [],
+          verificationStatus: ''
         );
       }
     } catch (e) {
       // Handle potential Firestore errors
-      print('Error fetching profile data: $e');
+      logger.i('Error fetching profile data: $e');
       return null;
     }
   }
@@ -51,7 +54,7 @@ class ProfileService {
           .set(updatedProfile.toMap());
     } catch (e) {
       // Handle potential Firestore errors
-      print('Error saving profile data: $e');
+      logger.i('Error saving profile data: $e');
     }
   }
 }

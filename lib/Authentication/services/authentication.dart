@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../Widgets/snackBar.dart';
-import '../models/service_provider.dart';
+import '../models/service_provider_model.dart';
 
 class AuthenticationMethod {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
