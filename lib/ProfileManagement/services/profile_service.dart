@@ -28,6 +28,7 @@ class ProfileService {
         // Return a default profile model if no data is found
         return AutomotiveProfileModel(
           uid: user.uid,
+          serviceProviderUid: user.uid,
           shopName: '',
           location: '',
           coverImage: '',

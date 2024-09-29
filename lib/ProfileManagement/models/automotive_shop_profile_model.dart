@@ -1,5 +1,6 @@
 class AutomotiveProfileModel {
   final String uid;
+  final String serviceProviderUid;
   final String shopName;
   final String location;
   final String coverImage;
@@ -12,6 +13,7 @@ class AutomotiveProfileModel {
   // Constructor for creating an instance of AutomotiveProfileModel
   AutomotiveProfileModel({
     required this.uid,
+    required this.serviceProviderUid,
     required this.shopName,
     required this.location,
     required this.coverImage,
@@ -26,6 +28,7 @@ class AutomotiveProfileModel {
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
+      'serviceProviderUid': serviceProviderUid,
       'shopName': shopName,
       'location': location,
       'coverImage': coverImage,
@@ -41,6 +44,7 @@ class AutomotiveProfileModel {
   factory AutomotiveProfileModel.fromDocument(Map<String, dynamic> doc, String uid) {
     return AutomotiveProfileModel(
       uid: uid,
+      serviceProviderUid: doc['serviceProviderUid'] as String? ?? '',
       shopName: doc['shopName'] as String? ?? '',
       location: doc['location'] as String? ?? '',
       coverImage: doc['coverImage'] as String? ?? '',

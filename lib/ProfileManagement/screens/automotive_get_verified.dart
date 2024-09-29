@@ -1,6 +1,7 @@
 import 'package:autocare_automotiveshops/ProfileManagement/services/get_verified_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:path/path.dart' as path;
 import 'automotive_verification_status.dart';
 
 class AutomotiveGetVerifiedScreen extends StatefulWidget {
@@ -11,11 +12,11 @@ class AutomotiveGetVerifiedScreen extends StatefulWidget {
       _AutomotiveGetVerifiedScreenState();
 }
 
-class _AutomotiveGetVerifiedScreenState
-    extends State<AutomotiveGetVerifiedScreen> {
+class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScreen> {
   bool _isLoading = false;
   bool _isUploaded = false;
   String? _filePath; // To store the selected file path
+  Key _pdfKey = UniqueKey(); // Use a unique key for the PDF view
 
   Future<void> _pickFile() async {
     setState(() {
@@ -29,6 +30,7 @@ class _AutomotiveGetVerifiedScreenState
       if (filePath != null && filePath.isNotEmpty) {
         setState(() {
           _filePath = filePath; // Store the selected file path
+          _pdfKey = UniqueKey(); // Force PDFView to reload
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -67,9 +69,7 @@ class _AutomotiveGetVerifiedScreenState
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VerificationStatusScreen(
-              uid: 'user_uid',
-            ),
+            builder: (context) => VerificationStatusScreen(uid: 'user_uid'),
           ),
         );
       } else {
@@ -97,80 +97,102 @@ class _AutomotiveGetVerifiedScreenState
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (_isLoading) const CircularProgressIndicator(),
-              if (!_isLoading && _isUploaded)
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('lib/ProfileManagement/assets/getVerifiedCar.png', height: 200),
+                const SizedBox(height: 16),
                 const Text(
-                  'SUCCESSFULLY UPLOADED THE FILE',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green),
+                  'Please upload a PDF file to get verified',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
                 ),
-              Image.asset('lib/ProfileManagement/assets/getVerifiedCar.png',
-                  height: 200),
-              const SizedBox(height: 16),
-              const Text(
-                'Please upload a PDF file to get verified',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 15),
-              ),
-              const SizedBox(height: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  minimumSize: const Size(300, 45),
-                  backgroundColor: Colors.deepOrange.shade700,
-                ),
-                onPressed: () {
-                  if (!_isLoading) {
-                    _pickFile();
-                  }
-                },
-                child: Text(
-                  _isLoading ? 'Picking...' : 'Pick PDF',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 15),
-                ),
-              ),
-              const SizedBox(height: 16),
-              if (_filePath != null)
-                Column(
-                  children: [
-                    Container(
-                      height: 300,
-                      child: PDFView(
-                        filePath: _filePath,
-                      ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () {
+                    if (!_isLoading) {
+                      _pickFile();
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                    backgroundColor: Colors.orange,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (!_isLoading) {
-                          _uploadFile();
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        minimumSize: const Size(300, 45),
-                        backgroundColor: Colors.deepOrange.shade700,
-                      ),
-                      child: Text(_isLoading ? 'Loading...' : 'Submit',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 15),),
-                    ),
-                  ],
+                  ),
+                  child: Text(
+                    _isLoading ? 'Picking...' : 'Pick PDF',
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white), // Set text style here
+                  ),
                 ),
-            ],
+
+                const SizedBox(height: 16),
+
+                // Display file name if a file is selected
+                if (_filePath != null)
+                  Text(
+                    'Selected file: ${path.basename(_filePath!)}',
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+
+                const SizedBox(height: 16),
+
+                if (_filePath != null)
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: 400, // Adjust height as needed
+                        child: PDFView(
+                          key: _pdfKey, // Use the unique key here
+                          filePath: _filePath,
+                          fitPolicy: FitPolicy.BOTH, // Fit PDF to its original size within the available space
+                          onRender: (_pages) {
+                            setState(() {});
+                          },
+                          onError: (error) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error loading PDF: $error')),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 24),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (!_isLoading) {
+                              _uploadFile();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                            backgroundColor: Colors.orange,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15), // Set the corner radius
+                            ),
+                          ),
+                          child: _isLoading // Check loading state
+                              ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white, // Set indicator color
+                            ),
+                          )
+                              : const Text(
+                            'Submit',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
           ),
         ),
       ),

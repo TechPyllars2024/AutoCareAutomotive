@@ -22,7 +22,7 @@ class GetVerifiedServices {
     if (result != null) {
       return result.files.single.path;
     } else {
-      return null; // No file selected
+      return null;
     }
   }
 
@@ -53,7 +53,7 @@ class GetVerifiedServices {
           dateSubmitted: DateFormat('yyyy-MM-dd').format(DateTime.now()),
           timeSubmitted: DateFormat('HH:mm').format(DateTime.now()),
           fileUrl: fileUrl,
-          verificationStatus: 'pending',
+          verificationStatus: 'Pending',
         );
 
         await FirebaseFirestore.instance
@@ -67,4 +67,5 @@ class GetVerifiedServices {
       logger.i('Failed to save verification data: $e');
     }
   }
+
 }
