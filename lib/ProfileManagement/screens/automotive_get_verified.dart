@@ -7,10 +7,12 @@ class AutomotiveGetVerifiedScreen extends StatefulWidget {
   const AutomotiveGetVerifiedScreen({super.key});
 
   @override
-  State<AutomotiveGetVerifiedScreen> createState() => _AutomotiveGetVerifiedScreenState();
+  State<AutomotiveGetVerifiedScreen> createState() =>
+      _AutomotiveGetVerifiedScreenState();
 }
 
-class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScreen> {
+class _AutomotiveGetVerifiedScreenState
+    extends State<AutomotiveGetVerifiedScreen> {
   bool _isLoading = false;
   bool _isUploaded = false;
   String? _filePath; // To store the selected file path
@@ -65,7 +67,9 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VerificationStatusScreen(uid: 'user_uid',),
+            builder: (context) => VerificationStatusScreen(
+              uid: 'user_uid',
+            ),
           ),
         );
       } else {
@@ -87,8 +91,9 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text('Get Verified'),
+        title: const Text('Get Verified', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -96,31 +101,43 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (_isLoading)
-                const CircularProgressIndicator(),
+              if (_isLoading) const CircularProgressIndicator(),
               if (!_isLoading && _isUploaded)
                 const Text(
                   'SUCCESSFULLY UPLOADED THE FILE',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green),
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green),
                 ),
-              Image.asset('lib/ProfileManagement/assets/getVerifiedCar.png', height: 200),
+              Image.asset('lib/ProfileManagement/assets/getVerifiedCar.png',
+                  height: 200),
               const SizedBox(height: 16),
               const Text(
                 'Please upload a PDF file to get verified',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 15),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                  minimumSize: const Size(300, 45),
+                  backgroundColor: Colors.deepOrange.shade700,
+                ),
                 onPressed: () {
                   if (!_isLoading) {
                     _pickFile();
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                child: Text(
+                  _isLoading ? 'Picking...' : 'Pick PDF',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 15),
                 ),
-                child: Text(_isLoading ? 'Picking...' : 'Pick PDF'),
               ),
               const SizedBox(height: 16),
               if (_filePath != null)
@@ -140,9 +157,16 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        minimumSize: const Size(300, 45),
+                        backgroundColor: Colors.deepOrange.shade700,
                       ),
-                      child: Text(_isLoading ? 'Loading...' : 'Submit'),
+                      child: Text(_isLoading ? 'Loading...' : 'Submit',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 15),),
                     ),
                   ],
                 ),
