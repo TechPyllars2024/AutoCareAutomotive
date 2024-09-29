@@ -41,7 +41,8 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
           // StatefulBuilder allows updating the dialog UI.
           builder: (context, setState) {
             return AlertDialog(
-              title: Text(service == null ? 'Add Service' : 'Update Service'),
+              backgroundColor: Colors.white,
+              title: Text(service == null ? 'Add Service' : 'Update Service', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -55,7 +56,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                   ),
                   TextField(
                     controller: priceController,
-                    decoration: const InputDecoration(labelText: 'Price'),
+                    decoration: const InputDecoration(labelText: 'Price',),
                     keyboardType: TextInputType.number,
                   ),
                   DropdownButton<String>(
@@ -74,6 +75,12 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                     }).toList(),
                   ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      minimumSize: const Size(250, 45),
+                      backgroundColor: Colors.deepOrange.shade700,
+                    ),
                     onPressed: () async {
                       // Let the user pick an image source
                       final source = await _pickImageSource();
@@ -85,17 +92,17 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                         });
                       }
                     },
-                    child: const Text('Pick Image'),
+                    child: const Text('Pick Image', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
                   ),
                 ],
               ),
               actions: [
                 TextButton(
-                  child: const Text('Cancel'),
+                  child: const Text('Cancel', style: TextStyle(color: Colors.grey),),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 TextButton(
-                  child: Text(service == null ? 'Add' : 'Update'),
+                  child: Text(service == null ? 'Add' : 'Update', style: TextStyle(color: Colors.orange.shade900, fontWeight: FontWeight.bold),),
                   onPressed: () async {
                     if (nameController.text.isNotEmpty &&
                         descriptionController.text.isNotEmpty &&
@@ -232,6 +239,8 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                   onTap: () => _showServiceOptions(
                       context, service), // Method for showing service options
                   child: Card(
+                    color: Colors.white,
+                    elevation: 5,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0),
                     ),
@@ -270,7 +279,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                                 service.name,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                                  fontSize: 15,
                                   color: Colors.grey[800],
                                 ),
                                 maxLines: 1, // Limit to a single line
@@ -281,14 +290,14 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                               Text(
                                 '${service.price.toStringAsFixed(2)} PHP',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   color: Colors.grey[600],
                                 ),
                               ),
                               Text(
                                 service.description,
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 13,
                                   color: Colors.grey[600],
                                 ),
                               )
