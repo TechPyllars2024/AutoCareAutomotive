@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:autocare_automotiveshops/ProfileManagement/widgets/button.dart';
+import '../widgets/button.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/daysOftheWeek.dart';
@@ -33,8 +33,8 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
   final AutomotiveShopEditProfileServices _automotiveShopEditProfileServices =
       AutomotiveShopEditProfileServices();
 
-  final double coverHeight = 220;
-  final double profileHeight = 130;
+  final double coverHeight = 160;
+  final double profileHeight = 100;
   TimeOfDay? _openingTime;
   TimeOfDay? _closingTime;
 
@@ -156,7 +156,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     final double top = coverHeight - profileHeight / 2;
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         title: const Text(
           'Edit Profile',
@@ -209,22 +209,25 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     );
   }
 
-  Widget buildInputs() => Column(
-    children: [
-      TextField(
-        controller: _shopNameController,
-        decoration: const InputDecoration(
-          hintText: 'Shop Name',
+  Widget buildInputs() => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+    child: Column(
+      children: [
+        TextField(
+          controller: _shopNameController,
+          decoration: const InputDecoration(
+            hintText: 'Shop Name',
+          ),
         ),
-      ),
-      const SizedBox(height: 10),
-      TextField(
-        controller: _locationController,
-        decoration: const InputDecoration(
-          hintText: 'Location',
+        const SizedBox(height: 10),
+        TextField(
+          controller: _locationController,
+          decoration: const InputDecoration(
+            hintText: 'Location',
+          ),
         ),
-      ),
-    ],
+      ],
+    ),
   );
 
   Widget buildCoverImage() => Stack(
@@ -243,17 +246,17 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
         bottom: 10,
         right: 10,
         child: Container(
-          width: 50,
-          height: 50,
-          decoration: const BoxDecoration(
-            color: Colors.grey,
+          width: 40,
+          height: 40,
+          decoration:  BoxDecoration(
+            color: Colors.orange.shade900,
             shape: BoxShape.circle,
           ),
           child: IconButton(
             icon: const Icon(
               Icons.camera_alt,
               color: Colors.white,
-              size: 24,
+              size: 20,
             ),
             onPressed: _pickCoverImage,
           ),
@@ -287,7 +290,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
         )
             : const Icon(
           Icons.person,
-          size: 100,
+          size: 80,
           color: Colors.white,
         ),
       ),
@@ -295,17 +298,17 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
         bottom: 0,
         right: 0,
         child: Container(
-          width: 50,
-          height: 50,
-          decoration: const BoxDecoration(
-            color: Colors.grey,
+          width: 40,
+          height: 40,
+          decoration:  BoxDecoration(
+            color: Colors.orange.shade900,
             shape: BoxShape.circle,
           ),
           child: IconButton(
             icon: const Icon(
               Icons.camera_alt,
               color: Colors.white,
-              size: 24,
+              size: 20,
             ),
             onPressed: _pickProfileImage,
           ),
@@ -323,7 +326,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
           'Operating hours',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -339,7 +342,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                   const SizedBox(height: 5),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 40),
+                        vertical: 15.0, horizontal: 55),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
@@ -357,7 +360,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                 ],
               ),
             ),
-            const SizedBox(width: 15),
+            const SizedBox(width: 5),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -366,7 +369,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
                   const SizedBox(height: 5),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 40),
+                        vertical: 15.0, horizontal: 55),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
@@ -399,7 +402,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
           'Select Service Specialization',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -422,7 +425,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
         const Text(
           'Select Days of the Week',
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),

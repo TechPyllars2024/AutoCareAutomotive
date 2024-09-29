@@ -584,11 +584,15 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
+
           title: const Text('Bookings',
               style: TextStyle(fontWeight: FontWeight.w900)),
-          backgroundColor: Colors.grey.shade300,
+          backgroundColor: Colors.grey.shade100,
           bottom: TabBar(
+            indicatorColor: Colors.orange.shade900,
+            indicatorSize: TabBarIndicatorSize.tab,
             tabs: [
               Tab(
                 child: Text(
@@ -596,7 +600,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                   style: TextStyle(
                     fontSize: 16, // Custom font size
                     fontWeight: FontWeight.bold, // Custom font weight
-                    color: Colors.orange.shade900, // Custom text color
+                    color: Colors.black, // Custom text color
                   ),
                 ),
               ),
@@ -606,7 +610,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                   style: TextStyle(
                     fontSize: 16, // Custom font size
                     fontWeight: FontWeight.bold, // Custom font weight
-                    color: Colors.orange.shade900, // Custom text color
+                    color: Colors.black, // Custom text color
                   ),
                 ),
               ),
@@ -614,12 +618,14 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
           ),
         ),
         body: TabBarView(
+
           children: [
             // Calendar View Tab
             Column(
               children: [
                 // Adding padding around the calendar for better visual spacing
                 Padding(
+
                   padding: const EdgeInsets.all(16.0),
                   child: TableCalendar(
                     firstDay: DateTime.utc(2020, 1, 1),
@@ -657,30 +663,30 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         return null;
                       },
                     ),
-                    headerStyle: const HeaderStyle(
+                    headerStyle:  HeaderStyle(
                       titleCentered:
                           true, // Center the title for better readability
-                      titleTextStyle: TextStyle(
+                      titleTextStyle: const TextStyle(
                         fontSize:
-                            22, // Increased font size for better readability
+                            25, // Increased font size for better readability
                         fontWeight: FontWeight.bold,
-                        color: Colors.black, // Darker color for better contrast
+                        color: Colors.white, // Darker color for better contrast
                       ),
                       formatButtonVisible:
                           false, // Hide format button (month/week)
-                      leftChevronIcon: Icon(
+                      leftChevronIcon: const Icon(
                         Icons.chevron_left,
-                        color: Colors.blue, // Customize left arrow
-                        size: 28, // Larger arrow for easier navigation
+                        color: Colors.white, // Customize left arrow
+                        size: 35, // Larger arrow for easier navigation
                       ),
-                      rightChevronIcon: Icon(
+                      rightChevronIcon: const Icon(
                         Icons.chevron_right,
-                        color: Colors.blue, // Customize right arrow
-                        size: 28, // Larger arrow for easier navigation
+                        color: Colors.white, // Customize right arrow
+                        size: 35, // Larger arrow for easier navigation
                       ),
                       decoration: BoxDecoration(
                         color: Colors
-                            .orangeAccent, // Subtle background color for the header
+                            .orange.shade900, // Subtle background color for the header
                         borderRadius:
                             BorderRadius.vertical(top: Radius.circular(16)),
                       ),
@@ -692,18 +698,18 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         boxShadow: [
                           BoxShadow(
                             color: Colors.blue.withOpacity(0.5),
-                            blurRadius: 10,
+                            blurRadius: 3,
                             spreadRadius: 3,
                           ),
                         ],
                       ),
                       todayDecoration: BoxDecoration(
-                        color: Colors.orange, // Highlight today's date
+                        color: Colors.orange.shade900, // Highlight today's date
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.orange.withOpacity(0.5),
-                            blurRadius: 10,
+                            blurRadius: 3,
                             spreadRadius: 3,
                           ),
                         ],

@@ -15,6 +15,7 @@ import '../widgets/carImage.dart';
 import '../widgets/googleButton.dart';
 import '../widgets/or.dart';
 import '../widgets/texfieldPassword.dart';
+
 import 'forgotPassword.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -29,7 +30,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool isLoading = false;
+  bool isLoadingLogin = false;  // Loading state for Log In button
+  bool isLoadingGoogle = false;  // Loading state for Google button
   final user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -42,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
   // Handles email and password authentication
   void loginUser() async {
     setState(() {
-      isLoading = true;
+      isLoadingLogin = true;
     });
 
     String res = await AuthenticationMethod().loginUser(
@@ -54,22 +56,20 @@ class _LoginScreenState extends State<LoginScreen> {
       // Check if email is verified
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null && user.emailVerified) {
-        // Navigate to the home screen if email is verified
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => const Navbar(),
           ),
         );
       } else {
-        // Inform the user to verify their email
         setState(() {
-          isLoading = false;
+          isLoadingLogin = false;  // Reset loading state
         });
         Utils.showSnackBar("Please verify your email address.");
       }
     } else {
       setState(() {
-        isLoading = false;
+        isLoadingLogin = false;  // Reset loading state
       });
       Utils.showSnackBar(res);
     }
@@ -78,25 +78,23 @@ class _LoginScreenState extends State<LoginScreen> {
   // Handles Google Log-In in the UI
   Future<void> logInWithGoogle() async {
     setState(() {
-      isLoading = true;
+      isLoadingGoogle = true;
     });
 
     String res = await AuthenticationMethod().logInWithGoogle();
 
     setState(() {
-      isLoading = false;
+      isLoadingGoogle = false;  // Reset loading state
     });
 
     if (res == "Service Provider") {
       if (user?.uid != null) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) =>
-                const Navbar(),
+            builder: (context) => const Navbar(),
           ),
         );
       } else {
-        // Handle null UID case (e.g., show a message or navigate elsewhere)
         Utils.showSnackBar("User ID is null.");
       }
     } else {
@@ -110,51 +108,56 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
-      body: SingleChildScrollView(
-        child: SizedBox(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                margin: const EdgeInsets.only(top: 40),
-                child: RichText(
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "Auto",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 50,
-                          color: Colors.white,
-                        ),
-                      ),
-                      TextSpan(
-                        text: "Care+",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 50,
-                          color: Colors.orange,
-                        ),
-                      ),
-                    ],
-                  ),
-                ).animate().fadeIn(duration: const Duration(seconds: 3)),
-              ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            child: const CarImageWidget(
+              imagePath: 'lib/Authentication/assets/images/login.jpeg',
+            ).animate().fadeIn(duration: const Duration(seconds: 1)),
+          ),
 
-              // Sign Up Image
-              const CarImageWidget(
-                      imagePath: 'lib/Authentication/assets/images/car.png')
-                  .animate()
-                  .fadeIn(duration: const Duration(seconds: 1)),
-              // Sign Up Form
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+          // Expanded container that stretches to the bottom of the screen
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
                 ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            const TextSpan(
+                              text: "Auto",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 30,
+                                color: Colors.black,
+                              ),
+                            ),
+                            TextSpan(
+                              text: "Care+",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 30,
+                                color: Colors.orange.shade900,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ).animate().fadeIn(duration: const Duration(seconds: 3)),
+                    ),
                     TextFieldInput(
                       icon: Icons.email,
                       textEditingController: emailController,
@@ -193,35 +196,44 @@ class _LoginScreenState extends State<LoginScreen> {
                             'Forgot Password?',
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 15,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) =>
-                                  const ForgotPasswordScreen(),
+                              const ForgotPasswordScreen(),
                             ),
                           ),
                         ),
                       ],
                     ),
 
-                    // Sign Up Button
-                    MyButtons(onTap: loginUser, text: "Log In"),
+                    // Log In Button
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: MyButtons(
+                        onTap: loginUser,
+                        text: "Log In",
+                        isLoading: isLoadingLogin,  // Use isLoadingLogin here
+                      ),
+                    ),
 
-                    // Sign Up OR
+                    // Log In OR
                     SizedBox(height: size.height * 0.02),
                     const Or(),
 
-                    // Sign Up with Google
+                    // Log In with Google
                     SizedBox(height: size.height * 0.03),
                     GoogleButton(
                       onTap: logInWithGoogle,
                       hintText: 'Log In with Google',
+                      isGoogleLoading: isLoadingGoogle,  // Use isLoadingGoogle here
                     ),
 
                     // Already have an account? Log In
-                    const SizedBox(height: 80),
+                    SizedBox(height: size.height * 0.07),
                     TextButton(
                       onPressed: () {
                         // Handle navigation to login screen
@@ -229,22 +241,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: RichText(
                         text: TextSpan(
                           text: "Don't have an account? ",
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black, fontSize: 12),
                           children: <TextSpan>[
                             TextSpan(
                               text: 'Sign Up',
-                              style: const TextStyle(
-                                color: Colors.orange,
+                              style: TextStyle(
+                                color: Colors.orange.shade900,
                                 fontWeight: FontWeight.bold,
+                                fontSize: 12
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  // Navigate to LoginScreen
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const SignupScreen()),
+                                        const SignupScreen()),
                                   );
                                 },
                             ),
@@ -255,13 +267,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ).animate().slide(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut,
-                  begin: const Offset(0, 1),
-                  end: const Offset(0, 0))
-            ],
+                duration: const Duration(milliseconds: 1000),
+                curve: Curves.easeInOut,
+                begin: const Offset(0, 1),
+                end: const Offset(0, 0),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
