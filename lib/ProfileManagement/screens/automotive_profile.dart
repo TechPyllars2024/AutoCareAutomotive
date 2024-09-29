@@ -56,7 +56,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         title: const Text(
           'Profile',
@@ -75,6 +75,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
             ),
             ProfileDetails(profile: profile),
             buildButton(),
+            const SizedBox(height: 10),
             buildGetVerified(),
             const ServicesCarousel(),
             const FeedbackSection(),
@@ -86,8 +87,11 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
 
   Widget buildButton() => WideButtons(
     onTap: editProfile,
+
     text: 'Edit Profile',
+
   );
+
 
   Widget buildGetVerified() => WideButtons(
     onTap: getVerified,
