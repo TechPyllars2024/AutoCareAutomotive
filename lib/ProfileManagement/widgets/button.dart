@@ -26,7 +26,7 @@ class WideButtons extends StatelessWidget {
         ),
         onPressed: onTap,
         child: Text(
-          text.toUpperCase(),
+          text,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
