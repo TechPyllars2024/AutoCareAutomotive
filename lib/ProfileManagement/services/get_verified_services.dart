@@ -12,6 +12,7 @@ import '../models/automotive_shop_profile_model.dart';
 class GetVerifiedServices {
   final ProfileService _profileService = ProfileService();
   final Logger logger = Logger();
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<String?> pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -68,4 +69,28 @@ class GetVerifiedServices {
     }
   }
 
-}
+  Future<String?> fetchStatus(String serviceProviderUid) async {
+      try {
+        final doc = await firestore
+            .collection('automotiveShops_profile')
+            .doc(serviceProviderUid)
+            .get();
+        final data = doc.data();
+
+        if (data != null) {
+          // Extract only firstName and lastName from the document data
+          final String status = data['verificationStatus'] ?? '';
+
+          // Return the full name concatenated
+          logger.i('User profile data found',status);
+          return status;
+        } else {
+          logger.i('No profile data found for user');
+          return null; // Return null if no data found
+        }
+      } catch (e) {
+        logger.e('Error fetching user profile: $e');
+        return null;
+      }
+    }
+  }
