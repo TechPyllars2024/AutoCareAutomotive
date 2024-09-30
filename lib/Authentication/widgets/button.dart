@@ -25,7 +25,7 @@ class MyButtons extends StatelessWidget {
           width: double.infinity,
 
           decoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(15),
               ),
@@ -39,10 +39,10 @@ class MyButtons extends StatelessWidget {
             children: [
               // Display text or loading indicator based on isLoading
               if (isLoading)
-                SizedBox(
+                const SizedBox(
                   width: 20.0,
                   height: 20.0,
-                  child: const CircularProgressIndicator(
+                  child: CircularProgressIndicator(
                     color: Colors.white,
                   ),
                 )
@@ -57,7 +57,6 @@ class MyButtons extends StatelessWidget {
                 ),
             ],
           ),
-
         ),
       ),
     );
