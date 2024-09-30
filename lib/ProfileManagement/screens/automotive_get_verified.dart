@@ -8,7 +8,8 @@ class AutomotiveGetVerifiedScreen extends StatefulWidget {
   const AutomotiveGetVerifiedScreen({super.key});
 
   @override
-  State<AutomotiveGetVerifiedScreen> createState() => _AutomotiveGetVerifiedScreenState();
+  State<AutomotiveGetVerifiedScreen> createState() =>
+      _AutomotiveGetVerifiedScreenState();
 }
 
 class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScreen> {
@@ -90,9 +91,9 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text('Get Verified',
-          style: TextStyle(fontWeight: FontWeight.w900),),
+        title: const Text('Get Verified', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

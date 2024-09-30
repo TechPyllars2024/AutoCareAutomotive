@@ -44,12 +44,12 @@ class TopSection extends StatelessWidget {
                 rate: rating,
                 items: List.generate(
                   5,
-                      (index) => const RatingWidget(
-                    selectedColor: Colors.orange,
+                      (index) =>  RatingWidget(
+                    selectedColor: Colors.orange.shade900,
                     unSelectedColor: Colors.grey,
                     child: Icon(
                       Icons.star,
-                      size: 20,
+                      size:15,
                     ),
                   ),
                 ),
@@ -58,7 +58,7 @@ class TopSection extends StatelessWidget {
               const SizedBox(width: 5),
               Text(
                 '$numberOfRating ratings',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
               ),
             ],
           ),

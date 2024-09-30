@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-
 import '../Widgets/button.dart';
 import '../Widgets/snackBar.dart';
 import '../Widgets/text_field.dart';
@@ -19,7 +18,6 @@ import 'package:autocare_automotiveshops/Authentication/screens/verifyEmail.dart
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key, this.child});
-
   final Widget? child;
 
   @override
@@ -27,31 +25,34 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final TextEditingController nameController = TextEditingController();
+ // final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
-  bool isLoading = false;
+  final TextEditingController confirmPasswordController = TextEditingController();
+  bool isLoadingSignup = false;  // Loading state for Sign Up button
+  bool isLoadingGoogle = false;  // Loading state for Google button
 
   @override
   void dispose() {
     super.dispose();
+   // nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
-    nameController.dispose();
     confirmPasswordController.dispose();
   }
 
   void signupUser() async {
+    final passwordError = passwordValidator(passwordController.text);
+    String? confirmPasswordError;
+
     setState(() {
-      isLoading = true;
+      isLoadingSignup = true;  // Set loading state for Sign Up
     });
 
     // Check if passwords match
     if (passwordController.text != confirmPasswordController.text) {
       setState(() {
-        isLoading = false;
+        isLoadingSignup = false;  // Reset loading state
       });
       Utils.showSnackBar("Passwords do not match.");
       return;
@@ -60,7 +61,6 @@ class _SignupScreenState extends State<SignupScreen> {
     String res = await AuthenticationMethod().signupServiceProvider(
       email: emailController.text,
       password: passwordController.text,
-      name: nameController.text,
     );
 
     if (res == "SUCCESS") {
@@ -69,9 +69,8 @@ class _SignupScreenState extends State<SignupScreen> {
         if (user != null) {
           await user.sendEmailVerification();
           setState(() {
-            isLoading = false;
+            isLoadingSignup = false;  // Reset loading state
           });
-
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => const VerifyEmailScreen(),
@@ -79,19 +78,19 @@ class _SignupScreenState extends State<SignupScreen> {
           );
         } else {
           setState(() {
-            isLoading = false;
+            isLoadingSignup = false;  // Reset loading state
           });
           Utils.showSnackBar("Failed to retrieve user.");
         }
       } catch (e) {
         setState(() {
-          isLoading = false;
+          isLoadingSignup = false;  // Reset loading state
         });
         Utils.showSnackBar(e.toString());
       }
     } else {
       setState(() {
-        isLoading = false;
+        isLoadingSignup = false;  // Reset loading state
       });
       Utils.showSnackBar(res);
     }
@@ -99,25 +98,21 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> signInWithGoogle() async {
     setState(() {
-      isLoading = true;
+      isLoadingGoogle = true;  // Set loading state for Google sign-in
     });
 
     String res = await AuthenticationMethod().signInWithGoogle();
+    setState(() {
+      isLoadingGoogle = false;  // Reset loading state
+    });
 
     if (res == "SUCCESS") {
-      setState(() {
-        isLoading = false;
-      });
-
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => const Navbar(),
         ),
       );
     } else {
-      setState(() {
-        isLoading = false;
-      });
       Utils.showSnackBar(res);
     }
   }
@@ -128,67 +123,68 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
-      body: SingleChildScrollView(
-        child: SizedBox(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                margin: const EdgeInsets.only(top: 40),
-                child: RichText(
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "Auto",
-                        style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 50,
-                          color: Colors.white,
-                        ),
-                      ),
-                      TextSpan(
-                        text: "Care+",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 50,
-                          color: Colors.orange,
-                        ),
-                      ),
-                    ],
-                  ),
-                ).animate().fadeIn(duration: const Duration(seconds: 3)),
-              ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          // Sign Up Image
+          const CarImageWidget(
+            imagePath: 'lib/Authentication/assets/images/signin.jpeg',
+          ).animate().fadeIn(duration: const Duration(seconds: 1)),
 
-              // Sign Up Image
-              const CarImageWidget(
-                      imagePath: 'lib/Authentication/assets/images/car.png')
-                  .animate()
-                  .fadeIn(duration: const Duration(seconds: 1)),
-              // Sign Up Form
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
+          // Sign Up Form
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(1.0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    TextFieldInput(
-                      icon: Icons.person,
-                      textEditingController: nameController,
-                      hintText: 'Enter your Name',
-                      textInputType: TextInputType.text,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a name';
-                        }
-                        return null;
-                      },
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            const TextSpan(
+                              text: "Auto",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 30,
+                                color: Colors.black,
+                              ),
+                            ),
+                            TextSpan(
+                              text: "Care+",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 30,
+                                color: Colors.orange.shade900,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ).animate().fadeIn(duration: const Duration(seconds: 3)),
                     ),
+                    // TextFieldInput(
+                    //   icon: Icons.person,
+                    //   textEditingController: nameController,
+                    //   hintText: 'Name',
+                    //   textInputType: TextInputType.text,
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return 'Please enter a name';
+                    //     }
+                    //     return null;
+                    //   },
+                    // ),
                     TextFieldInput(
                       icon: Icons.email,
                       textEditingController: emailController,
-                      hintText: 'Enter your Email',
+                      hintText: 'Email',
                       textInputType: TextInputType.text,
                       validator: (value) {
                         final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
@@ -203,7 +199,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     TextFieldPassword(
                       icon: Icons.lock,
                       textEditingController: passwordController,
-                      hintText: 'Enter your Password',
+                      hintText: 'Password',
                       textInputType: TextInputType.text,
                       validator: passwordValidator,
                       isPass: true,
@@ -211,11 +207,14 @@ class _SignupScreenState extends State<SignupScreen> {
                     TextFieldPassword(
                       icon: Icons.lock,
                       textEditingController: confirmPasswordController,
-                      hintText: 'Confirm your Password',
+                      hintText: 'Confirm Password',
                       textInputType: TextInputType.text,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please confirm your password';
+                        }
+                        if (value != passwordController.text) {
+                          return 'Passwords do not match';
                         }
                         return null;
                       },
@@ -223,43 +222,59 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
 
                     // Sign Up Button
-                    MyButtons(onTap: signupUser, text: "Sign Up"),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: MyButtons(
+                        onTap: signupUser,
+                        text: "Sign Up",
+                        isLoading: isLoadingSignup, // Use isLoadingSignup here
+                      ),
+                    ),
 
                     // Sign Up OR
-                    const Or(),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 12.0),
+                      child: Or(),
+                    ),
 
                     // Sign Up with Google
-                    SizedBox(height: size.height * 0.01),
+                    SizedBox(height: 12),
                     GoogleButton(
                       onTap: signInWithGoogle,
                       hintText: 'Sign Up with Google',
+                      isGoogleLoading: isLoadingGoogle,  // Use isLoadingGoogle here
                     ),
 
                     // Already have an account? Log In
-                    const SizedBox(height: 30),
+                    SizedBox(height: size.height * 0.08),
                     TextButton(
                       onPressed: () {
-                        // Handle navigation to login screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
+                          ),
+                        );
                       },
                       child: RichText(
                         text: TextSpan(
                           text: 'Already have an account? ',
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black, fontSize: 12),
                           children: <TextSpan>[
                             TextSpan(
                               text: 'Log In',
-                              style: const TextStyle(
-                                color: Colors.orange,
+                              style: TextStyle(
+                                color: Colors.orange.shade900,
                                 fontWeight: FontWeight.bold,
+                                fontSize: 12
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  // Navigate to LoginScreen
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginScreen()),
+                                      builder: (context) => const LoginScreen(),
+                                    ),
                                   );
                                 },
                             ),
@@ -269,14 +284,15 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ],
                 ),
-              ).animate().slide(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut,
-                  begin: const Offset(0, 1),
-                  end: const Offset(0, 0)),
-            ],
+              ),
+            ).animate().slide(
+              duration: const Duration(milliseconds: 1000),
+              curve: Curves.easeInOut,
+              begin: const Offset(0, 1),
+              end: const Offset(0, 0),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
