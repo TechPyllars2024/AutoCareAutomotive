@@ -47,7 +47,7 @@ class TopSection extends StatelessWidget {
                       (index) =>  RatingWidget(
                     selectedColor: Colors.orange.shade900,
                     unSelectedColor: Colors.grey,
-                    child: Icon(
+                    child: const Icon(
                       Icons.star,
                       size:15,
                     ),

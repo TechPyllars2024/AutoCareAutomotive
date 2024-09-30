@@ -1,3 +1,5 @@
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_verification_status.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/top_section.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/profile_details.dart';
@@ -19,6 +21,7 @@ class AutomotiveProfileScreen extends StatefulWidget {
 class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
   final ProfileService _profileService = ProfileService();
   AutomotiveProfileModel? profile;
+  final user = FirebaseAuth.instance.currentUser;
 
   final double coverHeight = 160;
   final double profileHeight = 100;
@@ -49,7 +52,14 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
   void getVerified() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AutomotiveGetVerifiedScreen()),
+      MaterialPageRoute(builder: (context) => const AutomotiveGetVerifiedScreen()),
+    );
+  }
+
+  void checkStatus() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => VerificationStatusScreen(uid: user!.uid)),
     );
   }
 
@@ -77,6 +87,8 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
             buildButton(),
             const SizedBox(height: 10),
             buildGetVerified(),
+            const SizedBox(height: 10),
+            buildCheckStatus(),
             const ServicesCarousel(),
             const FeedbackSection(),
           ],
@@ -87,14 +99,25 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
 
   Widget buildButton() => WideButtons(
     onTap: editProfile,
-
     text: 'Edit Profile',
-
   );
 
-
-  Widget buildGetVerified() => WideButtons(
-    onTap: getVerified,
-    text: 'Get Verified',
+  Widget buildGetVerified() => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 25),
+    child: ElevatedButton(
+    onPressed: getVerified,
+    style: ElevatedButton.styleFrom(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      minimumSize: const Size(400, 45),
+      backgroundColor: Colors.white, // Applied deep orange shade
+    ),
+    child: Text('Get Verified', style: TextStyle(color: Colors.deepOrange.shade700, fontWeight: FontWeight.bold),),
+  )
+  );
+  Widget buildCheckStatus() => WideButtons(
+    onTap: checkStatus,
+    text: 'Check Status',
   );
 }
