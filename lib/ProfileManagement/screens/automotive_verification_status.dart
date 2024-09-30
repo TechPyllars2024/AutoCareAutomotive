@@ -50,10 +50,6 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Verification Status'),
-        backgroundColor: const Color(0xffFABC3F),
-      ),
       body: Center(
         child: _buildScreenForStatus(status), // Build UI based on status
       ),
