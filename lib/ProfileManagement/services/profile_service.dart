@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import '../models/automotive_shop_profile_model.dart';
+import '../models/feedbacks_model.dart';
 
 class ProfileService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -59,5 +60,18 @@ class ProfileService {
       // Handle potential Firestore errors
       logger.i('Error saving profile data: $e');
     }
+  }
+
+  Stream<List<FeedbackModel>> fetchFeedbacks(String serviceProviderUid) {
+    return _firestore
+        .collection('feedback')
+        .where('serviceProviderUid', isEqualTo: serviceProviderUid)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => FeedbackModel.fromMap(doc.data(), doc.id))
+        .toList())
+        .handleError((e) {
+      logger.i('Error fetching feedbacks for provider ID $serviceProviderUid: $e');
+    });
   }
 }
