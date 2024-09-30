@@ -66,6 +66,7 @@ class ProfileDetails extends StatelessWidget {
                     // Ensure operationTime is a String
                     Expanded(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             (profile?.serviceSpecialization.join(', ') ?? 'Specialization'
