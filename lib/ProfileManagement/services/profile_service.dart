@@ -36,7 +36,9 @@ class ProfileService {
           daysOfTheWeek: [],
           operationTime: '',
           serviceSpecialization: [],
-          verificationStatus: ''
+          verificationStatus: '',
+          totalRatings: 0.0,
+          numberOfRatings: 0,
         );
       }
     } catch (e) {

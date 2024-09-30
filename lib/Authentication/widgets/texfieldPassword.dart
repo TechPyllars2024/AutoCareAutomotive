@@ -29,55 +29,63 @@ class _TextFieldPasswordState extends State<TextFieldPassword> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextField(
-            style: const TextStyle(fontSize: 15),
-            controller: widget.textEditingController,
-            obscureText: widget.isPass &&
-                !_isPasswordVisible, // Toggle password visibility
-            keyboardType: widget.textInputType,
-            decoration: InputDecoration(
-              labelText: widget.hintText,
-              prefixIcon: widget.icon != null
-                  ? Icon(widget.icon, color: Colors.black, size: 24)
-                  : null,
-              labelStyle:
-                  const TextStyle(color: Color.fromARGB(255, 77, 76, 76)),
-              suffixIcon: widget.isPass
-                  ? IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Colors.black,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                    )
-                  : null,
-              border: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
+          SizedBox(
+            height: 45,
+
+            child: TextField(
+              style: const TextStyle(fontSize: 15),
+              controller: widget.textEditingController,
+              obscureText: widget.isPass &&
+                  !_isPasswordVisible, // Toggle password visibility
+              keyboardType: widget.textInputType,
+              decoration: InputDecoration(
+                labelText: widget.hintText,
+                prefixIcon: widget.icon != null
+                    ? Icon(widget.icon, color: Colors.grey.shade800, size: 18)
+                    : null,
+                labelStyle:
+                const TextStyle(color: Color.fromARGB(255, 77, 76, 76)),
+                suffixIcon: widget.isPass
+                    ? IconButton(
+                  icon: Icon(
+                    _isPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: Colors.grey.shade800,
+                    size: 18,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                )
+                    : null,
+                border:  OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                  borderSide: const BorderSide(color: Colors.grey),
+                ),
+                enabledBorder:  OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                  borderSide: const BorderSide(color: Colors.grey),
+                ),
+                focusedBorder:  OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                  borderSide: const BorderSide(color: Colors.grey),
+                ),
+                // Remove errorText from InputDecoration
               ),
-              enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              // Remove errorText from InputDecoration
+              onChanged: (value) {
+                setState(() {
+                  errorMessage =
+                      widget.validator?.call(value); // Validate on text change
+                });
+              },
             ),
-            onChanged: (value) {
-              setState(() {
-                errorMessage =
-                    widget.validator?.call(value); // Validate on text change
-              });
-            },
           ),
           if (errorMessage != null && errorMessage!.isNotEmpty)
             Padding(

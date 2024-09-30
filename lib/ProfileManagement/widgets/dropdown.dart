@@ -42,13 +42,13 @@ class _CustomDropdownState extends State<CustomDropdown> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(15),
-                  color: Colors.grey[100],
+                  color: Colors.white,
                 ),
                 child: Obx(
                       () => widget.controller.selectedOptionList.isEmpty
                       ? Text(
                     widget.hintText,
-                    style: TextStyle(color: Colors.grey[700], fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   )
                       : Wrap(
                     spacing: 8.0,
@@ -59,7 +59,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
                           option,
                           style: const TextStyle(color: Colors.white),
                         ),
-                        backgroundColor: Colors.grey[600],
+                        backgroundColor: Colors.orange.shade900,
                         deleteIconColor: Colors.white,
                         onDeleted: () {
                           widget.controller.selectedOptionList.remove(option);
@@ -87,7 +87,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
             'Select Options',
             style: TextStyle(color: Colors.grey[800]), // Dark grey text
           ),
-          backgroundColor: Colors.grey[200], // Very light grey background
+          backgroundColor: Colors.white, // Very light grey background
           content: SingleChildScrollView(
             child: ListBody(
               children: widget.options.map((option) {
@@ -108,7 +108,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
                       widget.onSelectionChanged?.call(widget.controller.selectedOptionList);
                     },
                     controlAffinity: ListTileControlAffinity.leading,
-                    activeColor: Colors.grey[600], // Color for the checkbox when selected
+                    activeColor: Colors.orange.shade900, // Color for the checkbox when selected
                     checkColor: Colors.white, // Color for the check mark
                   ),
                 );
@@ -119,7 +119,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
             TextButton(
               child: Text(
                 'Save',
-                style: TextStyle(color: Colors.grey[800]), // Dark grey text
+                style: TextStyle(color: Colors.orange.shade900, fontWeight: FontWeight.bold), // Dark grey text
               ),
               onPressed: () {
                 Navigator.of(context).pop();
