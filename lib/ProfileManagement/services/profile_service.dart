@@ -74,4 +74,19 @@ class ProfileService {
       logger.i('Error fetching feedbacks for provider ID $serviceProviderUid: $e');
     });
   }
+
+  // Fetch service provider by uid
+  Future<Map<String, dynamic>> fetchProviderByUid(String uid) async {
+    try {
+      DocumentSnapshot providerSnapshot = await FirebaseFirestore.instance
+          .collection('automotiveShops_profile')
+          .doc(uid)
+          .get();
+
+      return providerSnapshot.data() as Map<String, dynamic>;
+    } catch (e) {
+      logger.i('Error fetching provider by UID $uid: $e');
+      return {};
+    }
+  }
 }
