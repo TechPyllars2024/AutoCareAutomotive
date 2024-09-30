@@ -11,7 +11,7 @@ class GoogleButton extends StatelessWidget {
     required this.onTap,
     required this.hintText,
     this.isGoogleLoading = false, // Default to false if not provided
-    this.width = 200, // Default width, you can adjust as needed
+    this.width = 220, // Default width, you can adjust as needed
   });
 
   @override
