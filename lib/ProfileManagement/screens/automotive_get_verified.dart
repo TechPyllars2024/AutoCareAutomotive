@@ -1,6 +1,6 @@
-import 'package:autocare_automotiveshops/ProfileManagement/screens/getVerified_pending.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/services/get_verified_services.dart';
 import 'package:autocare_automotiveshops/Service%20Management/screens/manage_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path/path.dart' as path;
@@ -24,6 +24,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
   int _currentPage = 0;
   bool _isReady = false;
   PDFViewController? _pdfViewController;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> _pickFile() async {
     setState(() {
@@ -55,6 +56,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
   }
 
   Future<void> _uploadFile() async {
+    final user = _auth.currentUser;
     if (_filePath == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please pick a PDF file first')),
@@ -80,7 +82,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const VerificationStatusScreen(),
+            builder: (context) => VerificationStatusScreen(uid: user!.uid),
           ),
         );
       } else {
