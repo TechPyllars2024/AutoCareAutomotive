@@ -102,14 +102,19 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
     text: 'Edit Profile',
   );
 
-  Widget buildGetVerified() => ElevatedButton(
+  Widget buildGetVerified() => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 25),
+    child: ElevatedButton(
     onPressed: getVerified,
     style: ElevatedButton.styleFrom(
-      foregroundColor: Colors.orange, backgroundColor: Colors.white, // Orange text
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16), // Smaller padding
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      minimumSize: const Size(400, 45),
+      backgroundColor: Colors.white, // Applied deep orange shade
     ),
-    child: const Text('Get Verified'),
-
+    child: Text('Get Verified', style: TextStyle(color: Colors.deepOrange.shade700, fontWeight: FontWeight.bold),),
+  )
   );
   Widget buildCheckStatus() => WideButtons(
     onTap: checkStatus,
