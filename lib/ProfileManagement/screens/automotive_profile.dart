@@ -1,7 +1,6 @@
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_verification_status.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:autocare_automotiveshops/ProfileManagement/widgets/top_section.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/profile_details.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/services_carousel.dart';
 import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
@@ -78,7 +77,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
           'Profile',
           style: TextStyle(fontWeight: FontWeight.w900),
         ),
-        backgroundColor: Colors.grey.shade300,
+        backgroundColor: Colors.grey.shade100,
         foregroundColor: Colors.black,
       ),
       body: FutureBuilder<Map<String, dynamic>>(
