@@ -1,4 +1,6 @@
+import 'package:autocare_automotiveshops/ProfileManagement/screens/getVerified_pending.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/services/get_verified_services.dart';
+import 'package:autocare_automotiveshops/Service%20Management/screens/manage_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path/path.dart' as path;
@@ -13,15 +15,19 @@ class AutomotiveGetVerifiedScreen extends StatefulWidget {
 }
 
 class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScreen> {
-  bool _isLoading = false;
+  bool _isLoadingPickFile = false; // Separate loading state for pick file
+  bool _isLoadingSubmit = false; // Separate loading state for submit
   bool _isUploaded = false;
-  String? _filePath; // To store the selected file path
-  Key _pdfKey = UniqueKey(); // Use a unique key for the PDF view
+  String? _filePath;
+  Key _pdfKey = UniqueKey();
+  int _totalPages = 0;
+  int _currentPage = 0;
+  bool _isReady = false;
+  PDFViewController? _pdfViewController;
 
   Future<void> _pickFile() async {
     setState(() {
-      _isLoading = true;
-      _isUploaded = false;
+      _isLoadingPickFile = true; // Set loading state for picking file
     });
 
     try {
@@ -29,7 +35,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
 
       if (filePath != null && filePath.isNotEmpty) {
         setState(() {
-          _filePath = filePath; // Store the selected file path
+          _filePath = filePath;
           _pdfKey = UniqueKey(); // Force PDFView to reload
         });
       } else {
@@ -43,16 +49,21 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
       );
     } finally {
       setState(() {
-        _isLoading = false;
+        _isLoadingPickFile = false; // Reset loading state after picking file
       });
     }
   }
 
   Future<void> _uploadFile() async {
-    if (_filePath == null) return;
+    if (_filePath == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please pick a PDF file first')),
+      );
+      return; // Exit if no file is picked
+    }
 
     setState(() {
-      _isLoading = true;
+      _isLoadingSubmit = true; // Set loading state for submission
     });
 
     try {
@@ -69,7 +80,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VerificationStatusScreen(uid: 'user_uid'),
+            builder: (context) => const VerificationStatusScreen(),
           ),
         );
       } else {
@@ -83,7 +94,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
       );
     } finally {
       setState(() {
-        _isLoading = false;
+        _isLoadingSubmit = false; // Reset loading state after submission
       });
     }
   }
@@ -110,9 +121,11 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                   style: TextStyle(fontSize: 18),
                 ),
                 const SizedBox(height: 30),
+
+                // Pick PDF Button
                 ElevatedButton(
                   onPressed: () {
-                    if (!_isLoading) {
+                    if (!_isLoadingPickFile) {
                       _pickFile();
                     }
                   },
@@ -124,17 +137,19 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                     ),
                   ),
                   child: Text(
-                    _isLoading ? 'Picking...' : 'Pick PDF',
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white), // Set text style here
+                    _isLoadingPickFile ? 'Picking...' : 'Pick PDF',
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white), // Set text style here
                   ),
                 ),
-
                 const SizedBox(height: 16),
 
                 // Display file name if a file is selected
                 if (_filePath != null)
                   Text(
-                    'Selected file: ${path.basename(_filePath!)}',
+                    'File Name: ${path.basename(_filePath!)}',
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                   ),
 
@@ -146,25 +161,72 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                       SizedBox(
                         height: 400, // Adjust height as needed
                         child: PDFView(
-                          key: _pdfKey, // Use the unique key here
+                          key: _pdfKey,
                           filePath: _filePath,
-                          fitPolicy: FitPolicy.BOTH, // Fit PDF to its original size within the available space
-                          onRender: (_pages) {
-                            setState(() {});
+                          fitPolicy: FitPolicy.BOTH,
+                          enableSwipe: true,
+                          swipeHorizontal: false,
+                          autoSpacing: true,
+                          pageFling: true,
+                          pageSnap: true,
+                          onRender: (pages) {
+                            setState(() {
+                              _totalPages = pages ?? 0;
+                              _isReady = true;
+                            });
+                          },
+                          onViewCreated: (PDFViewController pdfViewController) {
+                            _pdfViewController = pdfViewController;
                           },
                           onError: (error) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Error loading PDF: $error')),
                             );
                           },
+                          onPageChanged: (page, total) {
+                            setState(() {
+                              _currentPage = page!;
+                            });
+                          },
                         ),
                       ),
                       const SizedBox(height: 32),
+                      if (_isReady)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.arrow_back),
+                              onPressed: () async {
+                                if (_currentPage > 0) {
+                                  _currentPage--;
+                                  await _pdfViewController?.setPage(_currentPage); // Navigate to previous page
+                                }
+                              },
+                            ),
+                            Text(
+                              'Page ${_currentPage + 1} of $_totalPages',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.arrow_forward),
+                              onPressed: () async {
+                                if (_currentPage < _totalPages - 1) {
+                                  _currentPage++;
+                                  await _pdfViewController?.setPage(_currentPage); // Navigate to next page
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      const SizedBox(height: 32),
+
+                      // Submit Button
                       Container(
                         margin: const EdgeInsets.only(bottom: 24),
                         child: ElevatedButton(
                           onPressed: () {
-                            if (!_isLoading) {
+                            if (!_isLoadingSubmit) {
                               _uploadFile();
                             }
                           },
@@ -175,7 +237,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                               borderRadius: BorderRadius.circular(15), // Set the corner radius
                             ),
                           ),
-                          child: _isLoading // Check loading state
+                          child: _isLoadingSubmit
                               ? const SizedBox(
                             width: 24,
                             height: 24,
