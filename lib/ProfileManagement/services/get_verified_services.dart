@@ -73,7 +73,7 @@ class GetVerifiedServices {
       try {
         final doc = await firestore
             .collection('automotiveShops_profile')
-            .doc()
+            .doc(serviceProviderUid)
             .get();
         final data = doc.data();
 
@@ -82,6 +82,7 @@ class GetVerifiedServices {
           final String status = data['verificationStatus'] ?? '';
 
           // Return the full name concatenated
+          logger.i('User profile data found',status);
           return status;
         } else {
           logger.i('No profile data found for user');
