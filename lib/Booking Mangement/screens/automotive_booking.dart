@@ -450,126 +450,111 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     BookingModel booking = bookings[index];
 
                     return Card(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 12.0),
+                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                       elevation: 2,
-                      child: ListTile(
-                        title: Text(
-                          booking.selectedService.join(', ').toUpperCase(),
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0), // Add padding for better spacing
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start, // Align the text to the left
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Icon(
-                                  Icons.calendar_today, // Use a calendar icon for booking date
-                                  color: Colors.blue,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 5), // Adds space between the icon and text
-                                Text(
-                                  '${booking.bookingDate}, ${booking.bookingTime}',
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                              ],
+                            Text(
+                              booking.selectedService.join(', ').toUpperCase(),
+                              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                             ),
+                            const SizedBox(height: 10), // Adds spacing between title and details
                             Row(
-                              mainAxisAlignment: MainAxisAlignment
-                                  .start, // Aligns items to the start of the Row
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(
-                                  Icons
-                                      .php, // Use an appropriate icon (monetization_on is a money icon)
-                                  color:
-                                      Colors.blue, // Set the color of the icon
-                                  size: 20, // Set the size of the icon
-                                ),
-                                const SizedBox(
-                                    width:
-                                        5), // Adds some space between the icon and the text
-                                Text(
-                                  booking.totalPrice
-                                      .toString(), // Convert double to String
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment
-                                  .start, // Aligns items to the start of the Row
-                              children: [
-                                const Icon(
-                                  Icons
-                                      .person, // Use an appropriate icon for a person's name
-                                  color:
-                                      Colors.blue, // Set the color of the icon
-                                  size: 20, // Set the size of the icon
-                                ),
-                                const SizedBox(
-                                    width:
-                                        5), // Adds some space between the icon and the text
-                                Text(
-                                  booking.fullName, // Display the full name
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                              ],
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text:
-                                        'Status: ', // Keep 'Status:' in default color
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors
-                                          .black, // Or use Colors.grey for a muted color
-                                    ),
+                                // Details Section
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Booking Date and Time
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.calendar_today, color: Colors.blue, size: 20),
+                                          const SizedBox(width: 5),
+                                          Text(
+                                            '${booking.bookingDate}, ${booking.bookingTime}',
+                                            style: const TextStyle(fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 5),
+                                      // Total Price
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.attach_money, color: Colors.blue, size: 20),
+                                          const SizedBox(width: 5),
+                                          Text(
+                                            booking.totalPrice.toString(),
+                                            style: const TextStyle(fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 5),
+                                      // Full Name
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.person, color: Colors.blue, size: 20),
+                                          const SizedBox(width: 5),
+                                          Text(
+                                            booking.fullName,
+                                            style: const TextStyle(fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 5),
+                                      // Status
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            const TextSpan(
+                                              text: 'Status: ',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: '${booking.status?.toUpperCase()}',
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.orange,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  TextSpan(
-                                    text:
-                                        '${booking.status?.toUpperCase()}', // Capitalized status
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color:
-                                          Colors.orange, // Set color to orange
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        onTap: () {
-                          // Show the booking details modal when tapped
-                          _showBookingDetailsModal([booking]);
-                        },
-                        trailing:
-                            isMarkAsDoneEnabled // Align the button to the right
-                                ? SizedBox(
-                                    width:
-                                        100, // Set a width for the button's container if needed
+                                ),
+                                // Button Section
+                                if (isMarkAsDoneEnabled)
+                                  SizedBox(
+                                    width: 100, // Set width for consistency
                                     child: ElevatedButton(
                                       onPressed: () async {
                                         await markBookingAsDone(booking);
                                       },
                                       style: ElevatedButton.styleFrom(
                                         foregroundColor: Colors.white,
-                                        backgroundColor:
-                                            Colors.green, // Set the text color
+                                        backgroundColor: Colors.green, // Set the button color
+                                        padding: const EdgeInsets.symmetric(vertical: 12.0),
                                       ),
                                       child: const Text(
                                         'Done?',
-                                        style: TextStyle(fontSize: 18),
+                                        style: TextStyle(fontSize: 16),
                                       ),
                                     ),
-                                  )
-                                : null,
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },

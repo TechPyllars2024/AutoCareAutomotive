@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import '../models/automotive_shop_profile_model.dart';
+import '../models/feedbacks_model.dart';
 
 class ProfileService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -58,6 +59,34 @@ class ProfileService {
     } catch (e) {
       // Handle potential Firestore errors
       logger.i('Error saving profile data: $e');
+    }
+  }
+
+  Stream<List<FeedbackModel>> fetchFeedbacks(String serviceProviderUid) {
+    return _firestore
+        .collection('feedback')
+        .where('serviceProviderUid', isEqualTo: serviceProviderUid)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => FeedbackModel.fromMap(doc.data(), doc.id))
+        .toList())
+        .handleError((e) {
+      logger.i('Error fetching feedbacks for provider ID $serviceProviderUid: $e');
+    });
+  }
+
+  // Fetch service provider by uid
+  Future<Map<String, dynamic>> fetchProviderByUid(String uid) async {
+    try {
+      DocumentSnapshot providerSnapshot = await FirebaseFirestore.instance
+          .collection('automotiveShops_profile')
+          .doc(uid)
+          .get();
+
+      return providerSnapshot.data() as Map<String, dynamic>;
+    } catch (e) {
+      logger.i('Error fetching provider by UID $uid: $e');
+      return {};
     }
   }
 }
