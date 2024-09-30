@@ -168,7 +168,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               TextSpan(
-                                text: "Care",
+                                text: "Care+",
                                 style: TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 30,

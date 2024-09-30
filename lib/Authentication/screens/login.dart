@@ -1,6 +1,4 @@
-import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
 import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
-import 'package:autocare_automotiveshops/Service%20Management/screens/manage_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -149,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               TextSpan(
-                                text: "Care",
+                                text: "Care+",
                                 style: TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 30,
