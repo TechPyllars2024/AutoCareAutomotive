@@ -1,7 +1,7 @@
 class UserModel {
   final String uid;
   final String email;
-  final List<String> roles; // Roles like ['car_owner', 'service_provider']
+  final List<String> roles;
 
   UserModel({
     required this.uid,
