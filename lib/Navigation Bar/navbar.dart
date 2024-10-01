@@ -20,7 +20,7 @@ class _NavbarState extends State<Navbar> {
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
   final List<Widget> _screens = [
-    const AutomotiveBookingScreen(),
+    AutomotiveBookingScreen(),
     const AutomotiveMessagesScreen(),
     const ServiceManagementScreen(),
     const AutomotiveProfileScreen(),
@@ -29,15 +29,16 @@ class _NavbarState extends State<Navbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.grey.shade300, // Ensure CurvedNavigationBar background is also transparent
+        backgroundColor: Colors.grey.shade100,
 
         key: _bottomNavigationKey,
         items: <Widget>[
-          Icon(Icons.calendar_month, size: 35, color: _page == 0 ? Colors.orange : Colors.black),
-          Icon(Icons.message, size: 35, color: _page == 1 ? Colors.orange : Colors.black),
-          Icon(Icons.directions_car, size: 35, color: _page == 2 ? Colors.orange : Colors.black),
-          Icon(Icons.person, size: 35, color: _page == 3 ? Colors.orange : Colors.black),
+          Icon(Icons.calendar_month, size: 25, color: _page == 0 ? Colors.orange.shade900 : Colors.grey.shade700),
+          Icon(Icons.message, size: 25, color: _page == 1 ? Colors.orange.shade900 : Colors.grey.shade700),
+          Icon(Icons.directions_car, size: 25, color: _page == 2 ? Colors.orange.shade900 : Colors.grey.shade700),
+          Icon(Icons.person, size: 25, color: _page == 3 ? Colors.orange.shade900 : Colors.grey.shade700),
         ],
         onTap: (index) {
           setState(() {

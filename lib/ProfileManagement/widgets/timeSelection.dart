@@ -5,13 +5,13 @@ class TimePickerDisplay extends StatefulWidget {
   final Function(TimeOfDay)? onTimeSelected;
 
   const TimePickerDisplay({
-    Key? key,
+    super.key,
     required this.initialTime,
     this.onTimeSelected,
-  }) : super(key: key);
+  });
 
   @override
-  _TimePickerDisplayState createState() => _TimePickerDisplayState();
+  State<TimePickerDisplay> createState() => _TimePickerDisplayState();
 }
 
 class _TimePickerDisplayState extends State<TimePickerDisplay> {

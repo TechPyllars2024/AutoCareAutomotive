@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:autocare_automotiveshops/Service%20Management/models/category_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/services_model.dart';
 import '../services/image_service.dart';
@@ -28,8 +29,10 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
     final nameController = TextEditingController(text: service?.name);
     final descriptionController =
         TextEditingController(text: service?.description);
+
     final priceController =
         TextEditingController(text: service?.price.toString());
+
     String category = service?.category.isNotEmpty == true
         ? service!.category[0]
         : 'Electrical Works';
@@ -41,7 +44,8 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
           // StatefulBuilder allows updating the dialog UI.
           builder: (context, setState) {
             return AlertDialog(
-              title: Text(service == null ? 'Add Service' : 'Update Service'),
+              backgroundColor: Colors.white,
+              title: Text(service == null ? 'Add Service' : 'Update Service', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -55,11 +59,24 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                   ),
                   TextField(
                     controller: priceController,
-                    decoration: const InputDecoration(labelText: 'Price'),
-                    keyboardType: TextInputType.number,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    decoration: const InputDecoration(
+                      labelText: 'Price',
+                      hintText: 'Enter price greater than 0',
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                    ],
+                    onChanged: (value) {
+                      final price = double.tryParse(value);
+                      if (price != null && price <= 0) {
+                        priceController.clear(); // Clear the input if invalid
+                      }
+                    },
                   ),
                   DropdownButton<String>(
                     value: category,
+                    isExpanded: true,
                     onChanged: (newValue) {
                       setState(() {
                         category = newValue!;
@@ -73,7 +90,14 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                       );
                     }).toList(),
                   ),
+                  const SizedBox(height: 4),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      minimumSize: const Size(250, 45),
+                      backgroundColor: Colors.deepOrange.shade700,
+                    ),
                     onPressed: () async {
                       // Let the user pick an image source
                       final source = await _pickImageSource();
@@ -85,21 +109,23 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                         });
                       }
                     },
-                    child: const Text('Pick Image'),
+                    child: const Text('Pick Image', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
                   ),
                 ],
               ),
               actions: [
                 TextButton(
-                  child: const Text('Cancel'),
+                  child: const Text('Cancel', style: TextStyle(color: Colors.grey),),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 TextButton(
-                  child: Text(service == null ? 'Add' : 'Update'),
+                  child: Text(service == null ? 'Add' : 'Update', style: TextStyle(color: Colors.orange.shade900, fontWeight: FontWeight.bold),),
                   onPressed: () async {
                     if (nameController.text.isNotEmpty &&
                         descriptionController.text.isNotEmpty &&
-                        priceController.text.isNotEmpty) {
+                        priceController.text.isNotEmpty
+                        && priceController.text != '0.00'
+                        && _selectedImage != null) {
                       if (service == null) {
                         // Add new service
                         await _serviceManagement.addService(
@@ -167,7 +193,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.edit),
+                leading: const Icon(Icons.edit, color: Colors.grey),
                 title: const Text('Edit'),
                 onTap: () {
                   Navigator.of(context).pop();
@@ -175,7 +201,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.delete),
+                leading: const Icon(Icons.delete, color: Colors.red),
                 title: const Text('Delete'),
                 onTap: () async {
                   await _serviceManagement.deleteService(service.serviceId);
@@ -192,14 +218,15 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
+
         title: Text(
           'Manage Services',
           style:
               TextStyle(fontWeight: FontWeight.w900, color: Colors.grey[800]),
         ),
-        backgroundColor: Colors.grey.shade300,
+        backgroundColor: Colors.grey.shade100,
         elevation: 0,
       ),
       body: StreamBuilder<List<ServiceModel>>(
@@ -231,6 +258,8 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                   onTap: () => _showServiceOptions(
                       context, service), // Method for showing service options
                   child: Card(
+                    color: Colors.white,
+                    elevation: 5,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0),
                     ),
@@ -269,7 +298,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                                 service.name,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                                  fontSize: 15,
                                   color: Colors.grey[800],
                                 ),
                                 maxLines: 1, // Limit to a single line
@@ -280,14 +309,14 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                               Text(
                                 '${service.price.toStringAsFixed(2)} PHP',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   color: Colors.grey[600],
                                 ),
                               ),
                               Text(
                                 service.description,
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 13,
                                   color: Colors.grey[600],
                                 ),
                               )
@@ -304,8 +333,14 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.orange.shade900,
         onPressed: () => _addOrUpdateService(context),
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 30,
+          weight: 20,
+        ),
       ),
     );
   }

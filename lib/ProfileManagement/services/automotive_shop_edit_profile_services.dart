@@ -41,6 +41,7 @@ class AutomotiveShopEditProfileServices {
 
   Future<void> saveProfile({
     required String uid,
+    required String serviceProviderUid,
     required String shopName,
     required String location,
     required File? coverImage,
@@ -48,6 +49,9 @@ class AutomotiveShopEditProfileServices {
     required List<String> daysOfTheWeek,
     required String operationTime,
     required List<String> serviceSpecialization,
+    required String verificationStatus,
+    required double totalRatings,
+    required int numberOfRatings,
   }) async {
     final Map<String, dynamic> updatedData = {};
 
@@ -59,11 +63,15 @@ class AutomotiveShopEditProfileServices {
       updatedData['profileImage'] = await uploadImage(profileImage, 'automotiveProfileImages/$uid.jpg');
     }
 
+    updatedData['serviceProviderUid'] = serviceProviderUid;
     updatedData['shopName'] = shopName;
     updatedData['location'] = location;
     updatedData['daysOfTheWeek'] = daysOfTheWeek;
     updatedData['operationTime'] = operationTime;
     updatedData['serviceSpecialization'] = serviceSpecialization;
+    updatedData['verificationStatus'] = verificationStatus;
+    updatedData['totalRatings'] = totalRatings;
+    updatedData['numberOfRatings'] = numberOfRatings;
 
     final docRef = _firestore.collection('automotiveShops_profile').doc(uid);
     final doc = await docRef.get();

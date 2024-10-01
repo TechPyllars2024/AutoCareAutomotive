@@ -22,45 +22,64 @@ class ProfileDetails extends StatelessWidget {
             const SizedBox(height: 5),
             Row(
               children: [
-                const Icon(Icons.location_on, color: Colors.orange),
+                 Icon(Icons.location_on, color: Colors.orange.shade900, size: 15,),
                 const SizedBox(width: 4),
                 Text(
                   profile?.location ?? 'Location',
-                  style: const TextStyle(fontSize: 15),
+
                 ),
               ],
             ),
+            const SizedBox(height: 5),
             Row(
               children: [
-                const Icon(Icons.calendar_month, color: Colors.orange),
+                 Icon(Icons.calendar_month, color: Colors.orange.shade900, size: 15,),
                 const SizedBox(width: 4),
                 // Convert the list to a comma-separated string if it's a list
                 Text(
-                  (profile?.daysOfTheWeek?.join(', ') ?? 'Days of the Week'),
-                  style: const TextStyle(fontSize: 15),
+                  (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
+
                 ),
               ],
             ),
+            const SizedBox(height: 5),
             Row(
               children: [
-                const Icon(Icons.schedule, color: Colors.orange),
+                 Icon(Icons.schedule, color: Colors.orange.shade900, size: 15,),
                 const SizedBox(width: 4),
                 // Ensure operationTime is a String
                 Text(
                   profile?.operationTime ?? 'Operation Time',
-                  style: const TextStyle(fontSize: 15),
+
                 ),
               ],
             ),
-            Row(
+            const SizedBox(height: 5),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.check, color: Colors.orange),
-                const SizedBox(width: 4),
-                // Ensure operationTime is a String
-                Text(
-                  (profile?.serviceSpecialization?.join(', ') ?? 'Specialization'
-                      ''),
-                  style: const TextStyle(fontSize: 15),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                     Icon(Icons.check, color: Colors.orange.shade900, size: 15,),
+                    const SizedBox(width: 4),
+                    // Ensure operationTime is a String
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            (profile?.serviceSpecialization.join(', ') ?? 'Specialization'
+                                ''),
+                            overflow: TextOverflow.visible, // Allow text to wrap
+                            maxLines: 2, // Set max lines if needed
+                            softWrap: true, // Enable soft wrapping
+
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

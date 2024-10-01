@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:logger/logger.dart';
 import '../models/automotive_shop_profile_model.dart';
+import '../models/feedbacks_model.dart';
 
 class ProfileService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final Logger logger = Logger();
 
   // Fetch profile data from Firestore
   Future<AutomotiveProfileModel?> fetchProfileData() async {
@@ -26,18 +29,22 @@ class ProfileService {
         // Return a default profile model if no data is found
         return AutomotiveProfileModel(
           uid: user.uid,
-          shopName: 'Shop Name', // Default value
-          location: 'Location', // Default value
-          coverImage: '', // Default value
-          profileImage: '', // Default value
-          daysOfTheWeek: [], // Default empty string
-          operationTime: '', // Default value
-          serviceSpecialization: [], // Default empty list
+          serviceProviderUid: user.uid,
+          shopName: '',
+          location: '',
+          coverImage: '',
+          profileImage: '',
+          daysOfTheWeek: [],
+          operationTime: '',
+          serviceSpecialization: [],
+          verificationStatus: '',
+          totalRatings: 0.0,
+          numberOfRatings: 0,
         );
       }
     } catch (e) {
       // Handle potential Firestore errors
-      print('Error fetching profile data: $e');
+      logger.i('Error fetching profile data: $e');
       return null;
     }
   }
@@ -51,7 +58,35 @@ class ProfileService {
           .set(updatedProfile.toMap());
     } catch (e) {
       // Handle potential Firestore errors
-      print('Error saving profile data: $e');
+      logger.i('Error saving profile data: $e');
+    }
+  }
+
+  Stream<List<FeedbackModel>> fetchFeedbacks(String serviceProviderUid) {
+    return _firestore
+        .collection('feedback')
+        .where('serviceProviderUid', isEqualTo: serviceProviderUid)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => FeedbackModel.fromMap(doc.data(), doc.id))
+        .toList())
+        .handleError((e) {
+      logger.i('Error fetching feedbacks for provider ID $serviceProviderUid: $e');
+    });
+  }
+
+  // Fetch service provider by uid
+  Future<Map<String, dynamic>> fetchProviderByUid(String uid) async {
+    try {
+      DocumentSnapshot providerSnapshot = await FirebaseFirestore.instance
+          .collection('automotiveShops_profile')
+          .doc(uid)
+          .get();
+
+      return providerSnapshot.data() as Map<String, dynamic>;
+    } catch (e) {
+      logger.i('Error fetching provider by UID $uid: $e');
+      return {};
     }
   }
 }

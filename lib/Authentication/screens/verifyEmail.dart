@@ -112,7 +112,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
         ? const Navbar()
         : Scaffold(
             appBar: AppBar(
-              title: const Text('Verify Email'),
+              title: const Text('Verify Email', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.all(20),
@@ -121,8 +121,8 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                 children: [
                   Image.asset(
                     'lib/Authentication/assets/images/verifyemail.png',
-                    width: 300,
-                    height: 300,
+                    width: 200,
+                    height: 200,
                   ),
                   const SizedBox(height: 80),
                   const Text(
@@ -134,16 +134,17 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                   isLoading
                       ? const CircularProgressIndicator()
                       : ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(50),
-                            elevation: 10,
-                            shadowColor: Colors.black.withOpacity(0.8),
-                          ),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      minimumSize: const Size(400, 45),
+                      backgroundColor: Colors.deepOrange.shade700,
+                    ),
                           icon: const Icon(Icons.email,
-                              size: 32, color: Colors.green),
+                              size: 20, color: Colors.white),
                           label: const Text('Resend Email',
                               style:
-                                  TextStyle(fontSize: 24, color: Colors.green)),
+                                  TextStyle(fontSize: 20, color: Colors.white)),
                           onPressed:
                               canResendEmail ? sendVerificationEmail : null,
                         ),
