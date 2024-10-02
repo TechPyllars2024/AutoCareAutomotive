@@ -7,6 +7,7 @@ class AuthenticationMethod {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
+  final user = FirebaseAuth.instance.currentUser;
 
   // SIGN UP with Email and Password for Service Providers
   Future<String> signupServiceProvider({
@@ -17,16 +18,30 @@ class AuthenticationMethod {
       return "Please fill in all the required fields.";
     }
     try {
-      // Check if the user already exists with a conflicting role
-      DocumentSnapshot existingUserDoc =
-      await firestore.collection("users").doc(email).get();
+      // Check if the user already exists as a service provider
+      QuerySnapshot existingServiceProvider = await firestore
+          .collection("users")
+          .where('email', isEqualTo: user?.email)
+          .where('roles', arrayContains: 'service_provider')
+          .get();
 
-      if (existingUserDoc.exists) {
-        UserModel existingUser =
-        UserModel.fromMap(existingUserDoc.data() as Map<String, dynamic>);
-        if (existingUser.roles.contains('car_owner')) {
-          return "It looks like you already have a car owner account. Please use a different email or log in.";
-        }
+      if (existingServiceProvider.docs.isNotEmpty) {
+        // Sign out the user from Google Sign-In
+        await googleSignIn.signOut();
+        return "An account already exists for you as a service provider. Please use a different Google account.";
+      }
+
+      // Check if the user already exists as a car owner
+      QuerySnapshot existingCarOwner = await firestore
+          .collection("users")
+          .where('email', isEqualTo: user?.email)
+          .where('roles', arrayContains: 'car_owner')
+          .get();
+
+      if (existingCarOwner.docs.isNotEmpty) {
+        // Sign out the user from Google Sign-In
+        await googleSignIn.signOut();
+        return "You already have a car owner account. Please log in using your existing account.";
       }
 
       // Register the user with email and password
@@ -71,26 +86,29 @@ class AuthenticationMethod {
 
     try {
       // Logging in user with email and password
-      await auth.signInWithEmailAndPassword(
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      return "SUCCESS";
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'user-not-found':
-          return "No account found with this email. Please check or sign up.";
-        case 'wrong-password':
-          return "Incorrect password. Please try again.";
-        case 'invalid-email':
-          return "The email address format is not valid. Please check and try again.";
-        case 'user-disabled':
-          return "This account has been disabled. Please contact support.";
-        case 'invalid-credential':
-          return "The entered email/password is invalid. Please check your inputs.";
-        default:
-          return e.message ?? "An unknown error occurred. Please try again.";
+      // Get the logged-in user
+      User user = userCredential.user!;
+
+      // Check if user document exists in Firestore
+      DocumentSnapshot userDoc = await firestore.collection("users").doc(user.uid).get();
+
+      if (userDoc.exists) {
+        var userData = userDoc.data() as Map<String, dynamic>;
+
+        // Check for "roles" field and if "car_owner" is present
+        List<dynamic>? roles = userData['roles'];
+        if (roles?.contains('service_provider') ?? false) {
+          return "SUCCESS";
+        } else {
+          return "You are not registered as a service provider. Please use the appropriate account.";
+        }
+      } else {
+        return "No account found. Please register as a car owner.";
       }
     } catch (e) {
       return "Something went wrong. Please try again later.";
