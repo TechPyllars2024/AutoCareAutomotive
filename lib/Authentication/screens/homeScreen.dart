@@ -6,7 +6,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
 import '../Widgets/button.dart';
 import '../Widgets/snackBar.dart';
-import '../services/authentication.dart';
 import 'login.dart';
 
 class HomeScreen extends StatelessWidget {
