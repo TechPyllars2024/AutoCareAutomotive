@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../Widgets/snackBar.dart';
+
 import '../models/service_provider_model.dart';
-class AuthenticationMethod {
+
+class AuthenticationMethodSignIn{
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -75,96 +76,6 @@ class AuthenticationMethod {
     }
   }
 
-  // LOG IN with Email and Password
-  Future<String> loginUser({
-    required String email,
-    required String password,
-  }) async {
-    if (email.isEmpty || password.isEmpty) {
-      return "Please enter both your email and password.";
-    }
-
-    try {
-      // Logging in user with email and password
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      // Get the logged-in user
-      User user = userCredential.user!;
-
-      // Check if user document exists in Firestore
-      DocumentSnapshot userDoc = await firestore.collection("users").doc(user.uid).get();
-
-      if (userDoc.exists) {
-        var userData = userDoc.data() as Map<String, dynamic>;
-
-        // Check for "roles" field and if "car_owner" is present
-        List<dynamic>? roles = userData['roles'];
-        if (roles?.contains('service_provider') ?? false) {
-          return "SUCCESS";
-        } else {
-          return "You are not registered as a service provider. Please use the appropriate account.";
-        }
-      } else {
-        return "No account found. Please register as a car owner.";
-      }
-    } catch (e) {
-      return "Something went wrong. Please try again later.";
-    }
-  }
-
-  // SIGN OUT
-  Future<void> signOut() async {
-    try {
-      await auth.signOut();
-      await googleSignIn.signOut();
-    } catch (e) {
-      Utils.showSnackBar("An error occurred while signing out");
-    }
-  }
-// RESET PASSWORD
-  Future<String> resetPassword({
-    required String email,
-  }) async {
-    if (email.isEmpty) {
-      return "Please enter your email address.";
-    }
-
-    try {
-      // Query Firestore to check if the email exists in the "users" collection
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .limit(1)
-          .get();
-
-      // Check if any documents were returned
-      if (querySnapshot.docs.isEmpty) {
-        return "No account found with this email. Please check or sign up.";
-      }
-
-      // If email exists, proceed to send the password reset email
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      return "A reset link has been sent.";
-    } on FirebaseAuthException catch (e) {
-      // Handle specific errors
-      switch (e.code) {
-        case 'invalid-email':
-          return "The email address you entered is not properly formatted. Please check it.";
-        case 'user-not-found':
-          return "There is no account registered with this email.";
-        case 'too-many-requests':
-          return "You've made too many requests. Please wait for a moment and try again.";
-        default:
-          return e.message ?? "An error occurred. Please try again.";
-      }
-    } catch (e) {
-      return "Something went wrong. Please try again later.";
-    }
-  }
-
   // SIGN IN/LOG IN WITH GOOGLE
   Future<String> signInWithGoogle() async {
     try {
@@ -230,61 +141,6 @@ class AuthenticationMethod {
       return 'SUCCESS';
     } on FirebaseAuthException catch (e) {
       return e.message ?? "A problem occurred during Google Sign-In. Please try again.";
-    } catch (e) {
-      return "An unexpected error occurred. Please try again later.";
-    }
-  }
-
-  // Handles Google Log-In and checks user role
-  Future<String> logInWithGoogle() async {
-    try {
-      // Ensure the user is signed out before starting the Google Sign-In process
-      await GoogleSignIn().signOut();
-
-      // Initiate Google Log-In process
-      final GoogleSignInAccount? googleUser = await GoogleSignIn(
-          scopes: [
-            "https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/userinfo.email"
-          ]
-      ).signIn();
-      if (googleUser == null) {
-        return "Google Log-In was canceled. Please try again.";
-      }
-
-      final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
-      // Get the credentials from Google
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      // Log in to Firebase with the Google credentials
-      UserCredential userCredential =
-      await auth.signInWithCredential(credential);
-      final User? user = userCredential.user;
-
-      if (user == null) {
-        return "Failed to log in with Google. Please try again.";
-      }
-
-      // Check if the user exists in the users collection and has the service_provider role
-      DocumentSnapshot userDoc =
-      await firestore.collection("users").doc(user.uid).get();
-      if (userDoc.exists) {
-        var userData = userDoc.data() as Map<String, dynamic>;
-        // Check for the service_provider role
-        List<dynamic> roles = userData['roles'] ?? [];
-        if (roles.contains('service_provider')) {
-          return "Service Provider";
-        } else {
-          return "You are not registered as a service provider. Please use the appropriate account.";
-        }
-      } else {
-        return "No account found. Please register as a service provider.";
-      }
-    } on FirebaseAuthException catch (e) {
-      return e.message ?? "A problem occurred during Google Log-In. Please try again.";
     } catch (e) {
       return "An unexpected error occurred. Please try again later.";
     }

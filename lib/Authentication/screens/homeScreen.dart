@@ -1,3 +1,4 @@
+import 'package:autocare_automotiveshops/Authentication/services/authentication_signout.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -58,7 +59,7 @@ class HomeScreen extends StatelessWidget {
             MyButtons(
               onTap: () async {
                 try {
-                  await AuthenticationMethod().signOut();
+                  await AuthenticationMethodSignOut().signOut();
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => const LoginScreen()),
                   );

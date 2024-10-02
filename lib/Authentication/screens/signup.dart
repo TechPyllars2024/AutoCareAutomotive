@@ -1,3 +1,4 @@
+import 'package:autocare_automotiveshops/Authentication/services/authentication_signin.dart';
 import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
 import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -66,7 +67,7 @@ class _SignupScreenState extends State<SignupScreen> {
       return;
     }
 
-    String res = await AuthenticationMethod().signupServiceProvider(
+    String res = await AuthenticationMethodSignIn().signupServiceProvider(
       email: emailController.text,
       password: passwordController.text,
     );
@@ -109,7 +110,7 @@ class _SignupScreenState extends State<SignupScreen> {
       isLoadingGoogle = true;  // Set loading state for Google sign-in
     });
 
-    String res = await AuthenticationMethod().signInWithGoogle();
+    String res = await AuthenticationMethodSignIn().signInWithGoogle();
     setState(() {
       isLoadingGoogle = false;  // Reset loading state
     });
