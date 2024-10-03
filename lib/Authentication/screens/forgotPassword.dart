@@ -1,10 +1,10 @@
 import 'dart:ui';
 
+import 'package:autocare_automotiveshops/Authentication/services/authentication_reset_password.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_animate/flutter_animate.dart';
 import '../Widgets/button.dart';
-import '../services/authentication.dart';
 import 'login.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -36,7 +36,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
         isLoading = true;
       });
 
-      String res = await AuthenticationMethod().resetPassword(
+      String res = await AuthenticationMethodResetPassword().resetPassword(
         email: emailController.text,
       );
 

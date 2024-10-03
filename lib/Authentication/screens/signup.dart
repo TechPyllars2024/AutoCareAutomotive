@@ -1,3 +1,4 @@
+import 'package:autocare_automotiveshops/Authentication/services/authentication_signin.dart';
 import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
 import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,7 +8,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../Widgets/button.dart';
 import '../Widgets/snackBar.dart';
 import '../Widgets/text_field.dart';
-import '../services/authentication.dart';
 import '../widgets/carImage.dart';
 import '../widgets/googleButton.dart';
 import '../widgets/or.dart';
@@ -66,7 +66,7 @@ class _SignupScreenState extends State<SignupScreen> {
       return;
     }
 
-    String res = await AuthenticationMethod().signupServiceProvider(
+    String res = await AuthenticationMethodSignIn().signupServiceProvider(
       email: emailController.text,
       password: passwordController.text,
     );
@@ -109,7 +109,7 @@ class _SignupScreenState extends State<SignupScreen> {
       isLoadingGoogle = true;  // Set loading state for Google sign-in
     });
 
-    String res = await AuthenticationMethod().signInWithGoogle();
+    String res = await AuthenticationMethodSignIn().signInWithGoogle();
     setState(() {
       isLoadingGoogle = false;  // Reset loading state
     });
