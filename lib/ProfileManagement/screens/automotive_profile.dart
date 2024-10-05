@@ -164,7 +164,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
   Widget buildCoverImage(Map<String, dynamic> data) => Container(
     color: Colors.grey,
     child: Image.network(
-      data['coverImage'] ?? 'default_cover_image_url',
+      data['coverImage'] ?? 'https://mewitti.com/wp-content/themes/miyazaki/assets/images/default-fallback-image.png',
       width: double.infinity,
       height: coverHeight,
       fit: BoxFit.cover,
@@ -175,7 +175,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
     radius: profileHeight / 2,
     backgroundColor: Colors.grey.shade800,
     backgroundImage:
-    NetworkImage(data['profileImage'] ?? 'default_profile_image_url'),
+    NetworkImage(data['profileImage'] ?? 'https://i.pinimg.com/474x/d1/51/62/d15162b27cd9712860b90abe58cb60e7.jpg'),
   );
 
   Widget buildButton() => WideButtons(
