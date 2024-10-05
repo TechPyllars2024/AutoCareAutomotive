@@ -53,20 +53,6 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
     });
   }
 
-  void getVerified() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const AutomotiveGetVerifiedScreen()),
-    );
-  }
-
-  void checkStatus() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => VerificationStatusScreen(uid: user!.uid)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final double top = coverHeight - profileHeight / 2;
@@ -74,11 +60,30 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         title: const Text(
-          'Profile',
+          'Shop Profile',
           style: TextStyle(fontWeight: FontWeight.w900),
         ),
         backgroundColor: Colors.grey.shade100,
         foregroundColor: Colors.black,
+        actions: [
+          IconButton(
+            icon: Container(
+              decoration: BoxDecoration(
+                color: Colors.orange.shade900, // Set the background color to orange
+                borderRadius: BorderRadius.circular(12.0), // Rounded edges
+              ),
+              padding: const EdgeInsets.all(6.0), // Optional: Add some padding for better aesthetics
+              child: const Center( // Center the icon
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.white, // Set the icon color to white
+                  size: 30,
+                ),
+              ),
+            ),
+            onPressed: editProfile, // Call the editProfile method when pressed
+          ),
+        ],
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: _providerData,
@@ -95,12 +100,9 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
               children: [
                 buildTopSection(data, top),
                 ProfileDetails(profile: profile),
-                buildButton(),
-                const SizedBox(height: 10),
-                buildGetVerified(),
-                const SizedBox(height: 10),
-                buildCheckStatus(),
+                buildDivider(context),
                 const ServicesCarousel(),
+                buildDivider(context),
                 feedbackSection(user?.uid ?? ''),
               ],
             );
@@ -161,46 +163,50 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
     );
   }
 
-  Widget buildCoverImage(Map<String, dynamic> data) => Container(
-    color: Colors.grey,
-    child: Image.network(
-      data['coverImage'] ?? 'default_cover_image_url',
-      width: double.infinity,
-      height: coverHeight,
-      fit: BoxFit.cover,
-    ),
-  );
-
-  Widget buildProfileImage(Map<String, dynamic> data) => CircleAvatar(
-    radius: profileHeight / 2,
-    backgroundColor: Colors.grey.shade800,
-    backgroundImage:
-    NetworkImage(data['profileImage'] ?? 'default_profile_image_url'),
-  );
-
-  Widget buildButton() => WideButtons(
-    onTap: editProfile,
-    text: 'Edit Profile',
-  );
-
-  Widget buildGetVerified() => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 25),
-    child: ElevatedButton(
-    onPressed: getVerified,
-    style: ElevatedButton.styleFrom(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
+  Widget buildCoverImage(Map<String, dynamic> data) {
+    final coverImageUrl = profile?.coverImage ?? 'default_cover_image_url';
+    return Container(
+      color: Colors.grey,
+      child: coverImageUrl.isNotEmpty
+          ? Image.network(
+        coverImageUrl,
+        width: double.infinity,
+        height: coverHeight,
+        fit: BoxFit.cover,
+      )
+          : Container(
+        width: double.infinity,
+        height: coverHeight,
+        color: Colors.grey,
+        child: const Center(
+          child: Icon(Icons.image, color: Colors.white),
+        ),
       ),
-      minimumSize: const Size(400, 45),
-      backgroundColor: Colors.white, // Applied deep orange shade
-    ),
-    child: Text('Get Verified', style: TextStyle(color: Colors.deepOrange.shade700, fontWeight: FontWeight.bold),),
-  )
-  );
-  Widget buildCheckStatus() => WideButtons(
-    onTap: checkStatus,
-    text: 'Check Status',
-  );
+    );
+  }
+
+  Widget buildProfileImage(Map<String, dynamic> data) {
+    final profileImageUrl = profile?.profileImage ?? 'default_profile_image_url';
+    return CircleAvatar(
+      radius: profileHeight / 2,
+      backgroundColor: Colors.grey.shade800,
+      backgroundImage: profileImageUrl.isNotEmpty
+          ? NetworkImage(profileImageUrl)
+          : null,
+      child: profileImageUrl.isEmpty
+          ? const Icon(Icons.person, size: 50, color: Colors.white)
+          : null,
+    );
+  }
+
+  Widget buildDivider(BuildContext context) {
+    return const Divider(
+      color: Colors.grey,
+      thickness: 1,
+      indent: 20,
+      endIndent: 20,
+    );
+  }
 
   Widget feedbackSection(String serviceProviderUid) =>
       StreamBuilder<List<FeedbackModel>>(
@@ -351,3 +357,5 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
     return '${timestamp.day}/${timestamp.month}/${timestamp.year}';
   }
 }
+
+
