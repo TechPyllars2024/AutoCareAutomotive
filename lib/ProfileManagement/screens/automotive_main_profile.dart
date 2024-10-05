@@ -1,12 +1,10 @@
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_profile.dart';
-import 'package:autocare_automotiveshops/ProfileManagement/widgets/profile_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../Authentication/Widgets/snackBar.dart';
 import '../../Authentication/screens/login.dart';
 import '../../Authentication/services/authentication_signout.dart';
-import '../../main.dart';
 import '../models/automotive_shop_profile_model.dart';
 import '../services/profile_service.dart';
 import 'automotive_edit_profile.dart';
