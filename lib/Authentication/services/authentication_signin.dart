@@ -22,7 +22,7 @@ class AuthenticationMethodSignIn{
       // Check if the user already exists as a service provider
       QuerySnapshot existingServiceProvider = await firestore
           .collection("users")
-          .where('email', isEqualTo: user?.email)
+          .where('email', isEqualTo: email)
           .where('roles', arrayContains: 'service_provider')
           .get();
 
@@ -35,7 +35,7 @@ class AuthenticationMethodSignIn{
       // Check if the user already exists as a car owner
       QuerySnapshot existingCarOwner = await firestore
           .collection("users")
-          .where('email', isEqualTo: user?.email)
+          .where('email', isEqualTo: email)
           .where('roles', arrayContains: 'car_owner')
           .get();
 
