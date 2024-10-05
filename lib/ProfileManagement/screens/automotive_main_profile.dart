@@ -78,6 +78,25 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
           style: TextStyle(fontWeight: FontWeight.w900, fontSize: 30),
         ),
         backgroundColor: Colors.grey.shade100,
+        actions: [
+          IconButton(
+            icon: Container(
+              decoration: BoxDecoration(
+                color: Colors.orange.shade900, // Set the background color to orange
+                borderRadius: BorderRadius.circular(12.0), // Rounded edges
+              ),
+              padding: const EdgeInsets.all(6.0), // Optional: Add some padding for better aesthetics
+              child: const Center( // Center the icon
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.white, // Set the icon color to white
+                  size: 30,
+                ),
+              ),
+            ),
+            onPressed: editProfile, // Call the editProfile method when pressed
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
