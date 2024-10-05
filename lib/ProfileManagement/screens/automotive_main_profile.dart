@@ -6,6 +6,7 @@ import '../../Authentication/Widgets/snackBar.dart';
 import '../../Authentication/screens/login.dart';
 import '../../Authentication/services/authentication_signout.dart';
 import '../models/automotive_shop_profile_model.dart';
+import '../services/get_verified_services.dart';
 import '../services/profile_service.dart';
 import 'automotive_edit_profile.dart';
 import 'automotive_get_verified.dart';
@@ -25,6 +26,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
   AutomotiveProfileModel? profile;
   final user = FirebaseAuth.instance.currentUser;
   bool isExpanded = false;
+  bool isVerified = false;
 
   final double profileHeight = 100;
   late Future<Map<String, dynamic>> _providerData;
@@ -35,12 +37,20 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
     _loadProfileData();
     _providerData =
         ProfileService().fetchProviderByUid(user!.uid);
+    _checkVerificationStatus();
   }
 
   Future<void> _loadProfileData() async {
     final fetchedProfile = await _profileService.fetchProfileData();
     setState(() {
       profile = fetchedProfile;
+    });
+  }
+
+  Future<void> _checkVerificationStatus() async {
+    String? status = await GetVerifiedServices().fetchStatus(user!.uid);
+    setState(() {
+      isVerified = status == 'Verified';
     });
   }
 
@@ -116,12 +126,23 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
             Padding(
               padding: const EdgeInsets.only(top: 24),
               child: Center(
-                child: Text(
-                  '${profile?.shopName}' ?? '',
-                  style: const TextStyle(
-                    fontSize: 35,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${profile?.shopName}' ?? '',
+                      style: const TextStyle(
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (isVerified)
+                      const Icon(
+                        Icons.verified,
+                        color: Colors.orange,
+                        size: 30,
+                      ),
+                  ],
                 ),
               ),
             ),
