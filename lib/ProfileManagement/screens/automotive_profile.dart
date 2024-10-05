@@ -62,25 +62,6 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
         ),
         backgroundColor: Colors.grey.shade100,
         foregroundColor: Colors.black,
-        actions: [
-          IconButton(
-            icon: Container(
-              decoration: BoxDecoration(
-                color: Colors.orange.shade900, // Set the background color to orange
-                borderRadius: BorderRadius.circular(12.0), // Rounded edges
-              ),
-              padding: const EdgeInsets.all(6.0), // Optional: Add some padding for better aesthetics
-              child: const Center( // Center the icon
-                child: Icon(
-                  Icons.edit,
-                  color: Colors.white, // Set the icon color to white
-                  size: 30,
-                ),
-              ),
-            ),
-            onPressed: editProfile, // Call the editProfile method when pressed
-          ),
-        ],
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: _providerData,
@@ -101,6 +82,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
                 const ServicesCarousel(),
                 buildDivider(context),
                 feedbackSection(user?.uid ?? ''),
+                const SizedBox(height: 40),
               ],
             );
           }
