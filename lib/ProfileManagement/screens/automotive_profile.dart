@@ -7,9 +7,7 @@ import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
 import '../models/feedbacks_model.dart';
 import '../services/profile_service.dart';
 import '../models/automotive_shop_profile_model.dart';
-import '../widgets/button.dart'; // Assuming this is the button widget file
 import 'automotive_edit_profile.dart';
-import 'automotive_get_verified.dart';
 
 class AutomotiveProfileScreen extends StatefulWidget {
   const AutomotiveProfileScreen({super.key});
