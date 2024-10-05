@@ -1,4 +1,3 @@
-import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_verification_status.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/profile_details.dart';
