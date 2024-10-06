@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'dart:async';
 import '../../Navigation Bar/navbar.dart';
 
 class Onboardingpage3 extends StatefulWidget {
@@ -11,37 +11,31 @@ class Onboardingpage3 extends StatefulWidget {
 
 class _Onboardingpage3State extends State<Onboardingpage3> {
   @override
+  void initState() {
+    super.initState();
+    // Navigate to Navbar after 5 seconds
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Navbar()));
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      body: Column(
+      body: const Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Expanded(
             child: Center(
               child: Text(
-                'All Done!',
+                'You are all set!',
                 style: TextStyle(fontSize: 24),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 120),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Navbar()));
-              },
-              child: Text(
-                "Done",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.orange.shade900,
-                 // decoration: TextDecoration.underline,
-                ),
-              ),
-            ),
-          ),
+
         ],
       ),
     );
