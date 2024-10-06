@@ -1,4 +1,5 @@
 import 'dart:async'; // Import the Timer class
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_get_verified.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_main_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +61,8 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   // Conditionally build screen based on status
   Widget _buildScreenForStatus(String status) {
     switch (status) {
+      case 'Not Submitted':
+        return _buildNotSubmittedScreen();
       case 'Pending':
         return _buildPendingScreen();
       case 'Verified':
@@ -71,9 +74,114 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
     }
   }
 
+  // Not Submitted screen UI
+  Widget _buildNotSubmittedScreen() {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Verification Status',
+          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+        ),
+        backgroundColor: const Color(0x8A000000) ,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.description,
+                size: 120,
+                color: Colors.black54,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Want your shop to be verified?',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Verifying your shop allows you to build trust with customers, '
+                    'and start offering your services seamlessly.',
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.justify,
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Submit the necessary documents, and our team will review your '
+                    'application. Get verified now to enhance your credibility '
+                    'and boost your business visibility!',
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.justify,
+              ),
+              const SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AutomotiveGetVerifiedScreen()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                  backgroundColor: Colors.black54,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: const Text(
+                  'Get Verified',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                  side: const BorderSide(color: Colors.black54), // Border color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   // Pending screen UI
   Widget _buildPendingScreen() {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Verification Status',
+          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+        ),
+        backgroundColor: const Color(0xffFABC3F), // Use the requested color for AppBar
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -116,10 +224,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
               // Button to Go Back
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AutomotiveMainProfile()),
-                  );
+                  Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
@@ -200,10 +305,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
               // Done Button
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AutomotiveMainProfile()),
-                  );
+                  Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
@@ -277,7 +379,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 textAlign: TextAlign.center,
               ),
               const Text(
-                'Please try again or contact support.',
+                'Please try again with the correct documents.',
                 style: TextStyle(fontSize: 16),
                 textAlign: TextAlign.center,
               ),
@@ -285,11 +387,35 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
               // Button to Go Back
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);  // Go back to the previous screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AutomotiveGetVerifiedScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                  backgroundColor: const Color(0xffE72929),  // Button color matching the rejected status
+                  backgroundColor: const Color(0xffE72929),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: const Text(
+                  'Get Verified',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                  side: const BorderSide(color: Color(0xffE72929)), // Border color
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -299,7 +425,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,  // Button text color
+                    color: Colors.black,
                   ),
                 ),
               ),
