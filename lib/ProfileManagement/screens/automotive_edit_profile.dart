@@ -123,22 +123,20 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
       }
 
       try {
-        // If this is the first time the user is entering the details (editProfile is null)
-        if (editProfile == null) {
-          await _automotiveShopEditProfileServices.saveProfile(
-            uid: user.uid,
-            serviceProviderUid: user.uid,
-            shopName: _shopNameController.text,
-            location: _locationController.text,
-            coverImage: _coverImage,
-            profileImage: _profileImage,
-            daysOfTheWeek: List<String>.from(daysOfTheWeekController.selectedOptionList),
-            operationTime: '${_openingTime?.format(context)} - ${_closingTime?.format(context)}',
-            serviceSpecialization: List<String>.from(dropdownController.selectedOptionList),
-            verificationStatus: 'Pending',
-            totalRatings: 0.0,
-            numberOfRatings: 0,
-          );
+        await _automotiveShopEditProfileServices.saveProfile(
+          uid: user.uid,
+          serviceProviderUid: user.uid,
+          shopName: _shopNameController.text,
+          location: _locationController.text,
+          coverImage: _coverImage,
+          profileImage: _profileImage,
+          daysOfTheWeek: List<String>.from(daysOfTheWeekController.selectedOptionList),
+          operationTime: '${_openingTime?.format(context)} - ${_closingTime?.format(context)}',
+          serviceSpecialization: List<String>.from(dropdownController.selectedOptionList),
+          verificationStatus: 'Not Submitted',
+          totalRatings: 0.0,
+          numberOfRatings: 0,
+        );
 
           // Show success snackbar
           ScaffoldMessenger.of(context).showSnackBar(
