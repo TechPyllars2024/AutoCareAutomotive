@@ -578,7 +578,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
           bottom: TabBar(
             indicatorColor: Colors.orange.shade900,
             indicatorSize: TabBarIndicatorSize.tab,
-            tabs: [
+            tabs: const [
               Tab(
                 child: Text(
                   'Calendar View',
