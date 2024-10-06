@@ -15,7 +15,7 @@ class _Onboardingpage1State extends State<Onboardingpage1> {
       body: Center(
         child: Container(
 
-            child: Text('Onboarding Page 1')),
+            child: Text('Rev Up Your Ride with Effortless Care!')),
       ),
     );
   }
