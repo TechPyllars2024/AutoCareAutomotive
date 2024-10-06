@@ -14,7 +14,7 @@ class Onboarding extends StatefulWidget {
 }
 
 class _OnboardingState extends State<Onboarding> {
-  PageController _controller = PageController();
+  final PageController _controller = PageController();
   int currentPageIndex = 0; // Track the current page index
 
   @override
@@ -45,7 +45,7 @@ class _OnboardingState extends State<Onboarding> {
                 currentPageIndex = index; // Update the current page index
               });
             },
-            children: [
+            children: const [
               Onboardingpage1(),
               Onboardingpage2(),
               AutomotiveEditProfile(),
@@ -53,19 +53,19 @@ class _OnboardingState extends State<Onboarding> {
             ],
           ),
           Container(
-            alignment: Alignment(0, 0.9),
+            alignment: const Alignment(0, 0.9),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 currentPageIndex == 0
-                    ? Text("      ") // Don't show "pre" if on first page
+                    ? const Text("      ") // Don't show "pre" if on first page
                     : GestureDetector(
                   onTap: () {
                     _controller.previousPage(
-                        duration: Duration(milliseconds: 500),
+                        duration: const Duration(milliseconds: 500),
                         curve: Curves.easeIn);
                   },
-                  child: Icon(Icons.navigate_before),
+                  child: const Icon(Icons.navigate_before),
                 ),
                 SmoothPageIndicator(
                   controller: _controller,
@@ -78,14 +78,14 @@ class _OnboardingState extends State<Onboarding> {
                   ),
                 ),
                 (currentPageIndex == 2 || currentPageIndex == 3)
-                    ? Text("") // Don't show the next icon on the third page or the last page
+                    ? const Text("") // Don't show the next icon on the third page or the last page
                     : GestureDetector(
                   onTap: () {
                     _controller.nextPage(
-                        duration: Duration(milliseconds: 500),
+                        duration: const Duration(milliseconds: 500),
                         curve: Curves.easeIn);
                   },
-                  child: Icon(Icons.navigate_next),
+                  child: const Icon(Icons.navigate_next),
                 ),
               ],
             ),
