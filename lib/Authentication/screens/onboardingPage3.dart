@@ -31,7 +31,7 @@ class _Onboardingpage3State extends State<Onboardingpage3> {
             child: Center(
               child: Text(
                 'You are all set!',
-                style: TextStyle(fontSize: 24),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
           ),
