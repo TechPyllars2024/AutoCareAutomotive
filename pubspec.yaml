@@ -55,6 +55,7 @@ dependencies:
   logger: ^1.1.0
   table_calendar: ^3.1.2
   mockito: ^5.4.4
+  smooth_page_indicator: ^1.2.0+3
 
   flutter_native_splash: ^2.4.1
 
