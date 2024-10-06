@@ -90,14 +90,4 @@ class GetVerifiedServices {
       return null;
     }
   }
-
-  Future<void> updateStatus(String uid, String status) async {
-    try {
-      await firestore.collection('automotiveShops_profile').doc(uid).update({
-        'verificationStatus': status,
-      });
-    } catch (e) {
-      logger.e('Error updating status: $e');
-    }
-  }
 }
