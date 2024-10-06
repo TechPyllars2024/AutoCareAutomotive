@@ -4,7 +4,7 @@ import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage3.
 import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import '../../ProfileManagement/screens/automotive_edit_profile.dart';
+import '../../ProfileManagement/screens/automotive_complete_profile.dart';
 
 class Onboarding extends StatefulWidget {
   const Onboarding({super.key});
@@ -48,7 +48,7 @@ class _OnboardingState extends State<Onboarding> {
             children: const [
               Onboardingpage1(),
               Onboardingpage2(),
-              AutomotiveEditProfile(),
+              AutomotiveCompleteProfileScreen(),
               Onboardingpage3(),
             ],
           ),
