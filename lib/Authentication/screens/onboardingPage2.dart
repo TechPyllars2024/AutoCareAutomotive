@@ -15,7 +15,7 @@ class _Onboardingpage2State extends State<Onboardingpage2> {
       body: Center(
         child: Container(
 
-            child: Text('Onboarding Page 2')),
+            child: Text('With AutoCare, Your Car Gets the Best Care!')),
       ),
     );
   }
