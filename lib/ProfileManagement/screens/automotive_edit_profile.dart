@@ -129,7 +129,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
           daysOfTheWeek: List<String>.from(daysOfTheWeekController.selectedOptionList),
           operationTime: '${_openingTime?.format(context)} - ${_closingTime?.format(context)}',
           serviceSpecialization: List<String>.from(dropdownController.selectedOptionList),
-          verificationStatus: 'Pending',
+          verificationStatus: 'Not Submitted',
           totalRatings: 0.0,
           numberOfRatings: 0,
         );
