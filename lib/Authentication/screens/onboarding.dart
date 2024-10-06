@@ -15,8 +15,23 @@ class Onboarding extends StatefulWidget {
 
 class _OnboardingState extends State<Onboarding> {
   PageController _controller = PageController();
-  bool onLastPage = false;
-  bool onFirstPage = true;
+  int currentPageIndex = 0; // Track the current page index
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      setState(() {
+        currentPageIndex = _controller.page?.round() ?? 0; // Update the current page index
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose(); // Dispose of the controller
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +42,7 @@ class _OnboardingState extends State<Onboarding> {
             controller: _controller,
             onPageChanged: (index) {
               setState(() {
-                onLastPage = (index == 3);
-                onFirstPage = (index == 0);
+                currentPageIndex = index; // Update the current page index
               });
             },
             children: [
@@ -43,7 +57,7 @@ class _OnboardingState extends State<Onboarding> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                onFirstPage
+                currentPageIndex == 0
                     ? Text("      ") // Don't show "pre" if on first page
                     : GestureDetector(
                   onTap: () {
@@ -63,17 +77,8 @@ class _OnboardingState extends State<Onboarding> {
                     dotWidth: 8.0,
                   ),
                 ),
-                onLastPage
-                    ? GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Navbar()),
-                    );
-                  },
-                  child: Text(""),
-                )
+                (currentPageIndex == 2 || currentPageIndex == 3)
+                    ? Text("") // Don't show the next icon on the third page or the last page
                     : GestureDetector(
                   onTap: () {
                     _controller.nextPage(
