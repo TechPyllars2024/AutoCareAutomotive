@@ -1,4 +1,5 @@
 import 'dart:async'; // Import the Timer class
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_main_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/services/get_verified_services.dart';
@@ -66,7 +67,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
       case 'Rejected':
         return _buildRejectedScreen();
       default:
-        return const Text('Fetching status...'); // Show this while fetching the status
+        return const Center(child: CircularProgressIndicator());
     }
   }
 
@@ -115,7 +116,10 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
               // Button to Go Back
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);  // Go back to the previous screen
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AutomotiveMainProfile()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
@@ -196,8 +200,10 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
               // Done Button
               ElevatedButton(
                 onPressed: () {
-                  // Navigate back or perform any action
-                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AutomotiveMainProfile()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),

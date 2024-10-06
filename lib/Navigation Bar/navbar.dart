@@ -1,9 +1,10 @@
 import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
 import 'package:autocare_automotiveshops/Messages%20Management/screens/automotive_messages.dart';
-import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_profile.dart';
 import 'package:autocare_automotiveshops/Service%20Management/screens/manage_services.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+
+import '../ProfileManagement/screens/automotive_main_profile.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key, this.child});
@@ -20,10 +21,10 @@ class _NavbarState extends State<Navbar> {
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
   final List<Widget> _screens = [
-    AutomotiveBookingScreen(),
+    const AutomotiveBookingScreen(),
     const AutomotiveMessagesScreen(),
     const ServiceManagementScreen(),
-    const AutomotiveProfileScreen(),
+    const AutomotiveMainProfile(),
   ];
 
   @override

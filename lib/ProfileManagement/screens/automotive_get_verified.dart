@@ -25,6 +25,34 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
   PDFViewController? _pdfViewController;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  // for getting the verification status if pending or verified
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _redirectToStatusPageIfNeeded();
+  // }
+  //
+  // Future<void> _redirectToStatusPageIfNeeded() async {
+  //   String? status = await _checkVerificationStatus();
+  //   if (status == 'Pending' || status == 'Verified') {
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => VerificationStatusScreen(uid: _auth.currentUser!.uid),
+  //       ),
+  //     );
+  //   }
+  // }
+  //
+  // Future<String?> _checkVerificationStatus() async {
+  //   final user = _auth.currentUser;
+  //   if (user != null) {
+  //     return await GetVerifiedServices().fetchStatus(user.uid);
+  //   }
+  //   return 'not_verified';
+  // }
+
   Future<void> _pickFile() async {
     setState(() {
       _isLoadingPickFile = true; // Set loading state for picking file
