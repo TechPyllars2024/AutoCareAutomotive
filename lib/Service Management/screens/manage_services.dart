@@ -24,6 +24,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
   final ImageService _imageService = ImageService();
   File? _selectedImage;
   String category = CategoryList.categories[0];
+  bool _isLoading = false;
 
   void _addOrUpdateService(BuildContext context, {ServiceModel? service}) {
     final nameController = TextEditingController(text: service?.name);
@@ -115,19 +116,24 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
               ),
               actions: [
                 TextButton(
-                  child: const Text('Cancel', style: TextStyle(color: Colors.grey),),
+                  child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 TextButton(
-                  child: Text(service == null ? 'Add' : 'Update', style: TextStyle(color: Colors.orange.shade900, fontWeight: FontWeight.bold),),
+                  child: _isLoading
+                      ? const CircularProgressIndicator() // Show loading indicator
+                      : Text(service == null ? 'Add' : 'Update', style: TextStyle(color: Colors.orange.shade900, fontWeight: FontWeight.bold)),
                   onPressed: () async {
                     if (nameController.text.isNotEmpty &&
                         descriptionController.text.isNotEmpty &&
-                        priceController.text.isNotEmpty
-                        && priceController.text != '0.00'
-                        && _selectedImage != null) {
+                        priceController.text.isNotEmpty &&
+                        priceController.text != '0.00' &&
+                        _selectedImage != null) {
+                      setState(() {
+                        _isLoading = true; // Set loading state to true
+                      });
+
                       if (service == null) {
-                        // Add new service
                         await _serviceManagement.addService(
                           serviceProviderId: user!.uid,
                           name: nameController.text,
@@ -137,7 +143,6 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                           imageFile: _selectedImage,
                         );
                       } else {
-                        // Update existing service
                         await _serviceManagement.updateService(
                           serviceId: service.serviceId,
                           name: nameController.text,
@@ -147,6 +152,11 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                           imageFile: _selectedImage,
                         );
                       }
+
+                      setState(() {
+                        _isLoading = false; // Set loading state to false
+                      });
+
                       Navigator.of(context).pop();
                     }
                   },
