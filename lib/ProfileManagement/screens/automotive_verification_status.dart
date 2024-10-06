@@ -1,5 +1,6 @@
 import 'dart:async'; // Import the Timer class
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_get_verified.dart';
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_main_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/services/get_verified_services.dart';
@@ -223,7 +224,10 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
               // Button to Go Back
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AutomotiveMainProfile()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
@@ -304,7 +308,10 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
               // Done Button
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AutomotiveMainProfile()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),

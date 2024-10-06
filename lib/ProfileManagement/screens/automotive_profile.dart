@@ -1,12 +1,13 @@
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/profile_details.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/services_carousel.dart';
 import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
+import 'package:logger/logger.dart';
 import '../models/feedbacks_model.dart';
 import '../services/profile_service.dart';
 import '../models/automotive_shop_profile_model.dart';
-import 'automotive_edit_profile.dart';
 
 class AutomotiveProfileScreen extends StatefulWidget {
   const AutomotiveProfileScreen({super.key});
@@ -16,6 +17,7 @@ class AutomotiveProfileScreen extends StatefulWidget {
 }
 
 class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
+  final Logger logger = Logger();
   final ProfileService _profileService = ProfileService();
   AutomotiveProfileModel? profile;
   final user = FirebaseAuth.instance.currentUser;
@@ -43,7 +45,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
   void editProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const AutomotiveEditProfile()),
+      MaterialPageRoute(builder: (context) => const AutomotiveEditProfileScreen()),
     ).then((_) {
       // Reload profile data after returning from the edit profile screen
       _loadProfileData();
@@ -97,6 +99,10 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
     int numberOfRating =
         data['numberOfRatings'] ?? 0;
 
+    double normalizedRating = numberOfRating > 0 ? (rating / numberOfRating) : 0;
+
+    logger.i('Rating: $rating');
+
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -116,7 +122,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
           child: Row(
             children: [
               PannableRatingBar(
-                rate: rating,
+                rate: normalizedRating,
                 items: List.generate(
                   5,
                       (index) =>  RatingWidget(

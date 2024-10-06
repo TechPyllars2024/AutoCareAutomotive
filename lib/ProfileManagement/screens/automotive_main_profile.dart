@@ -1,3 +1,4 @@
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import '../../Authentication/services/authentication_signout.dart';
 import '../models/automotive_shop_profile_model.dart';
 import '../services/get_verified_services.dart';
 import '../services/profile_service.dart';
-import 'automotive_edit_profile.dart';
 import 'automotive_get_verified.dart';
 import 'automotive_verification_status.dart';
 
@@ -57,7 +57,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
   void editProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const AutomotiveEditProfile()),
+      MaterialPageRoute(builder: (context) => const AutomotiveEditProfileScreen()),
     ).then((_) {
       // Reload profile data after returning from the edit profile screen
       _loadProfileData();
