@@ -10,12 +10,32 @@ class Onboardingpage2 extends StatefulWidget {
 class _Onboardingpage2State extends State<Onboardingpage2> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: Colors.grey.shade100,
       body: Center(
-        child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
 
-            child: Text('With AutoCare, Your Car Gets the Best Care!')),
+            Image.asset(
+              'lib/Authentication/assets/images/onboard2.png',
+              width: 400,
+              height: 400,
+              fit: BoxFit.cover,
+            ),
+            SizedBox(height: 20),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                child: Text(
+                  'Accelerate Your Service: Where Every Connection Counts!',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold), // Customize your text style
+                  textAlign: TextAlign.center, // Center align the text
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
