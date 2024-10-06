@@ -190,7 +190,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
 
   Widget buildSaveButton() => WideButtons(
     onTap: _saveProfile,
-    text: 'Save Changes',
+    text: 'Save',
   );
 
   Widget buildTopSection(double top) {
