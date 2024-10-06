@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage3.dart';
+
 import '../widgets/button.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
@@ -95,6 +97,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     if (user != null) {
       List<String> emptyFields = [];
 
+      // Check for empty fields
       if (_shopNameController.text.isEmpty) {
         emptyFields.add('Shop Name');
       }
@@ -107,6 +110,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
         emptyFields.add('Operating hours');
       }
 
+      // If there are empty fields, show a snackbar and return
       if (emptyFields.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -134,15 +138,54 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
           numberOfRatings: 0,
         );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile saved successfully'),
-            backgroundColor: Colors.green,
-          ),
-        );
+          // Show success snackbar
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profile saved successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
 
-        Navigator.pop(context); // Return to the previous screen
+          // Navigate to the next page (e.g., a welcome or home page)
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Onboardingpage3()), // Replace with your actual page
+          );
+        } else {
+          // Check if the profile is being edited with an existing name
+          if (editProfile!.shopName == _shopNameController.text) {
+            Navigator.pop(context); // Just pop the page if the name is unchanged
+            return;
+          }
+
+          // Proceed to save the profile
+          await _automotiveShopEditProfileServices.saveProfile(
+            uid: user.uid,
+            serviceProviderUid: user.uid,
+            shopName: _shopNameController.text,
+            location: _locationController.text,
+            coverImage: _coverImage,
+            profileImage: _profileImage,
+            daysOfTheWeek: List<String>.from(daysOfTheWeekController.selectedOptionList),
+            operationTime: '${_openingTime?.format(context)} - ${_closingTime?.format(context)}',
+            serviceSpecialization: List<String>.from(dropdownController.selectedOptionList),
+            verificationStatus: 'Pending',
+            totalRatings: 0.0,
+            numberOfRatings: 0,
+          );
+
+          // Show success snackbar
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profile saved successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+
+          Navigator.pop(context); // Return to the previous screen
+        }
       } catch (e) {
+        // Show failure snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to save profile'),
@@ -153,15 +196,19 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     final double top = coverHeight - profileHeight / 2;
 
+
+
+
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text(
-          'Edit Profile',
+        title: Text(
+          editProfile == null ? 'Complete Your Profile' : 'Edit Profile',
           style: TextStyle(fontWeight: FontWeight.w900),
         ),
         backgroundColor: Colors.grey.shade300,
@@ -190,7 +237,7 @@ class _AutomotiveEditProfileState extends State<AutomotiveEditProfile> {
 
   Widget buildSaveButton() => WideButtons(
     onTap: _saveProfile,
-    text: 'Save Changes',
+    text: 'Save',
   );
 
   Widget buildTopSection(double top) {
