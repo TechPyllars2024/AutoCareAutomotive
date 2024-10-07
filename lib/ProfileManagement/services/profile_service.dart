@@ -9,6 +9,7 @@ class ProfileService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Logger logger = Logger();
 
+
   // Fetch profile data from Firestore
   Future<AutomotiveProfileModel?> fetchProfileData() async {
     final user = _auth.currentUser;
@@ -83,7 +84,27 @@ class ProfileService {
           .doc(uid)
           .get();
 
-      return providerSnapshot.data() as Map<String, dynamic>;
+      Map<String, dynamic> data = providerSnapshot.data() as Map<String, dynamic>;
+
+      // Fetch feedbacks for the provider
+      QuerySnapshot feedbackSnapshot = await FirebaseFirestore.instance
+          .collection('feedback')
+          .where('serviceProviderUid', isEqualTo: uid)
+          .get();
+
+      List<FeedbackModel> feedbacks = feedbackSnapshot.docs
+          .map((doc) => FeedbackModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
+          .toList();
+
+      // Calculate total ratings and number of ratings
+      double totalRatings = feedbacks.fold(0, (sum, feedback) => sum + feedback.rating);
+      int numberOfRatings = feedbacks.length;
+
+      // Add totalRatings and numberOfRatings to the data map
+      data['totalRatings'] = totalRatings;
+      data['numberOfRatings'] = numberOfRatings;
+
+      return data;
     } catch (e) {
       logger.i('Error fetching provider by UID $uid: $e');
       return {};

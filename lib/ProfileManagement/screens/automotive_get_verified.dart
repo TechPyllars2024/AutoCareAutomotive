@@ -72,6 +72,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
 
       if (fileUrl != null && fileUrl.isNotEmpty) {
         await GetVerifiedServices().saveVerificationData(fileUrl);
+        await GetVerifiedServices().updateStatus(user!.uid, 'Pending');
         setState(() {
           _isUploaded = true;
         });
@@ -81,7 +82,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VerificationStatusScreen(uid: user!.uid),
+            builder: (context) => VerificationStatusScreen(uid: user.uid),
           ),
         );
       } else {
@@ -105,7 +106,8 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text('Get Verified', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),),
+        title: const Text('Get Verified',
+          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 30),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

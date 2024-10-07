@@ -1,3 +1,6 @@
+import 'package:autocare_automotiveshops/Authentication/screens/onboarding.dart';
+import 'package:autocare_automotiveshops/Authentication/screens/signup.dart';
+import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,6 +9,8 @@ import 'Authentication/screens/login.dart';
 import 'Authentication/screens/verifyEmail.dart';
 
 Future<void> main() async {
+
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 

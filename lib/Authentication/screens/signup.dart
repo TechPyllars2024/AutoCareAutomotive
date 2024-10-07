@@ -1,3 +1,4 @@
+import 'package:autocare_automotiveshops/Authentication/screens/onboarding.dart';
 import 'package:autocare_automotiveshops/Authentication/services/authentication_signin.dart';
 import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
 import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
@@ -117,7 +118,7 @@ class _SignupScreenState extends State<SignupScreen> {
     if (res == "SUCCESS") {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const Navbar(),
+          builder: (context) => const Onboarding(),
         ),
       );
     } else {
