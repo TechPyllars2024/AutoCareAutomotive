@@ -35,8 +35,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
   void initState() {
     super.initState();
     _loadProfileData();
-    _providerData =
-        ProfileService().fetchProviderByUid(user!.uid);
+    _providerData = ProfileService().fetchProviderByUid(user!.uid);
     _checkVerificationStatus();
   }
 
@@ -57,7 +56,8 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
   void editProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const AutomotiveEditProfileScreen()),
+      MaterialPageRoute(
+          builder: (context) => const AutomotiveEditProfileScreen()),
     ).then((_) {
       // Reload profile data after returning from the edit profile screen
       _loadProfileData();
@@ -67,14 +67,16 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
   void getVerified() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const AutomotiveGetVerifiedScreen()),
+      MaterialPageRoute(
+          builder: (context) => const AutomotiveGetVerifiedScreen()),
     );
   }
 
   void checkStatus() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => VerificationStatusScreen(uid: user!.uid)),
+      MaterialPageRoute(
+          builder: (context) => VerificationStatusScreen(uid: user!.uid)),
     );
   }
 
@@ -85,22 +87,25 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
       appBar: AppBar(
         title: const Text(
           'Profile',
-          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 30),
+          style: TextStyle(fontWeight: FontWeight.w900),
         ),
         backgroundColor: Colors.grey.shade100,
         actions: [
           IconButton(
             icon: Container(
               decoration: BoxDecoration(
-                color: Colors.orange.shade900, // Set the background color to orange
+                color: Colors
+                    .orange.shade900, // Set the background color to orange
                 borderRadius: BorderRadius.circular(12.0), // Rounded edges
               ),
-              padding: const EdgeInsets.all(6.0), // Optional: Add some padding for better aesthetics
-              child: const Center( // Center the icon
+              padding: const EdgeInsets.all(
+                  6.0), // Optional: Add some padding for better aesthetics
+              child: const Center(
+                // Center the icon
                 child: Icon(
                   Icons.edit,
                   color: Colors.white, // Set the icon color to white
-                  size: 30,
+                  size: 25,
                 ),
               ),
             ),
@@ -112,15 +117,26 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
         child: Column(
           children: [
             Center(
-              child: CircleAvatar(
-                radius: 100,
-                backgroundColor: Colors.white,
-                backgroundImage: profile?.profileImage.isNotEmpty == true
-                    ? NetworkImage(profile!.profileImage)
-                    : null,
-                child: profile?.profileImage.isEmpty == true
-                    ? const Icon(Icons.person, size: 100, color: Colors.black)
-                    : null,
+              child: Container(
+                width: 180, // Adjust width for border thickness
+                height: 180, // Adjust height for border thickness
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.orange.shade900, // Border color
+                    width: 1, // Border width
+                  ),
+                ),
+                child: CircleAvatar(
+                  radius: 90,
+                  backgroundColor: Colors.white,
+                  backgroundImage: profile?.profileImage.isNotEmpty == true
+                      ? NetworkImage(profile!.profileImage)
+                      : null,
+                  child: profile?.profileImage.isEmpty == true
+                      ? const Icon(Icons.person, size: 90, color: Colors.black)
+                      : null,
+                ),
               ),
             ),
             Padding(
@@ -130,9 +146,9 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      '${profile?.shopName}' ?? '',
+                      '${profile?.shopName}',
                       style: const TextStyle(
-                        fontSize: 35,
+                        fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -146,16 +162,13 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                 ),
               ),
             ),
-
             ProfileDetailsWidget(profile: profile),
-
             const Divider(
               color: Colors.grey,
               thickness: 1,
               indent: 20,
               endIndent: 20,
             ),
-
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -169,7 +182,9 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                         // Navigate to Address screen
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const AutomotiveProfileScreen()),
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const AutomotiveProfileScreen()),
                         );
                       },
                     ),
@@ -177,31 +192,34 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                   Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     child: ProfileMenuWidget(
-                        title: "Check Status", 
-                        icon: Icons.verified, 
+                        title: "Check Status",
+                        icon: Icons.verified,
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => VerificationStatusScreen(uid: user!.uid)),
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    VerificationStatusScreen(uid: user!.uid)),
                           );
                         }),
                   ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     child: ProfileMenuWidget(
-                        title: "Logout",
-                        icon: Icons.logout,
-                        onPressed: () async {
-                          try {
-                            await AuthenticationMethodSignOut().signOut();
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (context) => const LoginScreen()),
-                            );
-                          } catch (e) {
-                            Utils.showSnackBar('Error Signing Out: $e');
-                          }
-                        },
-                        // onPressed: () {},
+                      title: "Logout",
+                      icon: Icons.logout,
+                      onPressed: () async {
+                        try {
+                          await AuthenticationMethodSignOut().signOut();
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                                builder: (context) => const LoginScreen()),
+                          );
+                        } catch (e) {
+                          Utils.showSnackBar('Error Signing Out: $e');
+                        }
+                      },
+                      // onPressed: () {},
                     ),
                   ),
                 ],
@@ -231,35 +249,44 @@ class ProfileDetailsWidget extends StatelessWidget {
             const SizedBox(height: 5),
             Row(
               children: [
-                Icon(Icons.location_on, color: Colors.orange.shade900, size: 15,),
+                Icon(
+                  Icons.location_on,
+                  color: Colors.orange.shade900,
+                  size: 15,
+                ),
                 const SizedBox(width: 4),
                 Text(
                   profile?.location ?? 'Location',
-
                 ),
               ],
             ),
             const SizedBox(height: 5),
             Row(
               children: [
-                Icon(Icons.calendar_month, color: Colors.orange.shade900, size: 15,),
+                Icon(
+                  Icons.calendar_month,
+                  color: Colors.orange.shade900,
+                  size: 15,
+                ),
                 const SizedBox(width: 4),
                 // Convert the list to a comma-separated string if it's a list
                 Text(
                   (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
-
                 ),
               ],
             ),
             const SizedBox(height: 5),
             Row(
               children: [
-                Icon(Icons.schedule, color: Colors.orange.shade900, size: 15,),
+                Icon(
+                  Icons.schedule,
+                  color: Colors.orange.shade900,
+                  size: 15,
+                ),
                 const SizedBox(width: 4),
                 // Ensure operationTime is a String
                 Text(
                   profile?.operationTime ?? 'Operation Time',
-
                 ),
               ],
             ),
@@ -270,7 +297,11 @@ class ProfileDetailsWidget extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.check, color: Colors.orange.shade900, size: 15,),
+                    Icon(
+                      Icons.check,
+                      color: Colors.orange.shade900,
+                      size: 15,
+                    ),
                     const SizedBox(width: 4),
                     // Ensure operationTime is a String
                     Expanded(
@@ -278,12 +309,13 @@ class ProfileDetailsWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            (profile?.serviceSpecialization.join(', ') ?? 'Specialization'
-                                ''),
-                            overflow: TextOverflow.visible, // Allow text to wrap
+                            (profile?.serviceSpecialization.join(', ') ??
+                                'Specialization'
+                                    ''),
+                            overflow:
+                                TextOverflow.visible, // Allow text to wrap
                             maxLines: 2, // Set max lines if needed
                             softWrap: true, // Enable soft wrapping
-
                           ),
                         ],
                       ),
@@ -298,7 +330,6 @@ class ProfileDetailsWidget extends StatelessWidget {
     );
   }
 }
-
 
 class ProfileMenuWidget extends StatelessWidget {
   const ProfileMenuWidget({
@@ -330,15 +361,18 @@ class ProfileMenuWidget extends StatelessWidget {
         child: Icon(icon, color: Colors.orange.shade900),
       ),
       title: Text(title, style: TextStyle(color: color ?? Colors.black)),
-      trailing: endIcon? Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100),
-          color: Colors.grey.withOpacity(0.1),
-        ),
-        child: const Icon(Icons.arrow_forward_ios, size: 18.0, color: Colors.grey),
-      ) : null,
+      trailing: endIcon
+          ? Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                color: Colors.grey.withOpacity(0.1),
+              ),
+              child: const Icon(Icons.arrow_forward_ios,
+                  size: 18.0, color: Colors.grey),
+            )
+          : null,
     );
   }
 }

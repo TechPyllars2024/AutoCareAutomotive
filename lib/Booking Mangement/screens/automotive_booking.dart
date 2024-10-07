@@ -571,7 +571,6 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
-
           title: const Text('Bookings',
               style: TextStyle(fontWeight: FontWeight.w900)),
           backgroundColor: Colors.grey.shade100,
@@ -603,14 +602,13 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
           ),
         ),
         body: TabBarView(
-
           children: [
             // Calendar View Tab
             Column(
               children: [
                 // Adding padding around the calendar for better visual spacing
+                const SizedBox(height: 45),
                 Padding(
-
                   padding: const EdgeInsets.all(16.0),
                   child: TableCalendar(
                     firstDay: DateTime.utc(2020, 1, 1),
@@ -673,7 +671,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         color: Colors
                             .orange.shade900, // Subtle background color for the header
                         borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(16)),
+                            const BorderRadius.vertical(top: Radius.circular(16)),
                       ),
                     ),
                     calendarStyle: CalendarStyle(
