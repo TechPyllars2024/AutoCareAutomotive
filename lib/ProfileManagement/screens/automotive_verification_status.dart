@@ -1,4 +1,5 @@
 import 'dart:async'; // Import the Timer class
+import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_get_verified.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_main_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -226,7 +227,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AutomotiveMainProfile()),
+                    MaterialPageRoute(builder: (context) => const Navbar()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -310,7 +311,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AutomotiveMainProfile()),
+                    MaterialPageRoute(builder: (context) => const Navbar()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
