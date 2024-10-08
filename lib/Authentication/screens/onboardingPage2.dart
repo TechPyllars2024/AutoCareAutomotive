@@ -17,7 +17,7 @@ class _Onboardingpage2State extends State<Onboardingpage2> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'lib/Authentication/assets/images/obbb1.png',
+              'lib/Authentication/assets/images/onb1.png',
               width: 350,
               height: 350,
               fit: BoxFit.cover,
