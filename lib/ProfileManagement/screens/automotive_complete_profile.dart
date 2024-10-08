@@ -202,6 +202,10 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
   Widget build(BuildContext context) {
     final double top = coverHeight - profileHeight / 2;
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Complete Your Shop Profile', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),),
+        backgroundColor: Colors.orange.shade800,
+      ),
       backgroundColor: Colors.grey.shade100,
       body: SafeArea(
         child: Padding(
@@ -210,7 +214,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
             padding: EdgeInsets.zero,
             children: [
               buildTopSection(top),
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
               buildInputs(),
               dayOfTheWeekSelection(),
               timeSelection(),
