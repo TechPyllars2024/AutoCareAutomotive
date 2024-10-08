@@ -12,24 +12,33 @@ class _Onboardingpage1State extends State<Onboardingpage1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Colors.orange.shade800,
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'lib/Authentication/assets/images/onboard1.png',
-              width: 400,
-              height: 400,
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 50.0),
-              child: Text('Rev Up Your Business: Connect with Clients Effortlessly!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold), // Customize your text style
-                textAlign: TextAlign.center,),
-            ),
-          ]
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'lib/Authentication/assets/images/onb2.png',
+                width: 350,
+                height: 350,
+                fit: BoxFit.cover,
+              ),
+              const SizedBox(height: 100),
+              const Positioned(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 50.0),
+                  child: Text(
+                    'Rev Up Your Business and Connect with Clients Effortlessly!',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ]
         ), // Fixed closing parenthesis
       ),
     );
