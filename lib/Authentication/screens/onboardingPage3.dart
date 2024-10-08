@@ -24,18 +24,33 @@ class _Onboardingpage3State extends State<Onboardingpage3> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      body: const Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Expanded(
-            child: Center(
-              child: Text(
-                'You are all set!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
+          Image.asset(
+            'lib/Authentication/assets/images/autocareLogo.png',
+          ),
+          const SizedBox(height: 80),
+          const Text(
+            'You are all set.',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          RichText(
+            text: const TextSpan(
+              text: 'Welcome to Auto',
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
+              children: <TextSpan>[
+                TextSpan(
+                  text: 'Care',
+                  style: TextStyle(color: Color(0xFFe65100)),
+                ),
+                TextSpan(
+                  text: '!',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
             ),
           ),
-
         ],
       ),
     );
