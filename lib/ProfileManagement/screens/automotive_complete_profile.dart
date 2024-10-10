@@ -100,7 +100,6 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     if (user != null) {
       List<String> emptyFields = [];
 
-      // Check for empty fields
       if (_shopNameController.text.isEmpty) {
         emptyFields.add('Shop Name');
       }
@@ -113,7 +112,6 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
         emptyFields.add('Operating hours');
       }
 
-      // If there are empty fields, show a snackbar and return
       if (emptyFields.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -126,11 +124,10 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
       }
 
       setState(() {
-        _isLoading = true; // Set loading state to true
+        _isLoading = true;
       });
 
       try {
-          // If this is the first time the user is entering the details (editProfile is null)
           if (editProfile == null) {
             await _automotiveShopEditProfileServices.saveProfile(
               uid: user.uid,
@@ -147,7 +144,6 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
               numberOfRatings: 0,
             );
 
-          // Show success snackbar
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Profile saved successfully'),
@@ -155,19 +151,16 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
             ),
           );
 
-          // Navigate to the next page (e.g., a welcome or home page)
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Onboardingpage3()), // Replace with your actual page
+            MaterialPageRoute(builder: (context) => Onboardingpage3()),
           );
         } else {
-          // Check if the profile is being edited with an existing name
           if (editProfile!.shopName == _shopNameController.text) {
-            Navigator.pop(context); // Just pop the page if the name is unchanged
+            Navigator.pop(context);
             return;
           }
 
-          // Proceed to save the profile
           await _automotiveShopEditProfileServices.saveProfile(
             uid: user.uid,
             serviceProviderUid: user.uid,
@@ -183,7 +176,6 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
             numberOfRatings: 0,
           );
 
-          // Show success snackbar
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Profile saved successfully'),
@@ -191,10 +183,9 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
             ),
           );
 
-          Navigator.pop(context); // Return to the previous screen
+          Navigator.pop(context);
         }
       } catch (e) {
-        // Show failure snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to save profile'),
@@ -203,7 +194,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
         );
       } finally {
         setState(() {
-          _isLoading = false; // Set loading state to false
+          _isLoading = false;
         });
       }
     }
@@ -218,7 +209,11 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Complete Your Shop Profile', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white)),
+        title: const Text('Complete Your Shop Profile',
+            style: TextStyle(
+                fontWeight: FontWeight.w900,
+                color: Colors.white)
+        ),
         backgroundColor: Colors.orange.shade900,
       ),
       backgroundColor: Colors.grey.shade100,
@@ -237,7 +232,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
                   serviceSpecialization(),
 
                   buildSaveButton(),
-                  const SizedBox(height: 20), // Add space to avoid overlapping with buttons
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -248,7 +243,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
               child: Container(
                 color: Colors.black.withOpacity(0.5),
                 child: const Center(
-                  child: CircularProgressIndicator(), // Show loading indicator
+                  child: CircularProgressIndicator(),
                 ),
               ),
             ),
