@@ -255,20 +255,18 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
 
                       // Sign Up OR
-                      const Padding(
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: Or(),
-                      ),
+                      SizedBox(height: size.height * 0.03),
+                      const Or(),
 
                       // Sign Up with Google
-                      SizedBox(height: size.height * 0.02),
+                      SizedBox(height: size.height * 0.03),
                       GoogleButton(
                         onTap: signInWithGoogle,
                         hintText: 'Sign Up with Google',
                       ),
 
                       // Already have an account? Log In
-                      SizedBox(height: size.height * 0.04),
+                      SizedBox(height: size.height * 0.06),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
