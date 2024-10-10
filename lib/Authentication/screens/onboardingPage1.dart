@@ -13,7 +13,7 @@ class _Onboardingpage1State extends State<Onboardingpage1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange.shade800,
+      backgroundColor: Colors.orange.shade900,
       body: Center(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
