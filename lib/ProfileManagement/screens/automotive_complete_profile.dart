@@ -212,6 +212,9 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
   @override
   Widget build(BuildContext context) {
     final double top = coverHeight - profileHeight / 2;
+
+    double bottomPadding = MediaQuery.of(context).viewInsets.bottom > 0 ? 0 : 80.0;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -222,17 +225,21 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
       body: Stack(
         children: [
           SafeArea(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                buildTopSection(top),
-                buildInputs(),
-                dayOfTheWeekSelection(),
-                timeSelection(),
-                serviceSpecialization(),
-                buildSaveButton(),
-                const SizedBox(height: 20), // Add space to avoid overlapping with buttons
-              ],
+            child: Padding(
+              padding: EdgeInsets.only(bottom: bottomPadding),
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  buildTopSection(top),
+                  buildInputs(),
+                  dayOfTheWeekSelection(),
+                  timeSelection(),
+                  serviceSpecialization(),
+
+                  buildSaveButton(),
+                  const SizedBox(height: 20), // Add space to avoid overlapping with buttons
+                ],
+              ),
             ),
           ),
           if (_isLoading)

@@ -82,7 +82,7 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                   ),
                   (currentPageIndex == 2 || currentPageIndex == 3)
-                      ? const Text("       ") // Don't show the next icon on the third page or the last page
+                      ? const Text("        ") // Don't show the next icon on the third page or the last page
                       : GestureDetector(
                     onTap: () {
                       _controller.nextPage(
