@@ -230,7 +230,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-
+        automaticallyImplyLeading: false,
         title: Text(
           'Manage Services',
           style:
