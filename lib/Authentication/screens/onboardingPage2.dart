@@ -13,6 +13,13 @@ class _Onboardingpage2State extends State<Onboardingpage2> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.orange.shade900,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(1.0), // Set the height of the AppBar
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.orange.shade900,
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
