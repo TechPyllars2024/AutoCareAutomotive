@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class Onboardingpage2 extends StatefulWidget {
   const Onboardingpage2({super.key});
@@ -21,7 +22,8 @@ class _Onboardingpage2State extends State<Onboardingpage2> {
               width: 350,
               height: 350,
               fit: BoxFit.cover,
-            ),
+            ).animate(onPlay: (controller) => controller.repeat())
+                .shimmer(delay: 2000.ms, duration: 1400.ms),
             const SizedBox(height: 100),
             const Positioned(
               child: Padding(
