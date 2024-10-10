@@ -14,6 +14,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "1000331742478-bhv513l1964vckgq738j1necb333hp51.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autocare.automotive.shops.autocare_automotiveshops",
+            "certificate_hash": "fb5bf81f8c857751bd8a8b89cac02f59be406182"
+          }
+        },
+        {
+          "client_id": "1000331742478-o2kk17g9s0bfj2solg2n1a1gpcr0h7h1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autocare.automotive.shops.autocare_automotiveshops",
+            "certificate_hash": "729d12e6bcf988d29c2fdee0f92472f7ad80f711"
+          }
+        },
+        {
+          "client_id": "1000331742478-t38bmep5o0uegph3asth1l18fgs8mdt9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autocare.automotive.shops.autocare_automotiveshops",
+            "certificate_hash": "045d7b7977c7aedf77e7573462191f6846cbd57a"
+          }
+        },
+        {
           "client_id": "1000331742478-elnao7phbfskck3fk44pt4344pbajlmj.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -50,11 +74,35 @@
       },
       "oauth_client": [
         {
+          "client_id": "1000331742478-20esp7ldijiq31ng8km52jsjkodt83n9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autocarecarowners.autocare_carowners",
+            "certificate_hash": "fb5bf81f8c857751bd8a8b89cac02f59be406182"
+          }
+        },
+        {
+          "client_id": "1000331742478-7fh2muol7akfucpl0n8o919q6163m80v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autocarecarowners.autocare_carowners",
+            "certificate_hash": "045d7b7977c7aedf77e7573462191f6846cbd57a"
+          }
+        },
+        {
           "client_id": "1000331742478-r9l6g5mv8u06s38jm8206ers6ujejngf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.autocarecarowners.autocare_carowners",
             "certificate_hash": "729d12e6bcf988d29c2fdee0f92472f7ad80f711"
+          }
+        },
+        {
+          "client_id": "1000331742478-vibhlkql3bh7iof0rdgfafmd1st60drv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autocarecarowners.autocare_carowners",
+            "certificate_hash": "704a4143d093486ac2a601de673382f3a5d27cc9"
           }
         },
         {
