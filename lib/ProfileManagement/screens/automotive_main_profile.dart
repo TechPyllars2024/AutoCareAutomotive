@@ -85,6 +85,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Profile',
           style: TextStyle(fontWeight: FontWeight.w900),

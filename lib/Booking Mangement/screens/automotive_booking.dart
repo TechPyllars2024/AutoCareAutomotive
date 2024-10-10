@@ -571,6 +571,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Text('Bookings',
               style: TextStyle(fontWeight: FontWeight.w900)),
           backgroundColor: Colors.grey.shade100,

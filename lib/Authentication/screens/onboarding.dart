@@ -71,8 +71,8 @@ class _OnboardingState extends State<Onboarding> {
                   controller: _controller,
                   count: 4,
                   effect: ExpandingDotsEffect(
-                    dotColor: Colors.grey, // Inactive dot color
-                    activeDotColor: Colors.orange.shade900, // Active dot color
+                    dotColor: Colors.black54, // Inactive dot color
+                    activeDotColor: Colors.orange.shade300, // Active dot color
                     dotHeight: 8.0,
                     dotWidth: 8.0,
                   ),

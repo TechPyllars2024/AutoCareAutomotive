@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:async';
 import '../../Navigation Bar/navbar.dart';
 
@@ -14,7 +15,7 @@ class _Onboardingpage3State extends State<Onboardingpage3> {
   void initState() {
     super.initState();
     // Navigate to Navbar after 5 seconds
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 5), () {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Navbar()));
     });
@@ -24,18 +25,35 @@ class _Onboardingpage3State extends State<Onboardingpage3> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      body: const Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Expanded(
-            child: Center(
-              child: Text(
-                'You are all set!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
+          Image.asset(
+            'lib/Authentication/assets/images/autocareLogo.png',
+          ).animate()
+              .shimmer(delay: 500.ms, duration: 1000.ms) // Shimmer effect
+              .fadeIn(duration: 500.ms),
+          const SizedBox(height: 80),
+          const Text(
+            'You are all set.',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          RichText(
+            text: const TextSpan(
+              text: 'Welcome to Auto',
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
+              children: <TextSpan>[
+                TextSpan(
+                  text: 'Care',
+                  style: TextStyle(color: Color(0xFFe65100)),
+                ),
+                TextSpan(
+                  text: '!',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
             ),
           ),
-
         ],
       ),
     );
