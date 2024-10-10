@@ -23,7 +23,7 @@ class _Onboardingpage2State extends State<Onboardingpage2> {
               height: 350,
               fit: BoxFit.cover,
             ).animate(onPlay: (controller) => controller.repeat())
-                .shimmer(delay: 2000.ms, duration: 1400.ms),
+                .shimmer(delay: 1000.ms, duration: 1400.ms),
             const SizedBox(height: 100),
             const Positioned(
               child: Padding(
