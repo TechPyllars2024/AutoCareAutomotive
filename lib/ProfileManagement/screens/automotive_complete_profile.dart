@@ -216,26 +216,23 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Complete Your Shop Profile', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white)),
-        backgroundColor: Colors.orange.shade800,
+        backgroundColor: Colors.orange.shade900,
       ),
       backgroundColor: Colors.grey.shade100,
       body: Stack(
         children: [
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 80.0), // Adjust this value to leave space for the buttons
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  buildTopSection(top),
-                  buildInputs(),
-                  dayOfTheWeekSelection(),
-                  timeSelection(),
-                  serviceSpecialization(),
-                  buildSaveButton(),
-                  const SizedBox(height: 20), // Add space to avoid overlapping with buttons
-                ],
-              ),
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                buildTopSection(top),
+                buildInputs(),
+                dayOfTheWeekSelection(),
+                timeSelection(),
+                serviceSpecialization(),
+                buildSaveButton(),
+                const SizedBox(height: 20), // Add space to avoid overlapping with buttons
+              ],
             ),
           ),
           if (_isLoading)
@@ -300,7 +297,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
   Widget buildCoverImage() => Stack(
     children: [
       Container(
-        color: Colors.grey.shade700,
+        color: Colors.grey.shade400,
         width: double.infinity,
         height: coverHeight,
         child: _coverImage != null
@@ -336,7 +333,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     children: [
       CircleAvatar(
         radius: profileHeight / 2,
-        backgroundColor: Colors.grey.shade600,
+        backgroundColor: Colors.grey.shade500,
         child: _profileImage != null
             ? ClipOval(
           child: Image.file(

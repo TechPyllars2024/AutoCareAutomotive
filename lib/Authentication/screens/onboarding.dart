@@ -36,6 +36,7 @@ class _OnboardingState extends State<Onboarding> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           PageView(
@@ -52,46 +53,51 @@ class _OnboardingState extends State<Onboarding> {
               Onboardingpage3(),
             ],
           ),
-          Container(
-            alignment: const Alignment(0, 0.9),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                currentPageIndex == 0
-                    ? const Text("      ") // Don't show "pre" if on first page
-                    : GestureDetector(
-                  onTap: () {
-                    _controller.previousPage(
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeIn);
-                  },
-                  child: const Icon(Icons.navigate_before),
-                ),
-                SmoothPageIndicator(
-                  controller: _controller,
-                  count: 4,
-                  effect: ExpandingDotsEffect(
-                    dotColor: Colors.black54, // Inactive dot color
-                    activeDotColor: Colors.orange.shade300, // Active dot color
-                    dotHeight: 8.0,
-                    dotWidth: 8.0,
+          Positioned(
+            bottom: 30, // Set this value as needed to ensure it's above the keyboard when opened
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  currentPageIndex == 0
+                      ? const Text("       ") // Don't show "pre" if on first page
+                      : GestureDetector(
+                    onTap: () {
+                      _controller.previousPage(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeIn);
+                    },
+                    child: const Icon(Icons.navigate_before, size: 30,),
                   ),
-                ),
-                (currentPageIndex == 2 || currentPageIndex == 3)
-                    ? const Text("") // Don't show the next icon on the third page or the last page
-                    : GestureDetector(
-                  onTap: () {
-                    _controller.nextPage(
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeIn);
-                  },
-                  child: const Icon(Icons.navigate_next),
-                ),
-              ],
+                  SmoothPageIndicator(
+                    controller: _controller,
+                    count: 4,
+                    effect: ExpandingDotsEffect(
+                      dotColor: Colors.black54, // Inactive dot color
+                      activeDotColor: Colors.orange.shade300, // Active dot color
+                      dotHeight: 8.0,
+                      dotWidth: 8.0,
+                    ),
+                  ),
+                  (currentPageIndex == 2 || currentPageIndex == 3)
+                      ? const Text("       ") // Don't show the next icon on the third page or the last page
+                      : GestureDetector(
+                    onTap: () {
+                      _controller.nextPage(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeIn);
+                    },
+                    child: const Icon(Icons.navigate_next, size: 30,),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
       ),
     );
   }
+
 }
