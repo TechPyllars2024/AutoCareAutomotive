@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage3.dart';
 
 import '../widgets/button.dart';
@@ -42,6 +43,8 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
 
   String? uid;
   AutomotiveProfileModel? editProfile;
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -122,6 +125,10 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
         return;
       }
 
+      setState(() {
+        _isLoading = true; // Set loading state to true
+      });
+
       try {
           // If this is the first time the user is entering the details (editProfile is null)
           if (editProfile == null) {
@@ -194,6 +201,10 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
             backgroundColor: Colors.red,
           ),
         );
+      } finally {
+        setState(() {
+          _isLoading = false; // Set loading state to false
+        });
       }
     }
   }
@@ -203,30 +214,43 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     final double top = coverHeight - profileHeight / 2;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Complete Your Shop Profile', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),),
+        title: const Text('Complete Your Shop Profile', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white)),
         backgroundColor: Colors.orange.shade800,
       ),
       backgroundColor: Colors.grey.shade100,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              buildTopSection(top),
-              // const SizedBox(height: 20),
-              buildInputs(),
-              dayOfTheWeekSelection(),
-              timeSelection(),
-              serviceSpecialization(),
-              buildSaveButton(),
-            ],
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 80.0), // Adjust this value to leave space for the buttons
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  buildTopSection(top),
+                  buildInputs(),
+                  dayOfTheWeekSelection(),
+                  timeSelection(),
+                  serviceSpecialization(),
+                  buildSaveButton(),
+                  const SizedBox(height: 20), // Add space to avoid overlapping with buttons
+                ],
+              ),
+            ),
           ),
-        ),
+          if (_isLoading)
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: const Center(
+                  child: CircularProgressIndicator(), // Show loading indicator
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
-
 
   Widget buildSaveButton() => WideButtons(
     onTap: _saveProfile,
