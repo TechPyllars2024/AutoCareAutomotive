@@ -130,9 +130,11 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+
       backgroundColor: Colors.black,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Column(
+
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           // Sign Up Image
@@ -155,6 +157,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
+
+
                       Container(
                         margin: const EdgeInsets.only(bottom: 8),
                         child: RichText(
@@ -180,6 +184,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ).animate().fadeIn(duration: const Duration(seconds: 3)),
                       ),
+
                       TextFieldInput(
                         icon: Icons.email,
                         textEditingController: emailController,
