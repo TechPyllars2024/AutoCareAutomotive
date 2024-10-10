@@ -214,6 +214,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     final double top = coverHeight - profileHeight / 2;
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Complete Your Shop Profile', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white)),
         backgroundColor: Colors.orange.shade800,
       ),
