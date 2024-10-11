@@ -1,7 +1,6 @@
-import 'dart:async'; // Import the Timer class
+import 'dart:async';
 import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_get_verified.dart';
-import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_main_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/services/get_verified_services.dart';
@@ -17,9 +16,9 @@ class VerificationStatusScreen extends StatefulWidget {
 
 class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  String status = ''; // Initialize the status as an empty string
+  String status = '';
   final Logger logger = Logger();
-  Timer? _timer; // Declare a Timer to run the fetch periodically
+  Timer? _timer;
 
   Future<void> _fetchStatus() async {
     final user = _auth.currentUser;
@@ -37,7 +36,6 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   @override
   void initState() {
     super.initState();
-    // Set up a Timer to fetch the status every 2 seconds
     _timer = Timer.periodic(const Duration(seconds: 2), (Timer t) {
       _fetchStatus();
     });
@@ -45,7 +43,6 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
 
   @override
   void dispose() {
-    // Cancel the timer when the widget is disposed
     _timer?.cancel();
     super.dispose();
   }
@@ -54,12 +51,11 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: _buildScreenForStatus(status), // Build UI based on status
+        child: _buildScreenForStatus(status),
       ),
     );
   }
 
-  // Conditionally build screen based on status
   Widget _buildScreenForStatus(String status) {
     switch (status) {
       case 'Not Submitted':
@@ -75,7 +71,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
     }
   }
 
-  // Not Submitted screen UI
+  // Not submitted screen UI
   Widget _buildNotSubmittedScreen() {
     return Scaffold(
       appBar: AppBar(
@@ -152,7 +148,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 },
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                  side: const BorderSide(color: Colors.black54), // Border color
+                  side: const BorderSide(color: Colors.black54),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -181,7 +177,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
           'Verification Status',
           style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
         ),
-        backgroundColor: const Color(0xffFABC3F), // Use the requested color for AppBar
+        backgroundColor: const Color(0xffFABC3F),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -191,9 +187,9 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
             children: [
               // Pending Icon
               const Icon(
-                Icons.hourglass_top_rounded,  // Use an hourglass or similar icon to represent pending
+                Icons.hourglass_top_rounded,
                 size: 120,
-                color: Color(0xffFABC3F),  // Hex color #FFFE599
+                color: Color(0xffFABC3F),
               ),
               const SizedBox(height: 20),
               // Pending Text
@@ -210,7 +206,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  color: Colors.yellow[800], // Optional: Yellow color to emphasize pending status
+                  color: Colors.yellow[800],
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -232,7 +228,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                  backgroundColor: const Color(0xffFABC3F),  // Button color
+                  backgroundColor: const Color(0xffFABC3F),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -269,11 +265,10 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Verified Icon
               const Icon(
-                Icons.verified, // Verified icon
-                color: Color(0xff06D001), // Icon color set to #fd9ead3
-                size: 100, // Adjust icon size as needed
+                Icons.verified,
+                color: Color(0xff06D001),
+                size: 100,
               ),
               const SizedBox(height: 20),
               // Verification Message
@@ -283,7 +278,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87, // Text color
+                  color: Colors.black87,
                 ),
               ),
               const Text(
@@ -302,7 +297,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.black54, // Subtitle text color
+                  color: Colors.black54,
                 ),
               ),
               const SizedBox(height: 32),
@@ -316,9 +311,9 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                  backgroundColor: const Color(0xff06D001), // Button color set to #fd9ead3
+                  backgroundColor: const Color(0xff06D001),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15), // Set the corner radius
+                    borderRadius: BorderRadius.circular(15),
                   ),
                 ),
                 child: const Text(
@@ -326,7 +321,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white, // Text color for the button
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -345,7 +340,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
           'Verification Status',
           style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
         ),
-        backgroundColor: const Color(0xffE72929), // Use the requested color for AppBar
+        backgroundColor: const Color(0xffE72929),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -355,9 +350,9 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
             children: [
               // Rejected Icon
               const Icon(
-                Icons.cancel_rounded,  // Use a "cancel" or "error" icon to represent rejection
+                Icons.cancel_rounded,
                 size: 120,
-                color: Color(0xffE72929),  // Hex color #f4cccc
+                color: Color(0xffE72929),
               ),
               const SizedBox(height: 20),
               // Rejected Text
@@ -374,12 +369,11 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  color: Colors.red, // Optional: Red color to emphasize rejection
+                  color: Colors.red,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
-              // Additional Message
               const Text(
                 'Unfortunately, your submitted documents did not meet our requirements.',
                 style: TextStyle(fontSize: 16),
@@ -422,7 +416,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 },
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                  side: const BorderSide(color: Color(0xffE72929)), // Border color
+                  side: const BorderSide(color: Color(0xffE72929)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
