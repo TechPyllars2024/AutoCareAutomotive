@@ -75,6 +75,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   Widget _buildNotSubmittedScreen() {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Verification Status',
           style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
@@ -173,6 +174,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   Widget _buildPendingScreen() {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Verification Status',
           style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
@@ -253,6 +255,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   Widget _buildVerifiedScreen() {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Verification Status',
           style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
@@ -336,6 +339,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   Widget _buildRejectedScreen() {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Verification Status',
           style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
