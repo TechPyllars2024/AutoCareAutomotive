@@ -36,7 +36,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 2), (Timer t) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       _fetchStatus();
     });
   }
@@ -121,10 +121,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AutomotiveGetVerifiedScreen()),
-                  );
+                  Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
@@ -223,10 +220,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
               // Button to Go Back
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Navbar()),
-                  );
+                  Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
@@ -307,10 +301,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
               // Done Button
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Navbar()),
-                  );
+                  Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
