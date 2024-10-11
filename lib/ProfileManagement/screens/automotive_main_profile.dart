@@ -193,7 +193,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                   Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     child: ProfileMenuWidget(
-                        title: "Check Status",
+                        title: "Get Verified",
                         icon: Icons.verified,
                         onPressed: () {
                           Navigator.push(
