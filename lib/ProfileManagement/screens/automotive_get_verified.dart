@@ -106,8 +106,10 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text('Get Verified',
-          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 30),),
+        title: const Text(
+          'Get Verified',
+          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.black),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -116,13 +118,122 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('lib/ProfileManagement/assets/getVerifiedCar.png', height: 200),
-                const SizedBox(height: 16),
                 const Text(
-                  'Please upload a PDF file to get verified',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18),
+                  'Complete Your Verification Process',
+                  style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
+                const SizedBox(height: 20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: const TextSpan(
+                        text: '1. ',
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                        children: [
+                          TextSpan(
+                            text: 'Prepare the Documents:',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 16.0, top: 8),
+                      child: Text(
+                        'Compile the following into a single PDF file',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 32.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: const TextSpan(
+                              text: '- ',
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                              children: [
+                                TextSpan(
+                                  text: 'Business Permit: ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: 'A clear copy of your valid business permit.',
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          RichText(
+                            text: const TextSpan(
+                              text: '- ',
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                              children: [
+                                TextSpan(
+                                  text: 'Valid ID (Back-to-Back): ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: 'A government-issued ID of the owner, showing both the front and back sides.',
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 16.0),
+
+                    RichText(
+                      text: const TextSpan(
+                        text: '2. ',
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                        children: [
+                          TextSpan(
+                            text: 'Prepare the Documents:',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0, top: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: const TextSpan(
+                              text: '- Format: ',
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                              children: [
+                                TextSpan(
+                                  text: 'PDF',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: ' only.',
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Text(
+                            '- Ensure all information is clear and readable.',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
                 const SizedBox(height: 30),
 
                 ElevatedButton(
