@@ -16,7 +16,7 @@ class _Onboardingpage1State extends State<Onboardingpage1> {
 
       backgroundColor: Colors.orange.shade900,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(1.0), // Set the height of the AppBar
+        preferredSize: const Size.fromHeight(1.0),
         child: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.orange.shade900,
@@ -49,7 +49,7 @@ class _Onboardingpage1State extends State<Onboardingpage1> {
                 ),
               ),
             ]
-        ), // Fixed closing parenthesis
+        ),
       ),
     );
   }
