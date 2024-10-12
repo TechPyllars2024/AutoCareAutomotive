@@ -121,7 +121,6 @@ class _AutomotiveEditProfileScreenState
         emptyFields.add('Operating hours');
       }
 
-      // If there are empty fields, show a snackbar and return
       if (emptyFields.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -134,7 +133,7 @@ class _AutomotiveEditProfileScreenState
       }
 
       try {
-        // Proceed to save the profile
+
         await _automotiveShopEditProfileServices.saveProfile(
           uid: user.uid,
           serviceProviderUid: user.uid,
@@ -153,7 +152,7 @@ class _AutomotiveEditProfileScreenState
           numberOfRatings: _numberOfRatings,
         );
 
-        // Show success snackbar
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Profile saved successfully'),
@@ -161,9 +160,8 @@ class _AutomotiveEditProfileScreenState
           ),
         );
 
-        Navigator.pop(context); // Return to the previous screen
+        Navigator.pop(context);
       } catch (e) {
-        // Show failure snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to save profile'),
@@ -185,7 +183,7 @@ class _AutomotiveEditProfileScreenState
           style: TextStyle(fontWeight: FontWeight.w900),
         ),
         backgroundColor: Colors.grey.shade300,
-        foregroundColor: Colors.black, // Ensures text is visible on AppBar
+        foregroundColor: Colors.black,
       ),
       body: SafeArea(
         child: Padding(
