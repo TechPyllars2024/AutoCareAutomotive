@@ -72,7 +72,10 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
           canResendEmail = false;
         });
 
-        Utils.showSnackBar("Verification email sent. Please check your inbox.");
+        const SnackBar(
+          content: Text("Verification email sent. Please check your inbox."),
+          backgroundColor: Colors.green,
+        );
 
         // Cooldown period before allowing another resend
         await Future.delayed(const Duration(seconds: 30));
