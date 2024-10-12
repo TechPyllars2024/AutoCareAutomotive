@@ -85,9 +85,9 @@ class _CustomDropdownState extends State<CustomDropdown> {
         return AlertDialog(
           title: Text(
             'Select Options',
-            style: TextStyle(color: Colors.grey[800]), // Dark grey text
+            style: TextStyle(color: Colors.grey[800]),
           ),
-          backgroundColor: Colors.white, // Very light grey background
+          backgroundColor: Colors.white,
           content: SingleChildScrollView(
             child: ListBody(
               children: widget.options.map((option) {
@@ -95,7 +95,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
                       () => CheckboxListTile(
                     title: Text(
                       option,
-                      style: TextStyle(color: Colors.grey[800]), // Dark grey text
+                      style: TextStyle(color: Colors.grey[800]),
                     ),
                     value: widget.controller.selectedOptionList.contains(option),
                     onChanged: (bool? value) {
@@ -108,8 +108,8 @@ class _CustomDropdownState extends State<CustomDropdown> {
                       widget.onSelectionChanged?.call(widget.controller.selectedOptionList);
                     },
                     controlAffinity: ListTileControlAffinity.leading,
-                    activeColor: Colors.orange.shade900, // Color for the checkbox when selected
-                    checkColor: Colors.white, // Color for the check mark
+                    activeColor: Colors.orange.shade900,
+                    checkColor: Colors.white,
                   ),
                 );
               }).toList(),
@@ -119,7 +119,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
             TextButton(
               child: Text(
                 'Save',
-                style: TextStyle(color: Colors.orange.shade900, fontWeight: FontWeight.bold), // Dark grey text
+                style: TextStyle(color: Colors.orange.shade900, fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
