@@ -34,9 +34,7 @@ class TextFieldInput extends StatelessWidget {
           decoration: InputDecoration(
             labelText: hintText,
 
-            // prefixIcon: icon != null
-            //     ? Icon(icon, color: Colors.black45, size: 24)
-            //     : null,
+
             labelStyle: const TextStyle(color: Color.fromARGB(255, 77, 76, 76)),
             border:  OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey),

@@ -22,7 +22,7 @@ class WideButtons extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
           ),
           minimumSize: const Size(400, 45),
-          backgroundColor: Colors.deepOrange.shade700, // Applied deep orange shade
+          backgroundColor: Colors.deepOrange.shade700,
         ),
         onPressed: onTap,
         child: Text(

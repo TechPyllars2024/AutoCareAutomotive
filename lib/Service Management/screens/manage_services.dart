@@ -29,10 +29,10 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
   void _addOrUpdateService(BuildContext context, {ServiceModel? service}) {
     final nameController = TextEditingController(text: service?.name);
     final descriptionController =
-        TextEditingController(text: service?.description);
+    TextEditingController(text: service?.description);
 
     final priceController =
-        TextEditingController(text: service?.price.toString());
+    TextEditingController(text: service?.price.toString());
 
     String category = service?.category.isNotEmpty == true
         ? service!.category[0]
@@ -42,15 +42,15 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
       context: context,
       builder: (context) {
         return StatefulBuilder(
-          // StatefulBuilder allows updating the dialog UI.
+
           builder: (context, setState) {
             return WillPopScope(
               onWillPop: () async {
                 setState(() {
                   _selectedImage =
-                      null; // Clear the selected image when dismissed
+                  null;
                 });
-                return true; // Allow the dialog to close
+                return true;
               },
               child: AlertDialog(
                 backgroundColor: Colors.white,
@@ -64,7 +64,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 4),
-                      // Conditionally display the selected image preview
+
                       if (_selectedImage != null)
                         Container(
                           height: 150,
@@ -79,9 +79,9 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                             child: Image.file(
 
                               _selectedImage!,
-                              // Show the selected image if available
+
                               fit: BoxFit
-                                  .cover, // Ensure the image scales properly
+                                  .cover,
                             ),
                           ),
                         )
@@ -103,15 +103,13 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                           backgroundColor: Colors.deepOrange.shade700,
                         ),
                         onPressed: () async {
-                          // Opens the modal to let the user choose camera or gallery
                           final source = await _pickImageSource();
                           if (source != null) {
-                            // Calls the image picking function and updates the state
                             File? pickedImage =
-                                await _imageService.pickImage(source);
+                            await _imageService.pickImage(source);
                             setState(() {
                               _selectedImage =
-                                  pickedImage; // Updates the selected image
+                                  pickedImage;
                             });
                           }
                         },
@@ -121,79 +119,87 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ),
                       ),
-                      // Show this message if no image has been selected yet
+
                       TextField(
                         controller: nameController,
                         onChanged: (text) {
-                          setState(() {}); // Trigger rebuild to update label color
+                          setState(() {});
                         },
                         decoration: InputDecoration(
                           labelText: 'Name',
                           labelStyle: TextStyle(
                             color: nameController.text.isEmpty
-                                ? Colors.black // Black when empty
-                                : Colors.orange.shade900, // Orange when typing
+                                ? Colors.black
+                                : Colors.orange.shade900,
                           ),
                           border: const OutlineInputBorder(),
                           focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.orange.shade900, width: 2),
+                            borderSide: BorderSide(
+                                color: Colors.orange.shade900, width: 2),
                           ),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade600, width: 1),
+                            borderSide: BorderSide(
+                                color: Colors.grey.shade600, width: 1),
                           ),
                         ),
-                        style: TextStyle(color: Colors.black), // Text color while typing
+                        style: TextStyle(color: Colors.black),
                       ),
                       TextField(
                         controller: descriptionController,
                         onChanged: (text) {
-                          setState(() {}); // Trigger rebuild to update label color
+                          setState(() {});
                         },
                         decoration: InputDecoration(
                           labelText: 'Description',
                           labelStyle: TextStyle(
                             color: descriptionController.text.isEmpty
-                                ? Colors.black // Black when empty
-                                : Colors.orange.shade900, // Orange when typing
+                                ? Colors.black
+                                : Colors.orange.shade900,
                           ),
                           border: const OutlineInputBorder(),
                           focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.orange.shade900, width: 2),
+                            borderSide: BorderSide(
+                                color: Colors.orange.shade900, width: 2),
                           ),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade600, width: 1),
+                            borderSide: BorderSide(
+                                color: Colors.grey.shade600, width: 1),
                           ),
                         ),
                       ),
 
                       TextField(
                         controller: priceController,
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
                         onChanged: (value) {
-                          setState(() {}); // Trigger rebuild to update label color
+                          setState(() {});
                           final price = double.tryParse(value);
                           if (price != null && price <= 0) {
-                            priceController.clear(); // Clear the input if invalid
+                            priceController.clear();
                           }
                         },
                         decoration: InputDecoration(
                           labelText: 'Price',
                           labelStyle: TextStyle(
                             color: priceController.text.isEmpty
-                                ? Colors.black // Black when empty
-                                : Colors.orange.shade900, // Orange when typing
+                                ? Colors.black
+                                : Colors.orange.shade900,
                           ),
                           hintText: 'Enter price greater than 0',
                           border: const OutlineInputBorder(),
                           focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.orange.shade900, width: 2),
+                            borderSide: BorderSide(
+                                color: Colors.orange.shade900, width: 2),
                           ),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade600, width: 1),
+                            borderSide: BorderSide(
+                                color: Colors.grey.shade600, width: 1),
                           ),
                         ),
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d*\.?\d*')),
                         ],
                       ),
 
@@ -239,25 +245,26 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                         style: TextStyle(color: Colors.grey)),
                     onPressed: () {
                       setState(() {
-                        _selectedImage = null; // Clear the selected image
+                        _selectedImage = null;
                       });
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: _isLoading
-                        ?  SizedBox(
+                        ? SizedBox(
                       height: 18,
-                          width: 18,
-                          child: CircularProgressIndicator(
-                                                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange.shade900), // Set the loading color
-                                                strokeWidth: 3,
-                                              ),
-                        ) // Show loading indicator
+                      width: 18,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.orange
+                            .shade900),
+                        strokeWidth: 3,
+                      ),
+                    ) // Show loading indicator
                         : Text(service == null ? 'Add' : 'Update',
-                            style: TextStyle(
-                                color: Colors.orange.shade900,
-                                fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                            color: Colors.orange.shade900,
+                            fontWeight: FontWeight.bold)),
                     onPressed: () async {
                       if (nameController.text.isNotEmpty &&
                           descriptionController.text.isNotEmpty &&
@@ -289,7 +296,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                         }
 
                         setState(() {
-                          _isLoading = false; // Set loading state to false
+                          _isLoading = false;
                           _selectedImage = null;
                         });
 
@@ -306,7 +313,6 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
     );
   }
 
-  // Pick an image source
   Future<ImageSource?> _pickImageSource() async {
     return showModalBottomSheet<ImageSource>(
       context: context,
@@ -329,7 +335,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
     );
   }
 
-  // Service options dialog
+
   void _showServiceOptions(BuildContext context, ServiceModel service) {
     showDialog(
       context: context,
@@ -371,7 +377,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
         title: Text(
           'Manage Services',
           style:
-              TextStyle(fontWeight: FontWeight.w900, color: Colors.grey[800]),
+          TextStyle(fontWeight: FontWeight.w900, color: Colors.grey[800]),
         ),
         backgroundColor: Colors.grey.shade100,
         elevation: 0,
@@ -393,18 +399,18 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
             padding: const EdgeInsets.all(8.0),
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Number of items per row
-                crossAxisSpacing: 10, // Horizontal spacing between items
-                mainAxisSpacing: 10, // Vertical spacing between items
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
                 childAspectRatio:
-                    3 / 4, // Adjust this for image and text alignment
+                3 / 4,
               ),
               itemCount: services.length,
               itemBuilder: (context, index) {
                 final service = services[index];
                 return GestureDetector(
                   onTap: () => _showServiceOptions(context, service),
-                  // Method for showing service options
+
                   child: Card(
                     color: Colors.white,
                     elevation: 5,
@@ -423,11 +429,11 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                             ),
                             child: Image.network(
                               service
-                                  .servicePicture, // Image URL from the service
+                                  .servicePicture,
                               width: double.infinity,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
-                                // Fallback in case the image fails to load
+
                                 return const Icon(
                                   Icons.broken_image,
                                   size: 60,
@@ -449,9 +455,9 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                                   fontSize: 15,
                                   color: Colors.grey[800],
                                 ),
-                                maxLines: 1, // Limit to a single line
+                                maxLines: 1,
                                 overflow:
-                                    TextOverflow.ellipsis, // Handle overflow
+                                TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 4.0),
                               Text(

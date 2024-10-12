@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// Controller for managing selected days
+
 class DaysOfTheWeekController extends GetxController {
   var selectedOptionList = <String>[].obs;
   var selectedOption = ''.obs;
 
-  // Update selected option based on selected days
+
   void updateSelectedOption() {
-    final selectedDays = selectedOptionList.toSet(); // Convert list to set
+    final selectedDays = selectedOptionList.toSet();
 
     if (selectedDays.length == 7) {
       selectedOption.value = 'Everyday';
@@ -22,7 +22,6 @@ class DaysOfTheWeekController extends GetxController {
   }
 }
 
-// Widget for selecting days of the week
 class DayOfTheWeek extends StatefulWidget {
   final List<String> options;
   final String hintText;
@@ -59,7 +58,7 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(15),
-                  color: Colors.white, // Light grey background
+                  color: Colors.white,
                 ),
                 child: Obx(
                       () => Text(
@@ -89,9 +88,9 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
         return AlertDialog(
           title: Text(
             'Select Options',
-            style: TextStyle(color: Colors.grey[800]), // Dark grey text
+            style: TextStyle(color: Colors.grey[800]),
           ),
-          backgroundColor: Colors.grey[200], // Very light grey background
+          backgroundColor: Colors.grey[200],
           content: SingleChildScrollView(
             child: ListBody(
               children: widget.options.map((option) {
@@ -99,7 +98,7 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
                       () => CheckboxListTile(
                     title: Text(
                       option,
-                      style: TextStyle(color: Colors.grey[800]), // Dark grey text
+                      style: TextStyle(color: Colors.grey[800]),
                     ),
                     value: widget.controller.selectedOptionList.contains(option),
                     onChanged: (bool? value) {
@@ -108,12 +107,12 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
                       } else {
                         widget.controller.selectedOptionList.remove(option);
                       }
-                      widget.controller.updateSelectedOption(); // Update selected options
+                      widget.controller.updateSelectedOption();
                       widget.onSelectionChanged?.call(widget.controller.selectedOptionList);
                     },
                     controlAffinity: ListTileControlAffinity.leading,
-                    activeColor: Colors.orange.shade900, // Color for the checkbox when selected
-                    checkColor: Colors.white, // Color for the check mark
+                    activeColor: Colors.orange.shade900,
+                    checkColor: Colors.white,
                   ),
                 );
               }).toList(),
@@ -123,7 +122,7 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
             TextButton(
               child: Text(
                 'Save',
-                style: TextStyle(color: Colors.orange.shade900), // Dark grey text
+                style: TextStyle(color: Colors.orange.shade900),
               ),
               onPressed: () {
                 Navigator.of(context).pop();

@@ -20,7 +20,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   bool isEmailVerified = false;
   Timer? timer;
   bool canResendEmail = true;
-  bool isLoading = false; // Add isLoading state for showing loader
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       isEmailVerified = user.emailVerified;
 
       if (!isEmailVerified) {
-        // Start periodic check for email verification but don't resend automatically
+
         timer = Timer.periodic(
           const Duration(seconds: 3),
           (_) => checkEmailVerified(),
@@ -60,7 +60,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
   Future<void> sendVerificationEmail() async {
     setState(() {
-      isLoading = true; // Show loader
+      isLoading = true;
     });
 
     try {
@@ -74,7 +74,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
         Utils.showSnackBar("Verification email sent. Please check your inbox.");
 
-        // Cooldown period before allowing another resend
+
         await Future.delayed(const Duration(seconds: 30));
 
         setState(() {
@@ -83,13 +83,13 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'too-many-requests') {
-        // Handle rate limit error by disabling the resend button longer
+
         Utils.showSnackBar("Too many requests. Please try again later.");
         setState(() {
           canResendEmail = false;
         });
 
-        // Wait 60 seconds before allowing resend again
+
         await Future.delayed(const Duration(seconds: 60));
 
         setState(() {

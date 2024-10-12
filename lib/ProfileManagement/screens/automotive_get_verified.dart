@@ -14,8 +14,8 @@ class AutomotiveGetVerifiedScreen extends StatefulWidget {
 }
 
 class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScreen> {
-  bool _isLoadingPickFile = false; // Separate loading state for pick file
-  bool _isLoadingSubmit = false; // Separate loading state for submit
+  bool _isLoadingPickFile = false;
+  bool _isLoadingSubmit = false;
   bool _isUploaded = false;
   String? _filePath;
   Key _pdfKey = UniqueKey();
@@ -27,7 +27,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
 
   Future<void> _pickFile() async {
     setState(() {
-      _isLoadingPickFile = true; // Set loading state for picking file
+      _isLoadingPickFile = true;
     });
 
     try {
@@ -36,7 +36,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
       if (filePath != null && filePath.isNotEmpty) {
         setState(() {
           _filePath = filePath;
-          _pdfKey = UniqueKey(); // Force PDFView to reload
+          _pdfKey = UniqueKey();
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -49,7 +49,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
       );
     } finally {
       setState(() {
-        _isLoadingPickFile = false; // Reset loading state after picking file
+        _isLoadingPickFile = false;
       });
     }
   }
@@ -60,11 +60,11 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please pick a PDF file first')),
       );
-      return; // Exit if no file is picked
+      return;
     }
 
     setState(() {
-      _isLoadingSubmit = true; // Set loading state for submission
+      _isLoadingSubmit = true;
     });
 
     try {
@@ -96,7 +96,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
       );
     } finally {
       setState(() {
-        _isLoadingSubmit = false; // Reset loading state after submission
+        _isLoadingSubmit = false;
       });
     }
   }
@@ -144,12 +144,12 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                     style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white), // Set text style here
+                        color: Colors.white),
                   ),
                 ),
                 const SizedBox(height: 16),
 
-                // Display file name if a file is selected
+
                 if (_filePath != null)
                   Text(
                     'File Name: ${path.basename(_filePath!)}',
@@ -162,7 +162,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                   Column(
                     children: [
                       SizedBox(
-                        height: 400, // Adjust height as needed
+                        height: 400,
                         child: PDFView(
                           key: _pdfKey,
                           filePath: _filePath,
@@ -203,7 +203,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                               onPressed: () async {
                                 if (_currentPage > 0) {
                                   _currentPage--;
-                                  await _pdfViewController?.setPage(_currentPage); // Navigate to previous page
+                                  await _pdfViewController?.setPage(_currentPage);
                                 }
                               },
                             ),
@@ -216,7 +216,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                               onPressed: () async {
                                 if (_currentPage < _totalPages - 1) {
                                   _currentPage++;
-                                  await _pdfViewController?.setPage(_currentPage); // Navigate to next page
+                                  await _pdfViewController?.setPage(_currentPage);
                                 }
                               },
                             ),
@@ -224,7 +224,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                         ),
                       const SizedBox(height: 32),
 
-                      // Submit Button
+
                       Container(
                         margin: const EdgeInsets.only(bottom: 24),
                         child: ElevatedButton(
@@ -237,7 +237,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
                             backgroundColor: Colors.orange,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15), // Set the corner radius
+                              borderRadius: BorderRadius.circular(15),
                             ),
                           ),
                           child: _isLoadingSubmit
@@ -245,7 +245,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                             width: 24,
                             height: 24,
                             child: CircularProgressIndicator(
-                              color: Colors.white, // Set indicator color
+                              color: Colors.white,
                             ),
                           )
                               : const Text(
