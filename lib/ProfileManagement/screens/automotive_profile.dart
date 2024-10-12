@@ -47,7 +47,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
       context,
       MaterialPageRoute(builder: (context) => const AutomotiveEditProfileScreen()),
     ).then((_) {
-      // Reload profile data after returning from the edit profile screen
+
       _loadProfileData();
     });
   }
@@ -250,7 +250,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
                                       radius: 16,
                                       backgroundColor: Colors.blueGrey[50],
                                       child: Text(
-                                        feedback.feedbackerName[0], // First letter of the feedbacker's name
+                                        feedback.feedbackerName[0],
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
@@ -284,11 +284,11 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
                                       child: Text(
                                         feedback.comment,
                                         style: TextStyle(
-                                          fontSize: isExpanded ? 12 : 13, // Decrease font size if expanded
+                                          fontSize: isExpanded ? 12 : 13,
                                           color: Colors.black54,
                                         ),
                                         overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                                        maxLines: isExpanded ? null : 2, // Show all lines if expanded
+                                        maxLines: isExpanded ? null : 2,
                                         softWrap: true,
                                       ),
                                     ),
@@ -314,7 +314,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
                                       ],
                                     ),
                                     Text(
-                                      _formatTimestamp(feedback.timestamp), // Function to format timestamp
+                                      _formatTimestamp(feedback.timestamp),
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: Colors.black45,
@@ -337,7 +337,7 @@ class _AutomotiveProfileScreenState extends State<AutomotiveProfileScreen> {
       },
     );
 
-// Helper function to format the timestamp
+
   String _formatTimestamp(DateTime timestamp) {
     return '${timestamp.day}/${timestamp.month}/${timestamp.year}';
   }
