@@ -192,9 +192,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                   FutureBuilder<String?>(
                     future: GetVerifiedServices().fetchStatus(user!.uid),
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
+                      if (snapshot.hasError) {
                         return const Text('Error fetching status');
                       } else {
                         String status = snapshot.data ?? 'Pending';
@@ -231,26 +229,13 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                                   builder: (context) => VerificationStatusScreen(uid: user!.uid),
                                 ),
                               );
+                              _checkVerificationStatus();
                             },
                           ),
                         );
                       }
                     },
                   ),
-                  // Container(
-                  //   margin: const EdgeInsets.only(bottom: 10),
-                  //   child: ProfileMenuWidget(
-                  //       title: "Get Verified",
-                  //       icon: Icons.description,
-                  //       onPressed: () {
-                  //         Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //               builder: (context) =>
-                  //                   VerificationStatusScreen(uid: user!.uid)),
-                  //         );
-                  //       }),
-                  // ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     child: ProfileMenuWidget(
