@@ -6,7 +6,7 @@ class TextFieldPassword extends StatefulWidget {
   final String hintText;
   final IconData? icon;
   final TextInputType textInputType;
-  final String? Function(String?)? validator; // Password validator
+  final String? Function(String?)? validator;
 
   const TextFieldPassword({
     super.key,
@@ -40,7 +40,7 @@ class _TextFieldPasswordState extends State<TextFieldPassword> {
               style: const TextStyle(fontSize: 15),
               controller: widget.textEditingController,
               obscureText: widget.isPass &&
-                  !_isPasswordVisible, // Toggle password visibility
+                  !_isPasswordVisible,
               keyboardType: widget.textInputType,
               decoration: InputDecoration(
                 labelText: widget.hintText,
@@ -77,12 +77,12 @@ class _TextFieldPasswordState extends State<TextFieldPassword> {
                   borderRadius: BorderRadius.circular(15.0),
                   borderSide: const BorderSide(color: Colors.grey),
                 ),
-                // Remove errorText from InputDecoration
+
               ),
               onChanged: (value) {
                 setState(() {
                   errorMessage =
-                      widget.validator?.call(value); // Validate on text change
+                      widget.validator?.call(value);
                 });
               },
             ),
