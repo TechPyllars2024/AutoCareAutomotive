@@ -100,7 +100,6 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     if (user != null) {
       List<String> emptyFields = [];
 
-      // Check for empty fields
       if (_shopNameController.text.isEmpty) {
         emptyFields.add('Shop Name');
       }
@@ -129,7 +128,6 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
       });
 
       try {
-
           if (editProfile == null) {
             await _automotiveShopEditProfileServices.saveProfile(
               uid: user.uid,
@@ -146,7 +144,6 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
               numberOfRatings: 0,
             );
 
-
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Profile saved successfully'),
@@ -154,13 +151,11 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
             ),
           );
 
-
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => Onboardingpage3()),
           );
         } else {
-
           if (editProfile!.shopName == _shopNameController.text) {
             Navigator.pop(context);
             return;
@@ -181,7 +176,6 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
             numberOfRatings: 0,
           );
 
-
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Profile saved successfully'),
@@ -192,7 +186,6 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
           Navigator.pop(context);
         }
       } catch (e) {
-
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to save profile'),
@@ -216,7 +209,11 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Complete Your Shop Profile', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white)),
+        title: const Text('Complete Your Shop Profile',
+            style: TextStyle(
+                fontWeight: FontWeight.w900,
+                color: Colors.white)
+        ),
         backgroundColor: Colors.orange.shade900,
       ),
       backgroundColor: Colors.grey.shade100,
