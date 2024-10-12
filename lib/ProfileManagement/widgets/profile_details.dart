@@ -35,7 +35,7 @@ class ProfileDetails extends StatelessWidget {
               children: [
                  Icon(Icons.calendar_month, color: Colors.orange.shade900, size: 15,),
                 const SizedBox(width: 4),
-                // Convert the list to a comma-separated string if it's a list
+
                 Text(
                   (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
 
@@ -47,7 +47,6 @@ class ProfileDetails extends StatelessWidget {
               children: [
                  Icon(Icons.schedule, color: Colors.orange.shade900, size: 15,),
                 const SizedBox(width: 4),
-                // Ensure operationTime is a String
                 Text(
                   profile?.operationTime ?? 'Operation Time',
 
@@ -63,7 +62,7 @@ class ProfileDetails extends StatelessWidget {
                   children: [
                      Icon(Icons.check, color: Colors.orange.shade900, size: 15,),
                     const SizedBox(width: 4),
-                    // Ensure operationTime is a String
+
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,9 +70,9 @@ class ProfileDetails extends StatelessWidget {
                           Text(
                             (profile?.serviceSpecialization.join(', ') ?? 'Specialization'
                                 ''),
-                            overflow: TextOverflow.visible, // Allow text to wrap
-                            maxLines: 2, // Set max lines if needed
-                            softWrap: true, // Enable soft wrapping
+                            overflow: TextOverflow.visible,
+                            maxLines: 2,
+                            softWrap: true,
 
                           ),
                         ],
