@@ -46,7 +46,11 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
           builder: (context, setState) {
             return AlertDialog(
               backgroundColor: Colors.white,
-              title: Text(service == null ? 'Add Service' : 'Update Service', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+              title: Text(
+                service == null ? 'Add Service' : 'Update Service',
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -60,7 +64,8 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                   ),
                   TextField(
                     controller: priceController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
                     decoration: const InputDecoration(
                       labelText: 'Price',
                       hintText: 'Enter price greater than 0',
@@ -75,9 +80,20 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                       }
                     },
                   ),
-                  DropdownButton<String>(
+                  DropdownButtonFormField<String>(
                     value: category,
                     isExpanded: true,
+                    decoration: InputDecoration(
+
+                      hintText: 'Select a category',
+                      border: const OutlineInputBorder(),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey.shade800, width: 2),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey.shade600, width: 1),
+                      ),
+                    ),
                     onChanged: (newValue) {
                       setState(() {
                         category = newValue!;
@@ -87,7 +103,12 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                         .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
-                        child: Text(value),
+                        child: Text(
+                          value,
+                          style: TextStyle(
+                              color: Colors.grey.shade800,
+                              fontWeight: FontWeight.w400),
+                        ),
                       );
                     }).toList(),
                   ),
@@ -110,19 +131,27 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                         });
                       }
                     },
-                    child: const Text('Pick Image', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                    child: const Text(
+                      'Pick Image',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
                   ),
                 ],
               ),
               actions: [
                 TextButton(
-                  child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+                  child: const Text('Cancel',
+                      style: TextStyle(color: Colors.grey)),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 TextButton(
                   child: _isLoading
                       ? const CircularProgressIndicator() // Show loading indicator
-                      : Text(service == null ? 'Add' : 'Update', style: TextStyle(color: Colors.orange.shade900, fontWeight: FontWeight.bold)),
+                      : Text(service == null ? 'Add' : 'Update',
+                          style: TextStyle(
+                              color: Colors.orange.shade900,
+                              fontWeight: FontWeight.bold)),
                   onPressed: () async {
                     if (nameController.text.isNotEmpty &&
                         descriptionController.text.isNotEmpty &&
@@ -259,14 +288,15 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                 crossAxisCount: 2, // Number of items per row
                 crossAxisSpacing: 10, // Horizontal spacing between items
                 mainAxisSpacing: 10, // Vertical spacing between items
-                childAspectRatio: 3 / 4, // Adjust this for image and text alignment
+                childAspectRatio:
+                    3 / 4, // Adjust this for image and text alignment
               ),
               itemCount: services.length,
               itemBuilder: (context, index) {
                 final service = services[index];
                 return GestureDetector(
-                  onTap: () => _showServiceOptions(
-                      context, service), // Method for showing service options
+                  onTap: () => _showServiceOptions(context, service),
+                  // Method for showing service options
                   child: Card(
                     color: Colors.white,
                     elevation: 5,
