@@ -35,6 +35,7 @@ class ServicesCarousel extends StatelessWidget {
           );
         } else {
           final services = snapshot.data!;
+          final enableInfiniteScroll = services.length > 2; // Set to true only if more than 2 services
 
           return Column(
             children: [
@@ -123,7 +124,7 @@ class ServicesCarousel extends StatelessWidget {
                     height: 220, // Carousel height
                     viewportFraction: 0.8, // Width of each item relative to the viewport
                     initialPage: 0,
-                    enableInfiniteScroll: true,
+                    enableInfiniteScroll: enableInfiniteScroll, // Use dynamic infinite scroll
                     autoPlay: true,
                     autoPlayInterval: const Duration(seconds: 3), // Automatic slide interval
                   ),

@@ -146,7 +146,7 @@ class _SignupScreenState extends State<SignupScreen> {
           Expanded(
             child: Container(
               height: MediaQuery.of(context).size.height * 0.6,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
@@ -255,20 +255,18 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
 
                       // Sign Up OR
-                      const Padding(
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: Or(),
-                      ),
+                      SizedBox(height: size.height * 0.03),
+                      const Or(),
 
                       // Sign Up with Google
-                      SizedBox(height: size.height * 0.02),
+                      SizedBox(height: size.height * 0.03),
                       GoogleButton(
                         onTap: signInWithGoogle,
                         hintText: 'Sign Up with Google',
                       ),
 
                       // Already have an account? Log In
-                      SizedBox(height: size.height * 0.04),
+                      SizedBox(height: size.height * 0.06),
                       TextButton(
                         onPressed: () {
                           Navigator.push(

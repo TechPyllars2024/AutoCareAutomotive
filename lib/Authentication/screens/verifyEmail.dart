@@ -125,13 +125,13 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                     width: 200,
                     height: 200,
                   ),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 50),
                   const Text(
                     'A Verification Email has been sent!',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 80),
                   isLoading
                       ? const CircularProgressIndicator()
                       : ElevatedButton.icon(

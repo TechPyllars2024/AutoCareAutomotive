@@ -231,25 +231,40 @@ class _AutomotiveEditProfileScreenState
   }
 
   Widget buildInputs() => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _shopNameController,
-              decoration: const InputDecoration(
-                hintText: 'Shop Name',
-              ),
+    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+    child: Column(
+      children: [
+        TextField(
+          controller: _shopNameController,
+          decoration: InputDecoration(
+            hintText: 'Shop Name',
+            border:  OutlineInputBorder(),
+            focusedBorder:  UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.orange.shade900, width: 2),
             ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _locationController,
-              decoration: const InputDecoration(
-                hintText: 'Location',
-              ),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey, width: 1),
             ),
-          ],
+          ),
         ),
-      );
+        const SizedBox(height: 10),
+        TextField(
+          controller: _locationController,
+          decoration: InputDecoration(
+            hintText: 'Location',
+            border:  OutlineInputBorder(),
+            focusedBorder:  UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.orange.shade900, width: 2),
+            ),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey, width: 1),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
 
   Widget buildCoverImage() => Stack(
         children: [
