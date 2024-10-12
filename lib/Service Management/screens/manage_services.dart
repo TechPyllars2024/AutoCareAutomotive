@@ -4,9 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../ProfileManagement/services/get_verified_services.dart';
 import '../models/services_model.dart';
 import '../services/image_service.dart';
 import '../services/service_management.dart';
+import '../widgets/service_status_alert_box.dart';
 
 class ServiceManagementScreen extends StatefulWidget {
   const ServiceManagementScreen({super.key, this.child});
@@ -233,112 +235,130 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
         automaticallyImplyLeading: false,
         title: Text(
           'Manage Services',
-          style:
-              TextStyle(fontWeight: FontWeight.w900, color: Colors.grey[800]),
+          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.grey[800]),
         ),
         backgroundColor: Colors.grey.shade100,
         elevation: 0,
       ),
-      body: StreamBuilder<List<ServiceModel>>(
-        stream: _serviceManagement.fetchServices(user!.uid),
+      body: StreamBuilder<String?>(
+        stream: GetVerifiedServices().fetchStatus(user!.uid).asStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No services available'));
+          if (snapshot.hasError) {
+            return const Center(child: Text('Error fetching verification status'));
           }
 
-          final services = snapshot.data!;
+          String status = snapshot.data ?? 'Pending';
+          bool isVerified = status == 'Verified';
 
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Number of items per row
-                crossAxisSpacing: 10, // Horizontal spacing between items
-                mainAxisSpacing: 10, // Vertical spacing between items
-                childAspectRatio: 3 / 4, // Adjust this for image and text alignment
+          return Column(
+            children: [
+              ServiceStatusAlertBox(isVerified: isVerified), // Use the new widget
+              Expanded(
+                child: StreamBuilder<List<ServiceModel>>(
+                  stream: _serviceManagement.fetchServices(user!.uid),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text('No services available'));
+                    }
+
+                    final services = snapshot.data!;
+
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 3 / 4,
+                        ),
+                        itemCount: services.length,
+                        itemBuilder: (context, index) {
+                          final service = services[index];
+                          return GestureDetector(
+                            onTap: () => _showServiceOptions(context, service),
+                            child: Card(
+                              color: Colors.white,
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(16.0),
+                                        topRight: Radius.circular(16.0),
+                                      ),
+                                      child: Image.network(
+                                        service.servicePicture,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return const Icon(
+                                            Icons.broken_image,
+                                            size: 60,
+                                            color: Colors.grey,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          service.name,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15,
+                                            color: Colors.grey[800],
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 4.0),
+                                        Text(
+                                          '${service.price.toStringAsFixed(2)} PHP',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                        Text(
+                                          service.description,
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.grey[600],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
-              itemCount: services.length,
-              itemBuilder: (context, index) {
-                final service = services[index];
-                return GestureDetector(
-                  onTap: () => _showServiceOptions(
-                      context, service), // Method for showing service options
-                  child: Card(
-                    color: Colors.white,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(16.0),
-                              topRight: Radius.circular(16.0),
-                            ),
-                            child: Image.network(
-                              service
-                                  .servicePicture, // Image URL from the service
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                // Fallback in case the image fails to load
-                                return const Icon(
-                                  Icons.broken_image,
-                                  size: 60,
-                                  color: Colors.grey,
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                service.name,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: Colors.grey[800],
-                                ),
-                                maxLines: 1, // Limit to a single line
-                                overflow:
-                                    TextOverflow.ellipsis, // Handle overflow
-                              ),
-                              const SizedBox(height: 4.0),
-                              Text(
-                                '${service.price.toStringAsFixed(2)} PHP',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              Text(
-                                service.description,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey[600],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+            ],
           );
         },
       ),
