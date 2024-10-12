@@ -122,12 +122,14 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                     color: Colors.black,
                   ),
                 ),
+                const SizedBox(height: 10),
                 const Divider(
                   color: Colors.grey,
                   thickness: 1,
                   indent: 20,
                   endIndent: 20,
                 ),
+                const SizedBox(height: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
