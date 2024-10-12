@@ -121,7 +121,10 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AutomotiveGetVerifiedScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
@@ -220,7 +223,13 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
               // Button to Go Back
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Navbar(),
+                    ),
+                        (route) => false,
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
