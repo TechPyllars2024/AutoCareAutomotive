@@ -1,7 +1,6 @@
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage1.dart';
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage2.dart';
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage3.dart';
-import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../ProfileManagement/screens/automotive_complete_profile.dart';
@@ -15,21 +14,21 @@ class Onboarding extends StatefulWidget {
 
 class _OnboardingState extends State<Onboarding> {
   final PageController _controller = PageController();
-  int currentPageIndex = 0; // Track the current page index
+  int currentPageIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _controller.addListener(() {
       setState(() {
-        currentPageIndex = _controller.page?.round() ?? 0; // Update the current page index
+        currentPageIndex = _controller.page?.round() ?? 0;
       });
     });
   }
 
   @override
   void dispose() {
-    _controller.dispose(); // Dispose of the controller
+    _controller.dispose();
     super.dispose();
   }
 
@@ -43,7 +42,7 @@ class _OnboardingState extends State<Onboarding> {
             controller: _controller,
             onPageChanged: (index) {
               setState(() {
-                currentPageIndex = index; // Update the current page index
+                currentPageIndex = index;
               });
             },
             children: const [
@@ -54,7 +53,7 @@ class _OnboardingState extends State<Onboarding> {
             ],
           ),
           Positioned(
-            bottom: 30, // Set this value as needed to ensure it's above the keyboard when opened
+            bottom: 30,
             left: 0,
             right: 0,
             child: SafeArea(
@@ -62,7 +61,7 @@ class _OnboardingState extends State<Onboarding> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   currentPageIndex == 0
-                      ? const Text("       ") // Don't show "pre" if on first page
+                      ? const Text("       ")
                       : GestureDetector(
                     onTap: () {
                       _controller.previousPage(
@@ -75,14 +74,14 @@ class _OnboardingState extends State<Onboarding> {
                     controller: _controller,
                     count: 4,
                     effect: ExpandingDotsEffect(
-                      dotColor: Colors.black54, // Inactive dot color
-                      activeDotColor: Colors.orange.shade300, // Active dot color
+                      dotColor: Colors.black54,
+                      activeDotColor: Colors.orange.shade300,
                       dotHeight: 8.0,
                       dotWidth: 8.0,
                     ),
                   ),
                   (currentPageIndex == 2 || currentPageIndex == 3)
-                      ? const Text("        ") // Don't show the next icon on the third page or the last page
+                      ? const Text("        ")
                       : GestureDetector(
                     onTap: () {
                       _controller.nextPage(
