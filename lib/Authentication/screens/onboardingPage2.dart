@@ -14,7 +14,7 @@ class _Onboardingpage2State extends State<Onboardingpage2> {
     return Scaffold(
       backgroundColor: Colors.orange.shade900,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(1.0), // Set the height of the AppBar
+        preferredSize: const Size.fromHeight(1.0),
         child: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.orange.shade900,
