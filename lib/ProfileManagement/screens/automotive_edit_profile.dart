@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 import '../widgets/button.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
@@ -47,6 +48,8 @@ class _AutomotiveEditProfileScreenState
 
   String? uid;
   AutomotiveProfileModel? editProfile;
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -108,7 +111,6 @@ class _AutomotiveEditProfileScreenState
     if (user != null) {
       List<String> emptyFields = [];
 
-      // Check for empty fields
       if (_shopNameController.text.isEmpty) {
         emptyFields.add('Shop Name');
       }
@@ -121,7 +123,6 @@ class _AutomotiveEditProfileScreenState
         emptyFields.add('Operating hours');
       }
 
-      // If there are empty fields, show a snackbar and return
       if (emptyFields.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -133,8 +134,11 @@ class _AutomotiveEditProfileScreenState
         return;
       }
 
+      setState(() {
+        _isLoading = true;
+      });
+
       try {
-        // Proceed to save the profile
         await _automotiveShopEditProfileServices.saveProfile(
           uid: user.uid,
           serviceProviderUid: user.uid,
@@ -153,7 +157,6 @@ class _AutomotiveEditProfileScreenState
           numberOfRatings: _numberOfRatings,
         );
 
-        // Show success snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Profile saved successfully'),
@@ -161,15 +164,18 @@ class _AutomotiveEditProfileScreenState
           ),
         );
 
-        Navigator.pop(context); // Return to the previous screen
+        Navigator.pop(context);
       } catch (e) {
-        // Show failure snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to save profile'),
             backgroundColor: Colors.red,
           ),
         );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -185,23 +191,37 @@ class _AutomotiveEditProfileScreenState
           style: TextStyle(fontWeight: FontWeight.w900),
         ),
         backgroundColor: Colors.grey.shade300,
-        foregroundColor: Colors.black, // Ensures text is visible on AppBar
+        foregroundColor: Colors.black,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              buildTopSection(top),
-              const SizedBox(height: 20),
-              buildInputs(),
-              dayOfTheWeekSelection(),
-              timeSelection(),
-              serviceSpecialization(),
-              buildSaveButton(),
-            ],
-          ),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  buildTopSection(top),
+                  const SizedBox(height: 20),
+                  buildInputs(),
+                  dayOfTheWeekSelection(),
+                  timeSelection(),
+                  serviceSpecialization(),
+                  buildSaveButton(),
+                ],
+              ),
+            ),
+            if (_isLoading)
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );

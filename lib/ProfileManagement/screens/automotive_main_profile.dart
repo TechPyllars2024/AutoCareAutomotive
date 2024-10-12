@@ -177,10 +177,9 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                   Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     child: ProfileMenuWidget(
-                      title: "Shop Profile Details",
+                      title: "Shop Profile",
                       icon: Icons.storefront,
                       onPressed: () {
-                        // Navigate to Address screen
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -190,19 +189,52 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                       },
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    child: ProfileMenuWidget(
-                        title: "Check Status",
-                        icon: Icons.verified,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    VerificationStatusScreen(uid: user!.uid)),
-                          );
-                        }),
+                  FutureBuilder<String?>(
+                    future: GetVerifiedServices().fetchStatus(user!.uid),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Text('Error fetching status');
+                      } else {
+                        String status = snapshot.data ?? 'Pending';
+                        String title;
+                        IconData icon;
+
+                        switch (status) {
+                          case 'Verified':
+                            title = 'Check Status';
+                            icon = Icons.verified;
+                            break;
+                          case 'Rejected':
+                            title = 'Check Status';
+                            icon = Icons.verified;
+                            break;
+                          case 'Pending':
+                            title = 'Check Status';
+                            icon = Icons.verified;
+                            break;
+                          default:
+                            title = 'Get Verified';
+                            icon = Icons.description;
+                        }
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: ProfileMenuWidget(
+                            title: title,
+                            icon: icon,
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => VerificationStatusScreen(uid: user!.uid),
+                                ),
+                              );
+                              _checkVerificationStatus();
+                            },
+                          ),
+                        );
+                      }
+                    },
                   ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 10),
