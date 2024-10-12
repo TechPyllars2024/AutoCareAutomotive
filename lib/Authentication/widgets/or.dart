@@ -9,8 +9,8 @@ class Or extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: Divider(
-          color: Colors.grey.shade700, // Color of the divider
-          thickness: 1, // Thickness of the divider
+          color: Colors.grey.shade700,
+          thickness: 1,
           ),
         ),
         Padding(
@@ -22,8 +22,8 @@ class Or extends StatelessWidget {
         ),
         Expanded(
           child: Divider(
-          color: Colors.grey.shade700, // Color of the divider
-          thickness: 1, // Thickness of the divider
+          color: Colors.grey.shade700,
+          thickness: 1,
           ),
         ),
       ],
