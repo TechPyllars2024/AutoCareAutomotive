@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'dart:io';
+import 'package:path/path.dart' as path;
 
 import '../models/automotive_shop_getVerified_model.dart';
 import '../models/automotive_shop_profile_model.dart';
@@ -14,6 +15,7 @@ class GetVerifiedServices {
   final Logger logger = Logger();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+
   Future<String?> pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -21,7 +23,15 @@ class GetVerifiedServices {
     );
 
     if (result != null) {
-      return result.files.single.path;
+      String filePath = result.files.single.path!;
+      String fileExtension = path.extension(filePath).toLowerCase();
+
+      if (fileExtension == '.pdf') {
+        return filePath;
+      } else {
+        // Show an error message or handle the error
+        throw Exception('Only PDF files are allowed');
+      }
     } else {
       return null;
     }
