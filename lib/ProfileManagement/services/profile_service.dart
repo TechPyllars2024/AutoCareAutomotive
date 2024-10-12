@@ -41,6 +41,7 @@ class ProfileService {
           verificationStatus: '',
           totalRatings: 0.0,
           numberOfRatings: 0,
+          numberOfBookingsPerHour: 0,
         );
       }
     } catch (e) {
