@@ -106,27 +106,28 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text(
-          'Get Verified',
-          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.black),
-        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: SingleChildScrollView(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'Complete Your Verification Process',
+                  'Register as a Verified Automotive Shop',
                   style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const Divider(
+                  color: Colors.grey,
+                  thickness: 1,
+                  indent: 20,
+                  endIndent: 20,
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -169,22 +170,6 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                               ],
                             ),
                           ),
-                          const SizedBox(height: 8.0),
-                          RichText(
-                            text: const TextSpan(
-                              text: '- ',
-                              style: TextStyle(fontSize: 16, color: Colors.black),
-                              children: [
-                                TextSpan(
-                                  text: 'Valid ID (Back-to-Back): ',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                TextSpan(
-                                  text: 'A government-issued ID of the owner, showing both the front and back sides.',
-                                ),
-                              ],
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -197,7 +182,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                         style: TextStyle(fontSize: 16, color: Colors.black),
                         children: [
                           TextSpan(
-                            text: 'Prepare the Documents:',
+                            text: 'File Requirements:',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -250,7 +235,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                     ),
                   ),
                   child: Text(
-                    _isLoadingPickFile ? 'Picking...' : 'Pick PDF',
+                    _isLoadingPickFile ? 'Picking...' : 'Pick File',
                     style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
