@@ -146,7 +146,7 @@ class _SignupScreenState extends State<SignupScreen> {
           Expanded(
             child: Container(
               height: MediaQuery.of(context).size.height * 0.6,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
