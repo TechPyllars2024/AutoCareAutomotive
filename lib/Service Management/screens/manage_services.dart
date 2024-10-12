@@ -44,153 +44,261 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
         return StatefulBuilder(
           // StatefulBuilder allows updating the dialog UI.
           builder: (context, setState) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: Text(
-                service == null ? 'Add Service' : 'Update Service',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(labelText: 'Name'),
-                  ),
-                  TextField(
-                    controller: descriptionController,
-                    decoration: const InputDecoration(labelText: 'Description'),
-                  ),
-                  TextField(
-                    controller: priceController,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    decoration: const InputDecoration(
-                      labelText: 'Price',
-                      hintText: 'Enter price greater than 0',
-                    ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                    ],
-                    onChanged: (value) {
-                      final price = double.tryParse(value);
-                      if (price != null && price <= 0) {
-                        priceController.clear(); // Clear the input if invalid
-                      }
-                    },
-                  ),
-                  DropdownButtonFormField<String>(
-                    value: category,
-                    isExpanded: true,
-                    decoration: InputDecoration(
+            return WillPopScope(
+              onWillPop: () async {
+                setState(() {
+                  _selectedImage =
+                      null; // Clear the selected image when dismissed
+                });
+                return true; // Allow the dialog to close
+              },
+              child: AlertDialog(
+                backgroundColor: Colors.white,
+                title: Text(
+                  service == null ? 'Add Service' : 'Update Service',
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 4),
+                      // Conditionally display the selected image preview
+                      if (_selectedImage != null)
+                        Container(
+                          height: 150,
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade400),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(
 
-                      hintText: 'Select a category',
-                      border: const OutlineInputBorder(),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade800, width: 2),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade600, width: 1),
-                      ),
-                    ),
-                    onChanged: (newValue) {
-                      setState(() {
-                        category = newValue!;
-                      });
-                    },
-                    items: CategoryList.categories
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(
-                          value,
-                          style: TextStyle(
-                              color: Colors.grey.shade800,
-                              fontWeight: FontWeight.w400),
+                              _selectedImage!,
+                              // Show the selected image if available
+                              fit: BoxFit
+                                  .cover, // Ensure the image scales properly
+                            ),
+                          ),
+                        )
+                      else
+                        Container(
+                            color: Colors.grey.shade200,
+                            height: 150,
+                            width: double.infinity,
+                            child: Center(
+                                child: const Text('No image selected',
+                                    style: TextStyle(color: Colors.grey)))),
+
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          minimumSize: const Size(250, 45),
+                          backgroundColor: Colors.deepOrange.shade700,
                         ),
-                      );
-                    }).toList(),
+                        onPressed: () async {
+                          // Opens the modal to let the user choose camera or gallery
+                          final source = await _pickImageSource();
+                          if (source != null) {
+                            // Calls the image picking function and updates the state
+                            File? pickedImage =
+                                await _imageService.pickImage(source);
+                            setState(() {
+                              _selectedImage =
+                                  pickedImage; // Updates the selected image
+                            });
+                          }
+                        },
+                        child: const Text(
+                          'Pick Image',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ),
+                      // Show this message if no image has been selected yet
+                      TextField(
+                        controller: nameController,
+                        onChanged: (text) {
+                          setState(() {}); // Trigger rebuild to update label color
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Name',
+                          labelStyle: TextStyle(
+                            color: nameController.text.isEmpty
+                                ? Colors.black // Black when empty
+                                : Colors.orange.shade900, // Orange when typing
+                          ),
+                          border: const OutlineInputBorder(),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.orange.shade900, width: 2),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey.shade600, width: 1),
+                          ),
+                        ),
+                        style: TextStyle(color: Colors.black), // Text color while typing
+                      ),
+                      TextField(
+                        controller: descriptionController,
+                        onChanged: (text) {
+                          setState(() {}); // Trigger rebuild to update label color
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Description',
+                          labelStyle: TextStyle(
+                            color: descriptionController.text.isEmpty
+                                ? Colors.black // Black when empty
+                                : Colors.orange.shade900, // Orange when typing
+                          ),
+                          border: const OutlineInputBorder(),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.orange.shade900, width: 2),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey.shade600, width: 1),
+                          ),
+                        ),
+                      ),
+
+                      TextField(
+                        controller: priceController,
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        onChanged: (value) {
+                          setState(() {}); // Trigger rebuild to update label color
+                          final price = double.tryParse(value);
+                          if (price != null && price <= 0) {
+                            priceController.clear(); // Clear the input if invalid
+                          }
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Price',
+                          labelStyle: TextStyle(
+                            color: priceController.text.isEmpty
+                                ? Colors.black // Black when empty
+                                : Colors.orange.shade900, // Orange when typing
+                          ),
+                          hintText: 'Enter price greater than 0',
+                          border: const OutlineInputBorder(),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.orange.shade900, width: 2),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey.shade600, width: 1),
+                          ),
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                        ],
+                      ),
+
+                      DropdownButtonFormField<String>(
+                        value: category,
+                        isExpanded: true,
+                        decoration: InputDecoration(
+                          hintText: 'Select a category',
+                          border: const OutlineInputBorder(),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Colors.orange.shade900, width: 2),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Colors.grey.shade600, width: 1),
+                          ),
+                        ),
+                        onChanged: (newValue) {
+                          setState(() {
+                            category = newValue!;
+                          });
+                        },
+                        items: CategoryList.categories
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: TextStyle(
+                                  color: Colors.grey.shade800,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 4),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      minimumSize: const Size(250, 45),
-                      backgroundColor: Colors.deepOrange.shade700,
-                    ),
+                ),
+                actions: [
+                  TextButton(
+                    child: const Text('Cancel',
+                        style: TextStyle(color: Colors.grey)),
+                    onPressed: () {
+                      setState(() {
+                        _selectedImage = null; // Clear the selected image
+                      });
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: _isLoading
+                        ?  SizedBox(
+                      height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(
+                                                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange.shade900), // Set the loading color
+                                                strokeWidth: 3,
+                                              ),
+                        ) // Show loading indicator
+                        : Text(service == null ? 'Add' : 'Update',
+                            style: TextStyle(
+                                color: Colors.orange.shade900,
+                                fontWeight: FontWeight.bold)),
                     onPressed: () async {
-                      // Let the user pick an image source
-                      final source = await _pickImageSource();
-                      if (source != null) {
-                        File? pickedImage =
-                            await _imageService.pickImage(source);
+                      if (nameController.text.isNotEmpty &&
+                          descriptionController.text.isNotEmpty &&
+                          priceController.text.isNotEmpty &&
+                          priceController.text != '0.00' &&
+                          _selectedImage != null) {
                         setState(() {
-                          _selectedImage = pickedImage;
+                          _isLoading = true; // Set loading state to true
                         });
+
+                        if (service == null) {
+                          await _serviceManagement.addService(
+                            serviceProviderId: user!.uid,
+                            name: nameController.text,
+                            description: descriptionController.text,
+                            price: double.parse(priceController.text),
+                            category: category,
+                            imageFile: _selectedImage,
+                          );
+                        } else {
+                          await _serviceManagement.updateService(
+                            serviceId: service.serviceId,
+                            name: nameController.text,
+                            description: descriptionController.text,
+                            price: double.parse(priceController.text),
+                            category: category,
+                            imageFile: _selectedImage,
+                          );
+                        }
+
+                        setState(() {
+                          _isLoading = false; // Set loading state to false
+                          _selectedImage = null;
+                        });
+
+                        Navigator.of(context).pop();
                       }
                     },
-                    child: const Text(
-                      'Pick Image',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
                   ),
                 ],
               ),
-              actions: [
-                TextButton(
-                  child: const Text('Cancel',
-                      style: TextStyle(color: Colors.grey)),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                TextButton(
-                  child: _isLoading
-                      ? const CircularProgressIndicator() // Show loading indicator
-                      : Text(service == null ? 'Add' : 'Update',
-                          style: TextStyle(
-                              color: Colors.orange.shade900,
-                              fontWeight: FontWeight.bold)),
-                  onPressed: () async {
-                    if (nameController.text.isNotEmpty &&
-                        descriptionController.text.isNotEmpty &&
-                        priceController.text.isNotEmpty &&
-                        priceController.text != '0.00' &&
-                        _selectedImage != null) {
-                      setState(() {
-                        _isLoading = true; // Set loading state to true
-                      });
-
-                      if (service == null) {
-                        await _serviceManagement.addService(
-                          serviceProviderId: user!.uid,
-                          name: nameController.text,
-                          description: descriptionController.text,
-                          price: double.parse(priceController.text),
-                          category: category,
-                          imageFile: _selectedImage,
-                        );
-                      } else {
-                        await _serviceManagement.updateService(
-                          serviceId: service.serviceId,
-                          name: nameController.text,
-                          description: descriptionController.text,
-                          price: double.parse(priceController.text),
-                          category: category,
-                          imageFile: _selectedImage,
-                        );
-                      }
-
-                      setState(() {
-                        _isLoading = false; // Set loading state to false
-                      });
-
-                      Navigator.of(context).pop();
-                    }
-                  },
-                ),
-              ],
             );
           },
         );
