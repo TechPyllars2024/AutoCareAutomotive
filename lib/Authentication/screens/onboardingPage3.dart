@@ -14,7 +14,7 @@ class _Onboardingpage3State extends State<Onboardingpage3> {
   @override
   void initState() {
     super.initState();
-    // Navigate to Navbar after 5 seconds
+
     Future.delayed(const Duration(seconds: 5), () {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Navbar()));
@@ -31,7 +31,7 @@ class _Onboardingpage3State extends State<Onboardingpage3> {
           Image.asset(
             'lib/Authentication/assets/images/autocareLogo.png',
           ).animate()
-              .shimmer(delay: 500.ms, duration: 1000.ms) // Shimmer effect
+              .shimmer(delay: 500.ms, duration: 1000.ms)
               .fadeIn(duration: 500.ms),
           const SizedBox(height: 80),
           const Text(
