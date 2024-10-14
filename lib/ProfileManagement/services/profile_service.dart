@@ -42,6 +42,7 @@ class ProfileService {
           totalRatings: 0.0,
           numberOfRatings: 0,
           numberOfBookingsPerHour: 0,
+          remainingSlots: {},
         );
       }
     } catch (e) {
