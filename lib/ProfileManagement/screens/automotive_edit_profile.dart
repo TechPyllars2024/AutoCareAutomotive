@@ -48,6 +48,7 @@ class _AutomotiveEditProfileScreenState
   int _numberOfBookingPerHour = 1;
   String? uid;
   AutomotiveProfileModel? editProfile;
+  late Map<String, Map<String, int>> remainingSlots;
 
   @override
   void initState() {
@@ -152,6 +153,7 @@ class _AutomotiveEditProfileScreenState
           totalRatings: _totalRatings,
           numberOfRatings: _numberOfRatings,
           numberOfBookingsPerHour: _numberOfBookingPerHour,
+          remainingSlots: remainingSlots
         );
 
         // Show success snackbar
