@@ -43,6 +43,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
   AutomotiveProfileModel? editProfile;
   bool _isLoading = false;
   int _numberOfBookingPerHour = 1;
+  Map<String, Map<String, int>> remainingSlots = {};
 
   @override
   void initState() {
@@ -141,6 +142,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
               totalRatings: 0.0,
               numberOfRatings: 0,
               numberOfBookingsPerHour: _numberOfBookingPerHour,
+              remainingSlots: remainingSlots
             );
 
           ScaffoldMessenger.of(context).showSnackBar(
