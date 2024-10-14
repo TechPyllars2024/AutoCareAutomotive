@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../models/automotive_shop_profile_model.dart';
 import '../services/automotive_shop_edit_profile_services.dart';
+import '../widgets/numberOfBookings.dart';
 
 class AutomotiveEditProfileScreen extends StatefulWidget {
   const AutomotiveEditProfileScreen({super.key, this.child});
@@ -44,9 +45,10 @@ class _AutomotiveEditProfileScreenState
   late String _verificationStatus = '';
   late double _totalRatings;
   late int _numberOfRatings;
-
+  int _numberOfBookingPerHour = 1;
   String? uid;
   AutomotiveProfileModel? editProfile;
+  late Map<String, Map<String, int>> remainingSlots;
 
   @override
   void initState() {
@@ -131,7 +133,6 @@ class _AutomotiveEditProfileScreenState
         );
         return;
       }
-
       try {
 
         await _automotiveShopEditProfileServices.saveProfile(
@@ -150,6 +151,8 @@ class _AutomotiveEditProfileScreenState
           verificationStatus: _verificationStatus,
           totalRatings: _totalRatings,
           numberOfRatings: _numberOfRatings,
+          numberOfBookingsPerHour: _numberOfBookingPerHour,
+          remainingSlots: remainingSlots
         );
 
 
@@ -196,6 +199,7 @@ class _AutomotiveEditProfileScreenState
               buildInputs(),
               dayOfTheWeekSelection(),
               timeSelection(),
+              numberOfBookingsSelection(),
               serviceSpecialization(),
               buildSaveButton(),
             ],
@@ -479,4 +483,30 @@ class _AutomotiveEditProfileScreenState
           ],
         ),
       );
+
+  Widget numberOfBookingsSelection() => Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Number of Bookings per Hour',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        NumberInputController(
+          initialValue: _numberOfBookingPerHour, // Set the initial value from the state variable
+          min: 1,
+          max: 10,
+          onValueChanged: (value) {
+            setState(() {
+              _numberOfBookingPerHour = value; // Update the state variable when the input changes
+            });
+          },
+        ),
+      ],
+    ),
+  );
 }

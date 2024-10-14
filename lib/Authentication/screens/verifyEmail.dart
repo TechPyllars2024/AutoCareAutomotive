@@ -1,6 +1,4 @@
 import 'package:autocare_automotiveshops/Authentication/screens/onboarding.dart';
-import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
-import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -72,7 +70,10 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
           canResendEmail = false;
         });
 
-        Utils.showSnackBar("Verification email sent. Please check your inbox.");
+        const SnackBar(
+          content: Text("Verification email sent. Please check your inbox."),
+          backgroundColor: Colors.green,
+        );
 
 
         await Future.delayed(const Duration(seconds: 30));

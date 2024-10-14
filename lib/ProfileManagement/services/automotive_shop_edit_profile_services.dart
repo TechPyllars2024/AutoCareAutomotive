@@ -52,6 +52,8 @@ class AutomotiveShopEditProfileServices {
     required String verificationStatus,
     required double totalRatings,
     required int numberOfRatings,
+    required int numberOfBookingsPerHour,
+    required Map<String, Map<String, int>> remainingSlots
   }) async {
     final Map<String, dynamic> updatedData = {};
 
@@ -72,6 +74,8 @@ class AutomotiveShopEditProfileServices {
     updatedData['verificationStatus'] = verificationStatus;
     updatedData['totalRatings'] = totalRatings;
     updatedData['numberOfRatings'] = numberOfRatings;
+    updatedData['numberOfBookingsPerHour'] = numberOfBookingsPerHour;
+    updatedData['remainingSlots'] = remainingSlots;
 
     final docRef = _firestore.collection('automotiveShops_profile').doc(uid);
     final doc = await docRef.get();
