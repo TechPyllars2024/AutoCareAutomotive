@@ -1,6 +1,4 @@
 import 'package:autocare_automotiveshops/Authentication/screens/onboarding.dart';
-import 'package:autocare_automotiveshops/Booking%20Mangement/screens/automotive_booking.dart';
-import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -20,7 +18,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   bool isEmailVerified = false;
   Timer? timer;
   bool canResendEmail = true;
-  bool isLoading = false; // Add isLoading state for showing loader
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -31,7 +29,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       isEmailVerified = user.emailVerified;
 
       if (!isEmailVerified) {
-        // Start periodic check for email verification but don't resend automatically
+
         timer = Timer.periodic(
           const Duration(seconds: 3),
           (_) => checkEmailVerified(),
@@ -60,7 +58,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
   Future<void> sendVerificationEmail() async {
     setState(() {
-      isLoading = true; // Show loader
+      isLoading = true;
     });
 
     try {
@@ -72,9 +70,12 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
           canResendEmail = false;
         });
 
-        Utils.showSnackBar("Verification email sent. Please check your inbox.");
+        const SnackBar(
+          content: Text("Verification email sent. Please check your inbox."),
+          backgroundColor: Colors.green,
+        );
 
-        // Cooldown period before allowing another resend
+
         await Future.delayed(const Duration(seconds: 30));
 
         setState(() {
@@ -83,13 +84,13 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'too-many-requests') {
-        // Handle rate limit error by disabling the resend button longer
+
         Utils.showSnackBar("Too many requests. Please try again later.");
         setState(() {
           canResendEmail = false;
         });
 
-        // Wait 60 seconds before allowing resend again
+
         await Future.delayed(const Duration(seconds: 60));
 
         setState(() {
@@ -125,13 +126,13 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                     width: 200,
                     height: 200,
                   ),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 50),
                   const Text(
                     'A Verification Email has been sent!',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 80),
                   isLoading
                       ? const CircularProgressIndicator()
                       : ElevatedButton.icon(

@@ -28,8 +28,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool isLoadingLogin = false;  // Loading state for Log In button
-  bool isLoadingGoogle = false;  // Loading state for Google button
+  bool isLoadingLogin = false;
+  bool isLoadingGoogle = false;
   final user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
   }
 
-  // Handles email and password authentication
+
   void loginUser() async {
     setState(() {
       isLoadingLogin = true;
@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (res == "SUCCESS") {
-      // Check if email is verified
+
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null && user.emailVerified) {
         Navigator.of(context).pushReplacement(
@@ -61,19 +61,19 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else {
         setState(() {
-          isLoadingLogin = false;  // Reset loading state
+          isLoadingLogin = false;
         });
         Utils.showSnackBar("Please verify your email address.");
       }
     } else {
       setState(() {
-        isLoadingLogin = false;  // Reset loading state
+        isLoadingLogin = false;
       });
       Utils.showSnackBar(res);
     }
   }
 
-  // Handles Google Log-In in the UI
+
   Future<void> logInWithGoogle() async {
     setState(() {
       isLoadingGoogle = true;
@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String res = await AuthenticationMethodLogIn().logInWithGoogle();
 
     setState(() {
-      isLoadingGoogle = false;  // Reset loading state
+      isLoadingGoogle = false;
     });
 
     if (res == "Service Provider") {
@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 .fadeIn(duration: const Duration(seconds: 2)),
           ),
 
-          // Expanded container that stretches to the bottom of the screen
+
           Expanded(
 
             child: Container(
@@ -216,30 +216,30 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: MyButtons(
                           onTap: loginUser,
                           text: "Log In",
-                          isLoading: isLoadingLogin, // Pass the loading state
+                          isLoading: isLoadingLogin,
                         ),
                       ),
 
                       // Sign Up OR
-                      SizedBox(height: size.height * 0.02),
+                      SizedBox(height: size.height * 0.03),
                       const Or(),
 
                       // Sign Up with Google
-                      SizedBox(height: size.height * 0.03),
+                      SizedBox(height: size.height * 0.04),
                       GoogleButton(
-                        onTap: logInWithGoogle, // Google button is always enabled
+                        onTap: logInWithGoogle,
                         hintText: 'Log In with Google',
                       ),
 
-                      // Already have an account? Log In
 
-                      SizedBox(height: size.height * 0.04),
+
+                      SizedBox(height: size.height * 0.06),
 
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: TextButton(
                           onPressed: () {
-                            // Handle navigation to login screen
+
                           },
                           child: RichText(
                             text: TextSpan(
@@ -254,7 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      // Navigate to SignupScreen
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

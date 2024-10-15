@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../models/automotive_shop_profile_model.dart';
 import '../services/automotive_shop_edit_profile_services.dart';
+import '../widgets/numberOfBookings.dart';
 
 class AutomotiveCompleteProfileScreen extends StatefulWidget {
   const AutomotiveCompleteProfileScreen({super.key, this.child});
@@ -26,7 +27,6 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
   final DropdownController dropdownController = Get.put(DropdownController());
   final DaysOfTheWeekController daysOfTheWeekController =
       Get.put(DaysOfTheWeekController());
-
   File? _coverImage;
   File? _profileImage;
   String? _coverImageUrl;
@@ -35,16 +35,15 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
   final TextEditingController _locationController = TextEditingController();
   final AutomotiveShopEditProfileServices _automotiveShopEditProfileServices =
       AutomotiveShopEditProfileServices();
-
   final double coverHeight = 160;
   final double profileHeight = 100;
   TimeOfDay? _openingTime;
   TimeOfDay? _closingTime;
-
   String? uid;
   AutomotiveProfileModel? editProfile;
-
   bool _isLoading = false;
+  int _numberOfBookingPerHour = 1;
+  Map<String, Map<String, int>> remainingSlots = {};
 
   @override
   void initState() {
@@ -142,6 +141,8 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
               verificationStatus: 'Not Submitted',
               totalRatings: 0.0,
               numberOfRatings: 0,
+              numberOfBookingsPerHour: _numberOfBookingPerHour,
+              remainingSlots: remainingSlots
             );
 
           ScaffoldMessenger.of(context).showSnackBar(
@@ -153,37 +154,8 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
 
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Onboardingpage3()),
+            MaterialPageRoute(builder: (context) => const Onboardingpage3()),
           );
-        } else {
-          if (editProfile!.shopName == _shopNameController.text) {
-            Navigator.pop(context);
-            return;
-          }
-
-          await _automotiveShopEditProfileServices.saveProfile(
-            uid: user.uid,
-            serviceProviderUid: user.uid,
-            shopName: _shopNameController.text,
-            location: _locationController.text,
-            coverImage: _coverImage,
-            profileImage: _profileImage,
-            daysOfTheWeek: List<String>.from(daysOfTheWeekController.selectedOptionList),
-            operationTime: '${_openingTime?.format(context)} - ${_closingTime?.format(context)}',
-            serviceSpecialization: List<String>.from(dropdownController.selectedOptionList),
-            verificationStatus: 'Not Submitted',
-            totalRatings: 0.0,
-            numberOfRatings: 0,
-          );
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Profile saved successfully'),
-              backgroundColor: Colors.green,
-            ),
-          );
-
-          Navigator.pop(context);
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -203,9 +175,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
   @override
   Widget build(BuildContext context) {
     final double top = coverHeight - profileHeight / 2;
-
     double bottomPadding = MediaQuery.of(context).viewInsets.bottom > 0 ? 0 : 80.0;
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -229,8 +199,8 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
                   buildInputs(),
                   dayOfTheWeekSelection(),
                   timeSelection(),
+                  numberOfBookingsSelection(),
                   serviceSpecialization(),
-
                   buildSaveButton(),
                   const SizedBox(height: 20),
                 ],
@@ -508,6 +478,32 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
           hintText: 'Select Days',
           controller: daysOfTheWeekController,
           onSelectionChanged: (selectedOptions) {
+          },
+        ),
+      ],
+    ),
+  );
+
+  Widget numberOfBookingsSelection() => Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Number of Bookings per Hour',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        NumberInputController(
+          initialValue: _numberOfBookingPerHour, // Set the initial value from the state variable
+          min: 1,
+          max: 10,
+          onValueChanged: (value) {
+            setState(() {
+              _numberOfBookingPerHour = value; // Update the state variable when the input changes
+            });
           },
         ),
       ],

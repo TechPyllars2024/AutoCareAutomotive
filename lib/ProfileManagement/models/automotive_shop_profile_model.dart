@@ -11,6 +11,8 @@ class AutomotiveProfileModel {
   final String verificationStatus;
   final double totalRatings;
   final int numberOfRatings;
+  final int numberOfBookingsPerHour;
+  final Map<String, Map<String, int>> remainingSlots;
 
   // Constructor for creating an instance of AutomotiveProfileModel
   AutomotiveProfileModel({
@@ -25,7 +27,9 @@ class AutomotiveProfileModel {
     required this.serviceSpecialization,
     required this.verificationStatus,
     required this.totalRatings,
-    required this.numberOfRatings
+    required this.numberOfRatings,
+    required this.numberOfBookingsPerHour,
+    required this.remainingSlots
   });
 
   // Convert the model to a map for storage or transfer
@@ -42,7 +46,9 @@ class AutomotiveProfileModel {
       'serviceSpecialization': serviceSpecialization,
       'verificationStatus': verificationStatus,
       'totalRatings': totalRatings,
-      'numberOfRatings': numberOfRatings
+      'numberOfRatings': numberOfRatings,
+      'numberOfBookingsPerHour': numberOfBookingsPerHour,
+      'remainingSlots': remainingSlots
     };
   }
 
@@ -60,7 +66,9 @@ class AutomotiveProfileModel {
       serviceSpecialization: List<String>.from(doc['serviceSpecialization'] ?? []),
       verificationStatus: doc['verificationStatus'] ?? '',
       totalRatings: doc['totalRatings']?.toDouble() ?? 0.0,
-      numberOfRatings: doc['numberOfRatings'] ?? 0
+      numberOfRatings: doc['numberOfRatings'] ?? 0,
+      numberOfBookingsPerHour: doc['numberOfBookingsPerHour'] ?? 0,
+      remainingSlots: Map<String, Map<String, int>>.from(doc['remainingSlots'] ?? {})
     );
   }
 }

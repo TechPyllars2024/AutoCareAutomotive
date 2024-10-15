@@ -7,7 +7,7 @@ import 'package:logger/logger.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
-import '../models/automotive_shop_getVerified_model.dart';
+import '../models/automotive_shop_get_verified_model.dart';
 import '../models/automotive_shop_profile_model.dart';
 
 class GetVerifiedServices {

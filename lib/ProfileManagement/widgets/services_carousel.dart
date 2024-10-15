@@ -29,12 +29,13 @@ class ServicesCarousel extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 12.0),
-            child: const Center(child: Text('No service available yet.')),
+          return const Padding(
+            padding: EdgeInsets.only(top: 12.0),
+            child: Center(child: Text('No service available yet.')),
           );
         } else {
           final services = snapshot.data!;
+          final enableInfiniteScroll = services.length > 2;
 
           return Column(
             children: [
@@ -45,7 +46,7 @@ class ServicesCarousel extends StatelessWidget {
                     Text(
                       'Services',
                       style: TextStyle(
-                        fontSize: 18, // Font size adjusted
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -54,15 +55,15 @@ class ServicesCarousel extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: 220, // Keeps the carousel height consistent
+                height: 220,
                 child: CarouselSlider.builder(
                   itemCount: services.length,
                   itemBuilder: (context, index, realIndex) {
                     final service = services[index];
                     return Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15), // Border radius
-                        color: Colors.grey.shade200, // Grey background color
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.grey.shade200,
                       ),
                       margin: const EdgeInsets.all(5),
                       child: Center(
@@ -77,15 +78,15 @@ class ServicesCarousel extends StatelessWidget {
                                     topLeft: Radius.circular(15),
                                     topRight: Radius.circular(15),
                                   ),
-                                  color: Colors.grey.shade300, // Background color for image section
+                                  color: Colors.grey.shade300,
                                 ),
                                 clipBehavior: Clip.antiAlias,
                                 child: service.servicePicture.isNotEmpty
                                     ? Image.network(
                                   service.servicePicture,
                                   height: 100,
-                                  width: double.infinity, // Ensure the image fills the container's width
-                                  fit: BoxFit.cover, // Cover ensures the image fills the container
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
                                 )
                                     : const Placeholder(),
                               ),
@@ -101,13 +102,13 @@ class ServicesCarousel extends StatelessWidget {
                                       service.name,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 16, // Font size for service name
+                                        fontSize: 16,
                                       ),
                                     ),
                                     Text(
                                       'Starts at Php ${service.price}',
                                       style: const TextStyle(
-                                        fontSize: 13, // Font size for price
+                                        fontSize: 13,
                                       ),
                                     ),
                                   ],
@@ -120,12 +121,12 @@ class ServicesCarousel extends StatelessWidget {
                     );
                   },
                   options: CarouselOptions(
-                    height: 220, // Carousel height
-                    viewportFraction: 0.8, // Width of each item relative to the viewport
+                    height: 220,
+                    viewportFraction: 0.8,
                     initialPage: 0,
-                    enableInfiniteScroll: true,
+                    enableInfiniteScroll: enableInfiniteScroll,
                     autoPlay: true,
-                    autoPlayInterval: const Duration(seconds: 3), // Automatic slide interval
+                    autoPlayInterval: const Duration(seconds: 3), 
                   ),
                 ),
               ),

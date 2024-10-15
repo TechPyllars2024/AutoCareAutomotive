@@ -24,8 +24,32 @@ class ProfileService {
 
       final data = doc.data();
       if (data != null) {
-        // If data exists, return a populated AutomotiveProfileModel
-        return AutomotiveProfileModel.fromDocument(data, user.uid);
+        // Casting 'remainingSlots' to the expected nested map type
+        final remainingSlots = (data['remainingSlots'] as Map<String, dynamic>?)?.map(
+              (key, value) => MapEntry(
+            key,
+            (value as Map<String, dynamic>).map(
+                  (innerKey, innerValue) => MapEntry(innerKey, innerValue as int),
+            ),
+          ),
+        ) ?? <String, Map<String, int>>{};
+
+        return AutomotiveProfileModel(
+          uid: user.uid,
+          serviceProviderUid: data['serviceProviderUid'] ?? user.uid,
+          shopName: data['shopName'] ?? '',
+          location: data['location'] ?? '',
+          coverImage: data['coverImage'] ?? '',
+          profileImage: data['profileImage'] ?? '',
+          daysOfTheWeek: (data['daysOfTheWeek'] as List<dynamic>? ?? []).cast<String>(),
+          operationTime: data['operationTime'] ?? '',
+          serviceSpecialization: (data['serviceSpecialization'] as List<dynamic>? ?? []).cast<String>(),
+          verificationStatus: data['verificationStatus'] ?? '',
+          totalRatings: (data['totalRatings'] as num?)?.toDouble() ?? 0.0,
+          numberOfRatings: data['numberOfRatings'] ?? 0,
+          numberOfBookingsPerHour: data['numberOfBookingsPerHour'] ?? 0,
+          remainingSlots: remainingSlots,
+        );
       } else {
         // Return a default profile model if no data is found
         return AutomotiveProfileModel(
@@ -41,6 +65,8 @@ class ProfileService {
           verificationStatus: '',
           totalRatings: 0.0,
           numberOfRatings: 0,
+          numberOfBookingsPerHour: 0,
+          remainingSlots: <String, Map<String, int>>{},
         );
       }
     } catch (e) {
@@ -49,6 +75,8 @@ class ProfileService {
       return null;
     }
   }
+
+
 
   // Save profile data to Firestore
   Future<void> saveUserProfile(AutomotiveProfileModel updatedProfile) async {

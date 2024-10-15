@@ -333,7 +333,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
                             backgroundColor: Colors.orange,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(15), // Set the corner radius
                             ),
                           ),
                           child: _isLoadingSubmit

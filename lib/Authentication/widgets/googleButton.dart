@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 class GoogleButton extends StatelessWidget {
   final VoidCallback? onTap;
   final String hintText;
-  final bool isGoogleLoading; // Add this parameter
-  final double width; // Add width parameter
+  final bool isGoogleLoading;
+  final double width;
 
   const GoogleButton({
     super.key,
     required this.onTap,
     required this.hintText,
-    this.isGoogleLoading = false, // Default to false if not provided
-    this.width = 220, // Default width, you can adjust as needed
+    this.isGoogleLoading = false,
+    this.width = 220,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: isGoogleLoading ? null : onTap, // Disable tap when loading
+      onTap: isGoogleLoading ? null : onTap,
       child: Container(
-        width: width, // Set a fixed width for the button
+        width: width,
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -34,14 +34,14 @@ class GoogleButton extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center, // Center the contents
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (isGoogleLoading)
               const SizedBox(
-                width: 24, // Ensure width is consistent
-                height: 24, // Ensure height is consistent
+                width: 24,
+                height: 24,
                 child: CircularProgressIndicator(
-                  color: Colors.black, // Change color as needed
+                  color: Colors.black,
                 ),
               )
             else

@@ -29,13 +29,11 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
   bool isVerified = false;
 
   final double profileHeight = 100;
-  late Future<Map<String, dynamic>> _providerData;
 
   @override
   void initState() {
     super.initState();
     _loadProfileData();
-    _providerData = ProfileService().fetchProviderByUid(user!.uid);
     _checkVerificationStatus();
   }
 
@@ -59,7 +57,6 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
       MaterialPageRoute(
           builder: (context) => const AutomotiveEditProfileScreen()),
     ).then((_) {
-      // Reload profile data after returning from the edit profile screen
       _loadProfileData();
     });
   }
@@ -95,22 +92,19 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
           IconButton(
             icon: Container(
               decoration: BoxDecoration(
-                color: Colors
-                    .orange.shade900, // Set the background color to orange
-                borderRadius: BorderRadius.circular(12.0), // Rounded edges
+                color: Colors.orange.shade900,
+                borderRadius: BorderRadius.circular(12.0),
               ),
-              padding: const EdgeInsets.all(
-                  6.0), // Optional: Add some padding for better aesthetics
+              padding: const EdgeInsets.all(6.0),
               child: const Center(
-                // Center the icon
                 child: Icon(
                   Icons.edit,
-                  color: Colors.white, // Set the icon color to white
+                  color: Colors.white,
                   size: 25,
                 ),
               ),
             ),
-            onPressed: editProfile, // Call the editProfile method when pressed
+            onPressed: editProfile,
           ),
         ],
       ),
@@ -119,13 +113,13 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
           children: [
             Center(
               child: Container(
-                width: 180, // Adjust width for border thickness
-                height: 180, // Adjust height for border thickness
+                width: 180,
+                height: 180,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Colors.orange.shade900, // Border color
-                    width: 1, // Border width
+                    color: Colors.orange.shade900,
+                    width: 1,
                   ),
                 ),
                 child: CircleAvatar(
@@ -252,7 +246,6 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                           Utils.showSnackBar('Error Signing Out: $e');
                         }
                       },
-                      // onPressed: () {},
                     ),
                   ),
                 ],
@@ -302,9 +295,13 @@ class ProfileDetailsWidget extends StatelessWidget {
                   size: 15,
                 ),
                 const SizedBox(width: 4),
-                // Convert the list to a comma-separated string if it's a list
-                Text(
-                  (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
+                Expanded(  // or Flexible
+                  child: Text(
+                    (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    softWrap: true,
+                  ),
                 ),
               ],
             ),
@@ -317,7 +314,6 @@ class ProfileDetailsWidget extends StatelessWidget {
                   size: 15,
                 ),
                 const SizedBox(width: 4),
-                // Ensure operationTime is a String
                 Text(
                   profile?.operationTime ?? 'Operation Time',
                 ),
@@ -336,7 +332,6 @@ class ProfileDetailsWidget extends StatelessWidget {
                       size: 15,
                     ),
                     const SizedBox(width: 4),
-                    // Ensure operationTime is a String
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -345,10 +340,9 @@ class ProfileDetailsWidget extends StatelessWidget {
                             (profile?.serviceSpecialization.join(', ') ??
                                 'Specialization'
                                     ''),
-                            overflow:
-                                TextOverflow.visible, // Allow text to wrap
-                            maxLines: 2, // Set max lines if needed
-                            softWrap: true, // Enable soft wrapping
+                            overflow: TextOverflow.visible,
+                            maxLines: 2,
+                            softWrap: true,
                           ),
                         ],
                       ),

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:autocare_automotiveshops/Authentication/services/authentication_reset_password.dart';
 import 'package:flutter/material.dart';
 
@@ -48,7 +46,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Password reset email sent")),
         );
-        Navigator.of(context).pop(); // Navigate back to the previous screen
+        Navigator.of(context).pop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(res)),

@@ -284,7 +284,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: Colors.black87, // Text color
                 ),
               ),
               const Text(

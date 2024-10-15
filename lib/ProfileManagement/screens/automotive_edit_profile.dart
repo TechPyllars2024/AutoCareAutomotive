@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:ui';
+import 'package:autocare_automotiveshops/ProfileManagement/services/profile_service.dart';
 import '../widgets/button.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../models/automotive_shop_profile_model.dart';
 import '../services/automotive_shop_edit_profile_services.dart';
+import '../widgets/numberOfBookings.dart';
 
 class AutomotiveEditProfileScreen extends StatefulWidget {
   const AutomotiveEditProfileScreen({super.key, this.child});
@@ -45,11 +46,10 @@ class _AutomotiveEditProfileScreenState
   late String _verificationStatus = '';
   late double _totalRatings;
   late int _numberOfRatings;
-
+  int _numberOfBookingPerHour = 1;
   String? uid;
   AutomotiveProfileModel? editProfile;
-
-  bool _isLoading = false;
+  late Map<String, Map<String, int>> remainingSlots;
 
   @override
   void initState() {
@@ -70,7 +70,7 @@ class _AutomotiveEditProfileScreenState
   Future<void> _loadProfileData() async {
     if (uid != null) {
       final fetchedProfile =
-          await _automotiveShopEditProfileServices.fetchProfileData(uid!);
+          await ProfileService().fetchProfileData();
       setState(() {
         editProfile = fetchedProfile;
         if (editProfile != null) {
@@ -83,6 +83,8 @@ class _AutomotiveEditProfileScreenState
           _verificationStatus = editProfile!.verificationStatus;
           _totalRatings = editProfile!.totalRatings;
           _numberOfRatings = editProfile!.numberOfRatings;
+          _numberOfBookingPerHour = editProfile!.numberOfBookingsPerHour;
+          remainingSlots = editProfile!.remainingSlots;
         }
       });
     }
@@ -111,6 +113,7 @@ class _AutomotiveEditProfileScreenState
     if (user != null) {
       List<String> emptyFields = [];
 
+      // Check for empty fields
       if (_shopNameController.text.isEmpty) {
         emptyFields.add('Shop Name');
       }
@@ -133,11 +136,6 @@ class _AutomotiveEditProfileScreenState
         );
         return;
       }
-
-      setState(() {
-        _isLoading = true;
-      });
-
       try {
         await _automotiveShopEditProfileServices.saveProfile(
           uid: user.uid,
@@ -155,7 +153,10 @@ class _AutomotiveEditProfileScreenState
           verificationStatus: _verificationStatus,
           totalRatings: _totalRatings,
           numberOfRatings: _numberOfRatings,
+          numberOfBookingsPerHour: _numberOfBookingPerHour,
+          remainingSlots: remainingSlots
         );
+
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -172,10 +173,6 @@ class _AutomotiveEditProfileScreenState
             backgroundColor: Colors.red,
           ),
         );
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
       }
     }
   }
@@ -194,34 +191,21 @@ class _AutomotiveEditProfileScreenState
         foregroundColor: Colors.black,
       ),
       body: SafeArea(
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  buildTopSection(top),
-                  const SizedBox(height: 20),
-                  buildInputs(),
-                  dayOfTheWeekSelection(),
-                  timeSelection(),
-                  serviceSpecialization(),
-                  buildSaveButton(),
-                ],
-              ),
-            ),
-            if (_isLoading)
-              BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                child: Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-              ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              buildTopSection(top),
+              const SizedBox(height: 20),
+              buildInputs(),
+              dayOfTheWeekSelection(),
+              timeSelection(),
+              numberOfBookingsSelection(),
+              serviceSpecialization(),
+              buildSaveButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -251,25 +235,40 @@ class _AutomotiveEditProfileScreenState
   }
 
   Widget buildInputs() => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _shopNameController,
-              decoration: const InputDecoration(
-                hintText: 'Shop Name',
-              ),
+    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+    child: Column(
+      children: [
+        TextField(
+          controller: _shopNameController,
+          decoration: InputDecoration(
+            hintText: 'Shop Name',
+            border:  const OutlineInputBorder(),
+            focusedBorder:  UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.orange.shade900, width: 2),
             ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _locationController,
-              decoration: const InputDecoration(
-                hintText: 'Location',
-              ),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey, width: 1),
             ),
-          ],
+          ),
         ),
-      );
+        const SizedBox(height: 10),
+        TextField(
+          controller: _locationController,
+          decoration: InputDecoration(
+            hintText: 'Location',
+            border:  const OutlineInputBorder(),
+            focusedBorder:  UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.orange.shade900, width: 2),
+            ),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey, width: 1),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
 
   Widget buildCoverImage() => Stack(
         children: [
@@ -486,4 +485,30 @@ class _AutomotiveEditProfileScreenState
           ],
         ),
       );
+
+  Widget numberOfBookingsSelection() => Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Number of Bookings per Hour',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        NumberInputController(
+          initialValue: _numberOfBookingPerHour,
+          min: 1,
+          max: 10,
+          onValueChanged: (value) {
+            setState(() {
+              _numberOfBookingPerHour = value;
+            });
+          },
+        ),
+      ],
+    ),
+  );
 }

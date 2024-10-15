@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
 class MyButtons extends StatelessWidget {
-  final VoidCallback? onTap; // Allow for null callbacks
+  final VoidCallback? onTap;
   final String text;
-  final bool isLoading; // Add this parameter
+  final bool isLoading;
 
   const MyButtons({
     super.key,
     required this.onTap,
     required this.text,
-    this.isLoading = false, // Default to false if not provided
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
 
-      onTap: isLoading ? null : onTap, // Disable tap when loading
+      onTap: isLoading ? null : onTap,
       child: Padding(
         padding: const EdgeInsets.only(top: 0.0),
         child: Container(
@@ -32,12 +32,12 @@ class MyButtons extends StatelessWidget {
 
             ),
 
-            color: Colors.orange.shade900, // Keep the button color consistent
+            color: Colors.orange.shade900,
           ),
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Display text or loading indicator based on isLoading
+
               if (isLoading)
                 const SizedBox(
                   width: 20.0,
