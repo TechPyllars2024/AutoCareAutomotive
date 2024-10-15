@@ -106,26 +106,123 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text('Get Verified',
-          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 30),),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: SingleChildScrollView(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('lib/ProfileManagement/assets/getVerifiedCar.png', height: 200),
-                const SizedBox(height: 16),
                 const Text(
-                  'Please upload a PDF file to get verified',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18),
+                  'Register as a Verified Automotive Shop',
+                  style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
+                const SizedBox(height: 10),
+                const Divider(
+                  color: Colors.grey,
+                  thickness: 1,
+                  indent: 20,
+                  endIndent: 20,
+                ),
+                const SizedBox(height: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: const TextSpan(
+                        text: '1. ',
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                        children: [
+                          TextSpan(
+                            text: 'Prepare the Documents:',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 16.0, top: 8),
+                      child: Text(
+                        'Compile the following into a single PDF file',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 32.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: const TextSpan(
+                              text: '- ',
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                              children: [
+                                TextSpan(
+                                  text: 'Business Permit: ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: 'A clear copy of your valid business permit.',
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 16.0),
+
+                    RichText(
+                      text: const TextSpan(
+                        text: '2. ',
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                        children: [
+                          TextSpan(
+                            text: 'File Requirements:',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0, top: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: const TextSpan(
+                              text: '- Format: ',
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                              children: [
+                                TextSpan(
+                                  text: 'PDF',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: ' only.',
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Text(
+                            '- Ensure all information is clear and readable.',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
                 const SizedBox(height: 30),
 
-                // Pick PDF Button
                 ElevatedButton(
                   onPressed: () {
                     if (!_isLoadingPickFile) {
@@ -140,7 +237,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                     ),
                   ),
                   child: Text(
-                    _isLoadingPickFile ? 'Picking...' : 'Pick PDF',
+                    _isLoadingPickFile ? 'Picking...' : 'Pick File',
                     style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -148,7 +245,6 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                   ),
                 ),
                 const SizedBox(height: 16),
-
 
                 if (_filePath != null)
                   Text(
@@ -203,7 +299,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                               onPressed: () async {
                                 if (_currentPage > 0) {
                                   _currentPage--;
-                                  await _pdfViewController?.setPage(_currentPage);
+                                  await _pdfViewController?.setPage(_currentPage); // Navigate to previous page
                                 }
                               },
                             ),
@@ -216,7 +312,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                               onPressed: () async {
                                 if (_currentPage < _totalPages - 1) {
                                   _currentPage++;
-                                  await _pdfViewController?.setPage(_currentPage);
+                                  await _pdfViewController?.setPage(_currentPage); // Navigate to next page
                                 }
                               },
                             ),
@@ -224,7 +320,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                         ),
                       const SizedBox(height: 32),
 
-
+                      // Submit Button
                       Container(
                         margin: const EdgeInsets.only(bottom: 24),
                         child: ElevatedButton(
@@ -237,7 +333,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
                             backgroundColor: Colors.orange,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(15), // Set the corner radius
                             ),
                           ),
                           child: _isLoadingSubmit
