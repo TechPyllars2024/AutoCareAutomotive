@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage3.dart';
+import 'package:flutter/services.dart';
 
 import '../widgets/button.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
@@ -254,6 +255,9 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
           decoration: const InputDecoration(
             hintText: 'Shop Name',
           ),
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(20),
+          ],
         ),
         const SizedBox(height: 10),
         TextField(
@@ -261,6 +265,9 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
           decoration: const InputDecoration(
             hintText: 'Location',
           ),
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(40),
+          ],
         ),
       ],
     ),
