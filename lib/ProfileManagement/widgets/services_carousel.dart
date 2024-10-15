@@ -29,9 +29,9 @@ class ServicesCarousel extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 12.0),
-            child: const Center(child: Text('No service available yet.')),
+          return const Padding(
+            padding: EdgeInsets.only(top: 12.0),
+            child: Center(child: Text('No service available yet.')),
           );
         } else {
           final services = snapshot.data!;
