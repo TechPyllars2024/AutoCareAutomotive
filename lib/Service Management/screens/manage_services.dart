@@ -121,6 +121,9 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                       ),
 
                       TextField(
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(10),
+                        ],
                         controller: nameController,
                         onChanged: (text) {
                           setState(() {});
@@ -145,6 +148,9 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                         style: TextStyle(color: Colors.black),
                       ),
                       TextField(
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(20),
+                        ],
                         controller: descriptionController,
                         onChanged: (text) {
                           setState(() {});
@@ -200,6 +206,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
                               RegExp(r'^\d*\.?\d*')),
+                          LengthLimitingTextInputFormatter(7)
                         ],
                       ),
 
