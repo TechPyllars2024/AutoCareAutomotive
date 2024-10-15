@@ -283,6 +283,9 @@ class ProfileDetailsWidget extends StatelessWidget {
                 const SizedBox(width: 4),
                 Text(
                   profile?.location ?? 'Location',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  softWrap: true,
                 ),
               ],
             ),

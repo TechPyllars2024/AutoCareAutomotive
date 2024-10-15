@@ -266,7 +266,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
             hintText: 'Location',
           ),
           inputFormatters: [
-            LengthLimitingTextInputFormatter(25),
+            LengthLimitingTextInputFormatter(40),
           ],
         ),
       ],
