@@ -1,7 +1,6 @@
 import 'dart:async'; // Import the Timer class
 import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_get_verified.dart';
-import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_main_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/services/get_verified_services.dart';

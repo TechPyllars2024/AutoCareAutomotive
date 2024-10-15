@@ -90,8 +90,8 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                             color: Colors.grey.shade200,
                             height: 150,
                             width: double.infinity,
-                            child: Center(
-                                child: const Text('No image selected',
+                            child: const Center(
+                                child: Text('No image selected',
                                     style: TextStyle(color: Colors.grey)))),
 
                       const SizedBox(height: 12),
@@ -142,7 +142,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                                 color: Colors.grey.shade600, width: 1),
                           ),
                         ),
-                        style: TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
                       ),
                       TextField(
                         controller: descriptionController,

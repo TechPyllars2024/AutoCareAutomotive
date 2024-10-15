@@ -29,13 +29,11 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
   bool isVerified = false;
 
   final double profileHeight = 100;
-  late Future<Map<String, dynamic>> _providerData;
 
   @override
   void initState() {
     super.initState();
     _loadProfileData();
-    _providerData = ProfileService().fetchProviderByUid(user!.uid);
     _checkVerificationStatus();
   }
 
@@ -59,7 +57,6 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
       MaterialPageRoute(
           builder: (context) => const AutomotiveEditProfileScreen()),
     ).then((_) {
-
       _loadProfileData();
     });
   }
@@ -95,14 +92,11 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
           IconButton(
             icon: Container(
               decoration: BoxDecoration(
-                color: Colors
-                    .orange.shade900,
+                color: Colors.orange.shade900,
                 borderRadius: BorderRadius.circular(12.0),
               ),
-              padding: const EdgeInsets.all(
-                  6.0),
+              padding: const EdgeInsets.all(6.0),
               child: const Center(
-
                 child: Icon(
                   Icons.edit,
                   color: Colors.white,
@@ -180,7 +174,6 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                       title: "Shop Profile Details",
                       icon: Icons.storefront,
                       onPressed: () {
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -269,9 +262,13 @@ class ProfileDetailsWidget extends StatelessWidget {
                   size: 15,
                 ),
                 const SizedBox(width: 4),
-
-                Text(
-                  (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
+                Expanded(  // or Flexible
+                  child: Text(
+                    (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    softWrap: true,
+                  ),
                 ),
               ],
             ),
@@ -284,7 +281,6 @@ class ProfileDetailsWidget extends StatelessWidget {
                   size: 15,
                 ),
                 const SizedBox(width: 4),
-
                 Text(
                   profile?.operationTime ?? 'Operation Time',
                 ),
@@ -303,7 +299,6 @@ class ProfileDetailsWidget extends StatelessWidget {
                       size: 15,
                     ),
                     const SizedBox(width: 4),
-
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,8 +307,7 @@ class ProfileDetailsWidget extends StatelessWidget {
                             (profile?.serviceSpecialization.join(', ') ??
                                 'Specialization'
                                     ''),
-                            overflow:
-                                TextOverflow.visible,
+                            overflow: TextOverflow.visible,
                             maxLines: 2,
                             softWrap: true,
                           ),
