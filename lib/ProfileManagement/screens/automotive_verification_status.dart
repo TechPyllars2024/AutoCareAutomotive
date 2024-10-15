@@ -1,4 +1,4 @@
-import 'dart:async'; // Import the Timer class
+import 'dart:async';
 import 'package:autocare_automotiveshops/Navigation%20Bar/navbar.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_get_verified.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,15 +36,13 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   @override
   void initState() {
     super.initState();
-
-    _timer = Timer.periodic(const Duration(seconds: 2), (Timer t) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       _fetchStatus();
     });
   }
 
   @override
   void dispose() {
-
     _timer?.cancel();
     super.dispose();
   }
@@ -57,7 +55,6 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
       ),
     );
   }
-
 
   Widget _buildScreenForStatus(String status) {
     switch (status) {
@@ -74,10 +71,11 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
     }
   }
 
-
+  // Not submitted screen UI
   Widget _buildNotSubmittedScreen() {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Verification Status',
           style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
@@ -176,11 +174,12 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   Widget _buildPendingScreen() {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Verification Status',
           style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
         ),
-        backgroundColor: const Color(0xffFABC3F)
+        backgroundColor: const Color(0xffFABC3F),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -188,6 +187,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Pending Icon
               const Icon(
                 Icons.hourglass_top_rounded,
                 size: 120,
@@ -213,19 +213,22 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
-
+              // Additional Message
               const Text(
                 'Please wait while we review your submitted documents.',
                 style: TextStyle(fontSize: 16),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),
-
+              // Button to Go Back
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
+                  Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => const Navbar()),
+                    MaterialPageRoute(
+                      builder: (context) => const Navbar(),
+                    ),
+                        (route) => false,
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -255,6 +258,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   Widget _buildVerifiedScreen() {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Verification Status',
           style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
@@ -267,21 +271,20 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
               const Icon(
                 Icons.verified,
                 color: Color(0xff06D001),
                 size: 100,
               ),
               const SizedBox(height: 20),
-
+              // Verification Message
               const Text(
                 'Your automotive shop has been successfully',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: Colors.black87, // Text color
                 ),
               ),
               const Text(
@@ -294,7 +297,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
-
+              // Subtitle for additional details
               const Text(
                 'Thank you for verifying your shop. You can now offer services on the platform.',
                 textAlign: TextAlign.center,
@@ -304,12 +307,10 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 ),
               ),
               const SizedBox(height: 32),
+              // Done Button
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Navbar()),
-                  );
+                  Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
@@ -338,6 +339,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
   Widget _buildRejectedScreen() {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Verification Status',
           style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
@@ -350,14 +352,14 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
+              // Rejected Icon
               const Icon(
                 Icons.cancel_rounded,
                 size: 120,
                 color: Color(0xffE72929),
               ),
               const SizedBox(height: 20),
-
+              // Rejected Text
               const Text(
                 'Your verification has been',
                 style: TextStyle(
@@ -376,7 +378,6 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
-              // Additional Message
               const Text(
                 'Unfortunately, your submitted documents did not meet our requirements.',
                 style: TextStyle(fontSize: 16),
@@ -388,7 +389,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),
-
+              // Button to Go Back
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -419,7 +420,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
                 },
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                  side: const BorderSide(color: Color(0xffE72929)), // Border color
+                  side: const BorderSide(color: Color(0xffE72929)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
