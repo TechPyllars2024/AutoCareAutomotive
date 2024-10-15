@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:autocare_automotiveshops/ProfileManagement/services/profile_service.dart';
 import '../widgets/button.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
@@ -69,7 +70,7 @@ class _AutomotiveEditProfileScreenState
   Future<void> _loadProfileData() async {
     if (uid != null) {
       final fetchedProfile =
-          await _automotiveShopEditProfileServices.fetchProfileData(uid!);
+          await ProfileService().fetchProfileData();
       setState(() {
         editProfile = fetchedProfile;
         if (editProfile != null) {
@@ -82,6 +83,8 @@ class _AutomotiveEditProfileScreenState
           _verificationStatus = editProfile!.verificationStatus;
           _totalRatings = editProfile!.totalRatings;
           _numberOfRatings = editProfile!.numberOfRatings;
+          _numberOfBookingPerHour = editProfile!.numberOfBookingsPerHour;
+          remainingSlots = editProfile!.remainingSlots;
         }
       });
     }
@@ -134,7 +137,6 @@ class _AutomotiveEditProfileScreenState
         return;
       }
       try {
-
         await _automotiveShopEditProfileServices.saveProfile(
           uid: user.uid,
           serviceProviderUid: user.uid,
@@ -240,7 +242,7 @@ class _AutomotiveEditProfileScreenState
           controller: _shopNameController,
           decoration: InputDecoration(
             hintText: 'Shop Name',
-            border:  OutlineInputBorder(),
+            border:  const OutlineInputBorder(),
             focusedBorder:  UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.orange.shade900, width: 2),
             ),
@@ -254,7 +256,7 @@ class _AutomotiveEditProfileScreenState
           controller: _locationController,
           decoration: InputDecoration(
             hintText: 'Location',
-            border:  OutlineInputBorder(),
+            border:  const OutlineInputBorder(),
             focusedBorder:  UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.orange.shade900, width: 2),
             ),
@@ -497,12 +499,12 @@ class _AutomotiveEditProfileScreenState
           ),
         ),
         NumberInputController(
-          initialValue: _numberOfBookingPerHour, // Set the initial value from the state variable
+          initialValue: _numberOfBookingPerHour,
           min: 1,
           max: 10,
           onValueChanged: (value) {
             setState(() {
-              _numberOfBookingPerHour = value; // Update the state variable when the input changes
+              _numberOfBookingPerHour = value;
             });
           },
         ),
