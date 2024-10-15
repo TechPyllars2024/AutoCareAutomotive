@@ -33,12 +33,19 @@ class ProfileDetails extends StatelessWidget {
             const SizedBox(height: 5),
             Row(
               children: [
-                 Icon(Icons.calendar_month, color: Colors.orange.shade900, size: 15,),
+                Icon(
+                  Icons.calendar_month,
+                  color: Colors.orange.shade900,
+                  size: 15,
+                ),
                 const SizedBox(width: 4),
-
-                Text(
-                  (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
-
+                Expanded(  // or Flexible
+                  child: Text(
+                    (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    softWrap: true,
+                  ),
                 ),
               ],
             ),
@@ -49,7 +56,6 @@ class ProfileDetails extends StatelessWidget {
                 const SizedBox(width: 4),
                 Text(
                   profile?.operationTime ?? 'Operation Time',
-
                 ),
               ],
             ),
