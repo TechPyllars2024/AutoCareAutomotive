@@ -49,7 +49,6 @@ class _OnboardingState extends State<Onboarding> {
               Onboardingpage1(),
               Onboardingpage2(),
               AutomotiveCompleteProfileScreen(),
-              Onboardingpage3(),
             ],
           ),
           Positioned(
@@ -63,13 +62,16 @@ class _OnboardingState extends State<Onboarding> {
                   currentPageIndex == 0
                       ? const Text("       ")
                       : GestureDetector(
-                    onTap: () {
-                      _controller.previousPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeIn);
-                    },
-                    child: const Icon(Icons.navigate_before, size: 30,),
-                  ),
+                          onTap: () {
+                            _controller.previousPage(
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeIn);
+                          },
+                          child: const Icon(
+                            Icons.navigate_before,
+                            size: 30,
+                          ),
+                        ),
                   SmoothPageIndicator(
                     controller: _controller,
                     count: 4,
@@ -83,13 +85,16 @@ class _OnboardingState extends State<Onboarding> {
                   (currentPageIndex == 2 || currentPageIndex == 3)
                       ? const Text("        ")
                       : GestureDetector(
-                    onTap: () {
-                      _controller.nextPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeIn);
-                    },
-                    child: const Icon(Icons.navigate_next, size: 30,),
-                  ),
+                          onTap: () {
+                            _controller.nextPage(
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeIn);
+                          },
+                          child: const Icon(
+                            Icons.navigate_next,
+                            size: 30,
+                          ),
+                        ),
                 ],
               ),
             ),
@@ -98,5 +103,4 @@ class _OnboardingState extends State<Onboarding> {
       ),
     );
   }
-
 }
