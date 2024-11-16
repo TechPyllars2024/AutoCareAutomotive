@@ -1,6 +1,5 @@
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage1.dart';
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage2.dart';
-import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage3.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../ProfileManagement/screens/automotive_complete_profile.dart';
