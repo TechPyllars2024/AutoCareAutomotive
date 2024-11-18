@@ -1,11 +1,11 @@
 class ServiceModel {
-  final String uid; //uid of the service provider
-  final String serviceId;  // Unique ID for the service
-  final String name;       // Name of the service
-  final String description; // Detailed description of the service
-  final double price;      // Price of the service
-  final String servicePicture; // URL of the service picture
-  final List<String> category;   // Category of the service
+  final String uid;
+  final String serviceId;
+  final String name;
+  final String description;
+  final double price;
+  final String servicePicture;
+  final List<String> category;
 
   ServiceModel({
     required this.uid,

@@ -24,10 +24,10 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   bool isLoadingSignup = false;
   bool isLoadingGoogle = false;
 
@@ -55,7 +55,6 @@ class _SignupScreenState extends State<SignupScreen> {
       Utils.showSnackBar("Please enter a valid password");
       return;
     }
-
 
     if (passwordController.text != confirmPasswordController.text) {
       setState(() {
@@ -128,26 +127,23 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.grey.shade100,
       resizeToAvoidBottomInset: true,
       body: Column(
-
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-
           const CarImageWidget(
             imagePath: 'lib/Authentication/assets/images/repair2.jpg',
           ).animate().fadeIn(duration: const Duration(seconds: 2)),
-
-
           Expanded(
             child: Container(
               height: MediaQuery.of(context).size.height * 0.6,
               padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
               decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30)),
               ),
               child: SingleChildScrollView(
                 child: Padding(
@@ -155,12 +151,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-
-
                       Container(
                         margin: const EdgeInsets.only(bottom: 8),
                         child: RichText(
-                          text:  TextSpan(
+                          text: TextSpan(
                             children: [
                               const TextSpan(
                                 text: "Auto",
@@ -180,29 +174,22 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                             ],
                           ),
-                        ).animate().fadeIn(duration: const Duration(seconds: 3)),
+                        )
+                            .animate()
+                            .fadeIn(duration: const Duration(seconds: 3)),
                       ),
-
                       TextFieldInput(
                         icon: Icons.email,
                         textEditingController: emailController,
                         hintText: 'Email',
                         textInputType: TextInputType.text,
                         validator: (value) {
-
                           final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-
-
                           if (value == null || value.isEmpty) {
                             return 'Please enter an email';
-                          }
-
-
-                          else if (!emailRegex.hasMatch(value)) {
+                          } else if (!emailRegex.hasMatch(value)) {
                             return 'Please enter a valid email address';
                           }
-
-
                           return null;
                         },
                       ),
@@ -220,29 +207,24 @@ class _SignupScreenState extends State<SignupScreen> {
                         hintText: 'Confirm Password',
                         textInputType: TextInputType.text,
                         validator: (value) {
-
                           if (value == null || value.isEmpty) {
                             return 'Please confirm your password';
                           }
 
-
-                          final passwordError = passwordValidator(passwordController.text);
+                          final passwordError =
+                              passwordValidator(passwordController.text);
                           if (passwordError != null) {
                             return 'The password does not meet the required criteria';
                           }
-
 
                           if (value != passwordController.text) {
                             return 'Passwords do not match';
                           }
 
-
                           return null;
                         },
                         isPass: true,
                       ),
-
-
                       Padding(
                         padding: const EdgeInsets.only(top: 5.0),
                         child: MyButtons(
@@ -251,19 +233,13 @@ class _SignupScreenState extends State<SignupScreen> {
                           isLoading: isLoadingSignup,
                         ),
                       ),
-
-
                       SizedBox(height: size.height * 0.03),
                       const Or(),
-
-
                       SizedBox(height: size.height * 0.03),
                       GoogleButton(
                         onTap: signInWithGoogle,
                         hintText: 'Sign Up with Google',
                       ),
-
-
                       SizedBox(height: size.height * 0.06),
                       TextButton(
                         onPressed: () {
@@ -290,7 +266,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => const LoginScreen(),
+                                        builder: (context) =>
+                                            const LoginScreen(),
                                       ),
                                     );
                                   },
@@ -305,11 +282,11 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
             ).animate().slide(
-              duration: const Duration(milliseconds: 1000),
-              curve: Curves.easeInOut,
-              begin: const Offset(0, 1),
-              end: const Offset(0, 0),
-            ),
+                  duration: const Duration(milliseconds: 1000),
+                  curve: Curves.easeInOut,
+                  begin: const Offset(0, 1),
+                  end: const Offset(0, 0),
+                ),
           ),
         ],
       ),

@@ -9,7 +9,6 @@ class ProfileService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Logger logger = Logger();
 
-
   // Fetch profile data from Firestore
   Future<AutomotiveProfileModel?> fetchProfileData() async {
     final user = _auth.currentUser;
@@ -25,14 +24,17 @@ class ProfileService {
       final data = doc.data();
       if (data != null) {
         // Casting 'remainingSlots' to the expected nested map type
-        final remainingSlots = (data['remainingSlots'] as Map<String, dynamic>?)?.map(
-              (key, value) => MapEntry(
-            key,
-            (value as Map<String, dynamic>).map(
-                  (innerKey, innerValue) => MapEntry(innerKey, innerValue as int),
-            ),
-          ),
-        ) ?? <String, Map<String, int>>{};
+        final remainingSlots =
+            (data['remainingSlots'] as Map<String, dynamic>?)?.map(
+                  (key, value) => MapEntry(
+                    key,
+                    (value as Map<String, dynamic>).map(
+                      (innerKey, innerValue) =>
+                          MapEntry(innerKey, innerValue as int),
+                    ),
+                  ),
+                ) ??
+                <String, Map<String, int>>{};
 
         return AutomotiveProfileModel(
           uid: user.uid,
@@ -41,9 +43,10 @@ class ProfileService {
           location: data['location'] ?? '',
           coverImage: data['coverImage'] ?? '',
           profileImage: data['profileImage'] ?? '',
-          daysOfTheWeek: (data['daysOfTheWeek'] as List<dynamic>? ?? []).cast<String>(),
+          daysOfTheWeek: (data['daysOfTheWeek'] ?? []).cast<String>(),
           operationTime: data['operationTime'] ?? '',
-          serviceSpecialization: (data['serviceSpecialization'] as List<dynamic>? ?? []).cast<String>(),
+          serviceSpecialization:
+              (data['serviceSpecialization'] ?? []).cast<String>(),
           verificationStatus: data['verificationStatus'] ?? '',
           totalRatings: (data['totalRatings'] as num?)?.toDouble() ?? 0.0,
           numberOfRatings: data['numberOfRatings'] ?? 0,
@@ -76,8 +79,6 @@ class ProfileService {
     }
   }
 
-
-
   // Save profile data to Firestore
   Future<void> saveUserProfile(AutomotiveProfileModel updatedProfile) async {
     try {
@@ -97,10 +98,11 @@ class ProfileService {
         .where('serviceProviderUid', isEqualTo: serviceProviderUid)
         .snapshots()
         .map((snapshot) => snapshot.docs
-        .map((doc) => FeedbackModel.fromMap(doc.data(), doc.id))
-        .toList())
+            .map((doc) => FeedbackModel.fromMap(doc.data(), doc.id))
+            .toList())
         .handleError((e) {
-      logger.i('Error fetching feedbacks for provider ID $serviceProviderUid: $e');
+      logger.i(
+          'Error fetching feedbacks for provider ID $serviceProviderUid: $e');
     });
   }
 
@@ -112,7 +114,8 @@ class ProfileService {
           .doc(uid)
           .get();
 
-      Map<String, dynamic> data = providerSnapshot.data() as Map<String, dynamic>;
+      Map<String, dynamic> data =
+          providerSnapshot.data() as Map<String, dynamic>;
 
       // Fetch feedbacks for the provider
       QuerySnapshot feedbackSnapshot = await FirebaseFirestore.instance
@@ -121,11 +124,13 @@ class ProfileService {
           .get();
 
       List<FeedbackModel> feedbacks = feedbackSnapshot.docs
-          .map((doc) => FeedbackModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
+          .map((doc) =>
+              FeedbackModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
           .toList();
 
       // Calculate total ratings and number of ratings
-      double totalRatings = feedbacks.fold(0, (sum, feedback) => sum + feedback.rating);
+      double totalRatings =
+          feedbacks.fold(0, (sum, feedback) => sum + feedback.rating);
       int numberOfRatings = feedbacks.length;
 
       // Add totalRatings and numberOfRatings to the data map
