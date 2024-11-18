@@ -7,6 +7,9 @@ class StartConversationModel {
   DateTime timestamp;
   String shopName;
   String shopProfilePhoto;
+  String carOwnerFirstName;
+  String carOwnerLastName;
+  String carOwnerProfilePhoto;
   String lastMessage;
   DateTime lastMessageTime;
   int numberOfMessages;
@@ -19,6 +22,9 @@ class StartConversationModel {
     required this.timestamp,
     required this.shopName,
     required this.shopProfilePhoto,
+    required this.carOwnerFirstName,
+    required this.carOwnerLastName,
+    required this.carOwnerProfilePhoto,
     required this.lastMessage,
     required this.lastMessageTime,
     required this.numberOfMessages,
@@ -33,6 +39,9 @@ class StartConversationModel {
       'timestamp': timestamp,
       'shopName': shopName,
       'shopProfilePhoto': shopProfilePhoto,
+      'carOwnerFirstName': carOwnerFirstName,
+      'carOwnerLastName': carOwnerLastName,
+      'carOwnerProfile': carOwnerProfilePhoto,
       'lastMessage': lastMessage,
       'lastMessageTime': lastMessageTime.toIso8601String(),
       'numberOfMessages': numberOfMessages,
@@ -48,6 +57,9 @@ class StartConversationModel {
       timestamp: map['timestamp'] != null ? (map['timestamp'] as Timestamp).toDate() : DateTime.now(),
       shopName: map['shopName'] ?? '',
       shopProfilePhoto: map['shopProfilePhoto'] ?? '',
+      carOwnerFirstName: map['senderFirstName'] ?? '',
+      carOwnerLastName: map['senderLastName'] ?? '',
+      carOwnerProfilePhoto: map['senderProfilePhoto'] ?? '',
       lastMessage: map['lastMessage'] ?? '',
       lastMessageTime: map['lastMessageTime'] != null
           ? (map['lastMessageTime'] is Timestamp
