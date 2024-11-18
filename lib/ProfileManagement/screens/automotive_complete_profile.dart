@@ -12,7 +12,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../models/automotive_shop_profile_model.dart';
 import '../services/automotive_shop_edit_profile_services.dart';
-import '../widgets/numberOfBookings.dart';
 
 class AutomotiveCompleteProfileScreen extends StatefulWidget {
   const AutomotiveCompleteProfileScreen({super.key, this.child});
@@ -44,6 +43,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
   bool _isLoading = false;
   int _numberOfBookingPerHour = 1;
   Map<String, Map<String, int>> remainingSlots = {};
+  List<String>? _serviceSpecialization;
 
   @override
   void initState() {
@@ -442,11 +442,16 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
             fontWeight: FontWeight.bold,
           ),
         ),
+        const SizedBox(height: 8),
         CustomDropdown(
           options: CategoryList.categories,
           hintText: 'Service Specialization',
           controller: dropdownController,
+          initialSelectedOptions: const [],
           onSelectionChanged: (selectedOptions) {
+            setState(() {
+              _serviceSpecialization = selectedOptions.cast<String>();
+            });
           },
         ),
       ],
@@ -477,8 +482,9 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
           ],
           hintText: 'Select Days',
           controller: daysOfTheWeekController,
+          initialSelectedOptions: const [],
           onSelectionChanged: (selectedOptions) {
-          },
+          }
         ),
       ],
     ),
@@ -496,15 +502,27 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
             fontWeight: FontWeight.bold,
           ),
         ),
-        NumberInputController(
-          initialValue: _numberOfBookingPerHour, // Set the initial value from the state variable
-          min: 1,
-          max: 10,
-          onValueChanged: (value) {
-            setState(() {
-              _numberOfBookingPerHour = value; // Update the state variable when the input changes
-            });
-          },
+        Row(
+          children: [
+            Expanded(
+              child: Slider(
+                value: _numberOfBookingPerHour.toDouble(),
+                min: 1,
+                max: 10,
+                divisions: 9, // For 1 to 10
+                label: _numberOfBookingPerHour.toString(),
+                onChanged: (double value) {
+                  setState(() {
+                    _numberOfBookingPerHour = value.toInt();
+                  });
+                },
+              ),
+            ),
+            Text(
+              '$_numberOfBookingPerHour',
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
         ),
       ],
     ),
