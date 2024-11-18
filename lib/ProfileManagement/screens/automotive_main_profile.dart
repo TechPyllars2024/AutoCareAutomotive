@@ -220,7 +220,8 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => VerificationStatusScreen(uid: user!.uid),
+                                  builder: (context) =>
+                                      VerificationStatusScreen(uid: user!.uid),
                                 ),
                               );
                               _checkVerificationStatus();
@@ -295,7 +296,8 @@ class ProfileDetailsWidget extends StatelessWidget {
                   size: 15,
                 ),
                 const SizedBox(width: 4),
-                Expanded(  // or Flexible
+                Expanded(
+                  // or Flexible
                   child: Text(
                     (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
                     overflow: TextOverflow.ellipsis,
