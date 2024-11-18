@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage3.dart';
-
 import '../widgets/button.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
@@ -19,10 +18,12 @@ class AutomotiveCompleteProfileScreen extends StatefulWidget {
   final Widget? child;
 
   @override
-  State<AutomotiveCompleteProfileScreen> createState() => _AutomotiveCompleteProfileScreenState();
+  State<AutomotiveCompleteProfileScreen> createState() =>
+      _AutomotiveCompleteProfileScreenState();
 }
 
-class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProfileScreen> {
+class _AutomotiveCompleteProfileScreenState
+    extends State<AutomotiveCompleteProfileScreen> {
   final DropdownController dropdownController = Get.put(DropdownController());
   final DaysOfTheWeekController daysOfTheWeekController =
       Get.put(DaysOfTheWeekController());
@@ -52,6 +53,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     _loadProfileData();
   }
 
+  // Get the current user
   Future<void> _getCurrentUser() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -61,9 +63,11 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     }
   }
 
+  // Load the profile data
   Future<void> _loadProfileData() async {
     if (uid != null) {
-      final fetchedProfile = await _automotiveShopEditProfileServices.fetchProfileData(uid!);
+      final fetchedProfile =
+          await _automotiveShopEditProfileServices.fetchProfileData(uid!);
       setState(() {
         editProfile = fetchedProfile;
         if (editProfile != null) {
@@ -76,6 +80,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     }
   }
 
+  // Pick the cover image
   Future<void> _pickCoverImage() async {
     final image = await _automotiveShopEditProfileServices.pickCoverImage();
     if (image != null) {
@@ -85,6 +90,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     }
   }
 
+  // Pick the profile image
   Future<void> _pickProfileImage() async {
     final image = await _automotiveShopEditProfileServices.pickProfileImage();
     if (image != null) {
@@ -94,6 +100,7 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     }
   }
 
+  // Save the profile
   Future<void> _saveProfile() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -127,23 +134,25 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
       });
 
       try {
-          if (editProfile == null) {
-            await _automotiveShopEditProfileServices.saveProfile(
+        if (editProfile == null) {
+          await _automotiveShopEditProfileServices.saveProfile(
               uid: user.uid,
               serviceProviderUid: user.uid,
               shopName: _shopNameController.text,
               location: _locationController.text,
               coverImage: _coverImage,
               profileImage: _profileImage,
-              daysOfTheWeek: List<String>.from(daysOfTheWeekController.selectedOptionList),
-              operationTime: '${_openingTime?.format(context)} - ${_closingTime?.format(context)}',
-              serviceSpecialization: List<String>.from(dropdownController.selectedOptionList),
+              daysOfTheWeek:
+                  List<String>.from(daysOfTheWeekController.selectedOptionList),
+              operationTime:
+                  '${_openingTime?.format(context)} - ${_closingTime?.format(context)}',
+              serviceSpecialization:
+                  List<String>.from(dropdownController.selectedOptionList),
               verificationStatus: 'Not Submitted',
               totalRatings: 0.0,
               numberOfRatings: 0,
               numberOfBookingsPerHour: _numberOfBookingPerHour,
-              remainingSlots: remainingSlots
-            );
+              remainingSlots: remainingSlots);
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -175,15 +184,13 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
   @override
   Widget build(BuildContext context) {
     final double top = coverHeight - profileHeight / 2;
-    double bottomPadding = MediaQuery.of(context).viewInsets.bottom > 0 ? 0 : 80.0;
+    double bottomPadding =
+        MediaQuery.of(context).viewInsets.bottom > 0 ? 0 : 80.0;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Complete Your Shop Profile',
-            style: TextStyle(
-                fontWeight: FontWeight.w900,
-                color: Colors.white)
-        ),
+            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white)),
         backgroundColor: Colors.orange.shade900,
       ),
       backgroundColor: Colors.grey.shade100,
@@ -222,11 +229,13 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     );
   }
 
+  // Save button
   Widget buildSaveButton() => WideButtons(
-    onTap: _saveProfile,
-    text: 'Save',
-  );
+        onTap: _saveProfile,
+        text: 'Save',
+      );
 
+  // Top section
   Widget buildTopSection(double top) {
     return Stack(
       clipBehavior: Clip.none,
@@ -245,286 +254,291 @@ class _AutomotiveCompleteProfileScreenState extends State<AutomotiveCompleteProf
     );
   }
 
+  // Inputs
   Widget buildInputs() => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-    child: Column(
-      children: [
-        TextField(
-          controller: _shopNameController,
-          decoration: const InputDecoration(
-            hintText: 'Shop Name',
-          ),
+        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _shopNameController,
+              decoration: const InputDecoration(
+                hintText: 'Shop Name',
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _locationController,
+              decoration: const InputDecoration(
+                hintText: 'Location',
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 10),
-        TextField(
-          controller: _locationController,
-          decoration: const InputDecoration(
-            hintText: 'Location',
-          ),
-        ),
-      ],
-    ),
-  );
+      );
 
+  // Cover image
   Widget buildCoverImage() => Stack(
-    children: [
-      Container(
-        color: Colors.grey.shade400,
-        width: double.infinity,
-        height: coverHeight,
-        child: _coverImage != null
-            ? Image.file(_coverImage!, fit: BoxFit.cover)
-            : (_coverImageUrl != null && _coverImageUrl!.isNotEmpty)
-            ? Image.network(_coverImageUrl!, fit: BoxFit.cover)
-            : null,
-      ),
-      Positioned(
-        bottom: 10,
-        right: 10,
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration:  BoxDecoration(
-            color: Colors.orange.shade900,
-            shape: BoxShape.circle,
+        children: [
+          Container(
+            color: Colors.grey.shade400,
+            width: double.infinity,
+            height: coverHeight,
+            child: _coverImage != null
+                ? Image.file(_coverImage!, fit: BoxFit.cover)
+                : (_coverImageUrl != null && _coverImageUrl!.isNotEmpty)
+                    ? Image.network(_coverImageUrl!, fit: BoxFit.cover)
+                    : null,
           ),
-          child: IconButton(
-            icon: const Icon(
-              Icons.camera_alt,
-              color: Colors.white,
-              size: 20,
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.orange.shade900,
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.camera_alt,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                onPressed: _pickCoverImage,
+              ),
             ),
-            onPressed: _pickCoverImage,
           ),
-        ),
-      ),
-    ],
-  );
+        ],
+      );
 
+  // Profile image
   Widget buildProfileImage() => Stack(
-    children: [
-      CircleAvatar(
-        radius: profileHeight / 2,
-        backgroundColor: Colors.grey.shade500,
-        child: _profileImage != null
-            ? ClipOval(
-          child: Image.file(
-            _profileImage!,
-            fit: BoxFit.cover,
-            width: 130,
-            height: 130,
+        children: [
+          CircleAvatar(
+            radius: profileHeight / 2,
+            backgroundColor: Colors.grey.shade500,
+            child: _profileImage != null
+                ? ClipOval(
+                    child: Image.file(
+                      _profileImage!,
+                      fit: BoxFit.cover,
+                      width: 130,
+                      height: 130,
+                    ),
+                  )
+                : (_profileImageUrl != null && _profileImageUrl!.isNotEmpty)
+                    ? ClipOval(
+                        child: Image.network(
+                          _profileImageUrl!,
+                          fit: BoxFit.cover,
+                          width: 130,
+                          height: 130,
+                        ),
+                      )
+                    : const Icon(
+                        Icons.person,
+                        size: 80,
+                        color: Colors.white,
+                      ),
           ),
-        )
-            : (_profileImageUrl != null && _profileImageUrl!.isNotEmpty)
-            ? ClipOval(
-          child: Image.network(
-            _profileImageUrl!,
-            fit: BoxFit.cover,
-            width: 130,
-            height: 130,
-          ),
-        )
-            : const Icon(
-          Icons.person,
-          size: 80,
-          color: Colors.white,
-        ),
-      ),
-      Positioned(
-        bottom: 0,
-        right: 0,
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration:  BoxDecoration(
-            color: Colors.orange.shade900,
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            icon: const Icon(
-              Icons.camera_alt,
-              color: Colors.white,
-              size: 20,
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.orange.shade900,
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.camera_alt,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                onPressed: _pickProfileImage,
+              ),
             ),
-            onPressed: _pickProfileImage,
           ),
-        ),
-      ),
-    ],
-  );
+        ],
+      );
 
+  // Time selection
   Widget timeSelection() => Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Operating hours',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text('Open'),
-                  const SizedBox(height: 5),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 55),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: TimePickerDisplay(
-                      initialTime: const TimeOfDay(hour: 0, minute: 0),
-                      onTimeSelected: (selectedTime) {
-                        setState(() {
-                          _openingTime = selectedTime;
-                        });
-                      },
-                    ),
-                  ),
-                ],
+            const Text(
+              'Operating hours',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(width: 5),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text('Close'),
-                  const SizedBox(height: 5),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 55),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: TimePickerDisplay(
-                      initialTime: const TimeOfDay(hour: 0, minute: 0),
-                      onTimeSelected: (selectedTime) {
-                        setState(() {
-                          _closingTime = selectedTime;
-                        });
-                      },
-                    ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text('Open'),
+                      const SizedBox(height: 5),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 55),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        child: TimePickerDisplay(
+                          initialTime: const TimeOfDay(hour: 0, minute: 0),
+                          onTimeSelected: (selectedTime) {
+                            setState(() {
+                              _openingTime = selectedTime;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text('Close'),
+                      const SizedBox(height: 5),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 55),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        child: TimePickerDisplay(
+                          initialTime: const TimeOfDay(hour: 0, minute: 0),
+                          onTimeSelected: (selectedTime) {
+                            setState(() {
+                              _closingTime = selectedTime;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-      ],
-    ),
-  );
+      );
 
+  // Service specialization
   Widget serviceSpecialization() => Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Select Service Specialization',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 8),
-        CustomDropdown(
-          options: CategoryList.categories,
-          hintText: 'Service Specialization',
-          controller: dropdownController,
-          initialSelectedOptions: const [],
-          onSelectionChanged: (selectedOptions) {
-            setState(() {
-              _serviceSpecialization = selectedOptions.cast<String>();
-            });
-          },
-        ),
-      ],
-    ),
-  );
-
-  Widget dayOfTheWeekSelection() => Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Select Days of the Week',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        DayOfTheWeek(
-          options: const [
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-            'Sunday'
-          ],
-          hintText: 'Select Days',
-          controller: daysOfTheWeekController,
-          initialSelectedOptions: const [],
-          onSelectionChanged: (selectedOptions) {
-          }
-        ),
-      ],
-    ),
-  );
-
-  Widget numberOfBookingsSelection() => Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Number of Bookings per Hour',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Row(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Slider(
-                value: _numberOfBookingPerHour.toDouble(),
-                min: 1,
-                max: 10,
-                divisions: 9, // For 1 to 10
-                label: _numberOfBookingPerHour.toString(),
-                onChanged: (double value) {
-                  setState(() {
-                    _numberOfBookingPerHour = value.toInt();
-                  });
-                },
+            const Text(
+              'Select Service Specialization',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            Text(
-              '$_numberOfBookingPerHour',
-              style: const TextStyle(fontSize: 16),
+            const SizedBox(height: 8),
+            CustomDropdown(
+              options: CategoryList.categories,
+              hintText: 'Service Specialization',
+              controller: dropdownController,
+              initialSelectedOptions: const [],
+              onSelectionChanged: (selectedOptions) {
+                setState(() {
+                  _serviceSpecialization = selectedOptions.cast<String>();
+                });
+              },
             ),
           ],
         ),
-      ],
-    ),
-  );
+      );
+
+  // Days of the week selection
+  Widget dayOfTheWeekSelection() => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Select Days of the Week',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            DayOfTheWeek(
+                options: const [
+                  'Monday',
+                  'Tuesday',
+                  'Wednesday',
+                  'Thursday',
+                  'Friday',
+                  'Saturday',
+                  'Sunday'
+                ],
+                hintText: 'Select Days',
+                controller: daysOfTheWeekController,
+                initialSelectedOptions: const [],
+                onSelectionChanged: (selectedOptions) {}),
+          ],
+        ),
+      );
+
+  // Number of bookings per hour selection
+  Widget numberOfBookingsSelection() => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Number of Bookings per Hour',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Slider(
+                    value: _numberOfBookingPerHour.toDouble(),
+                    min: 1,
+                    max: 10,
+                    divisions: 9, // For 1 to 10
+                    label: _numberOfBookingPerHour.toString(),
+                    onChanged: (double value) {
+                      setState(() {
+                        _numberOfBookingPerHour = value.toInt();
+                      });
+                    },
+                  ),
+                ),
+                Text(
+                  '$_numberOfBookingPerHour',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
 }
