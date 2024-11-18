@@ -58,6 +58,7 @@ dependencies:
   smooth_page_indicator: ^1.2.0+3
 
   flutter_native_splash: ^2.4.1
+  firebase_messaging: ^15.1.4
 
 
 
