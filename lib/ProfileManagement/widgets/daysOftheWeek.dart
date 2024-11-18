@@ -1,24 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 class DaysOfTheWeekController extends GetxController {
   var selectedOptionList = <String>[].obs;
   var selectedOption = ''.obs;
 
-
   void updateSelectedOption() {
-    final selectedDays = selectedOptionList.toSet();
-
-    if (selectedDays.length == 7) {
-      selectedOption.value = 'Everyday';
-    } else if (selectedDays.containsAll([
-      'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'
-    ]) && !selectedDays.contains('Saturday') && !selectedDays.contains('Sunday')) {
-      selectedOption.value = 'Weekdays';
-    } else {
-      selectedOption.value = selectedOptionList.join(', ');
-    }
+    // Directly join the selected days as a comma-separated string
+    selectedOption.value = selectedOptionList.join(', ');
   }
 }
 
@@ -27,20 +16,30 @@ class DayOfTheWeek extends StatefulWidget {
   final String hintText;
   final void Function(List<String>)? onSelectionChanged;
   final DaysOfTheWeekController controller;
+  final List<String>? initialSelectedOptions;
 
-  const DayOfTheWeek({
-    super.key,
-    required this.options,
-    required this.hintText,
-    required this.controller,
-    this.onSelectionChanged,
-  });
+  const DayOfTheWeek(
+      {super.key,
+      required this.options,
+      required this.hintText,
+      required this.controller,
+      this.onSelectionChanged,
+      required this.initialSelectedOptions});
 
   @override
   State<DayOfTheWeek> createState() => _DayOfTheWeekState();
 }
 
 class _DayOfTheWeekState extends State<DayOfTheWeek> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialSelectedOptions == null) {
+      widget.controller.selectedOptionList.value =
+          List<String>.from(widget.initialSelectedOptions!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -54,14 +53,15 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(15),
                   color: Colors.white,
                 ),
                 child: Obx(
-                      () => Text(
+                  () => Text(
                     widget.controller.selectedOptionList.isEmpty
                         ? widget.hintText
                         : widget.controller.selectedOption.value,
@@ -95,12 +95,13 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
             child: ListBody(
               children: widget.options.map((option) {
                 return Obx(
-                      () => CheckboxListTile(
+                  () => CheckboxListTile(
                     title: Text(
                       option,
                       style: TextStyle(color: Colors.grey[800]),
                     ),
-                    value: widget.controller.selectedOptionList.contains(option),
+                    value:
+                        widget.controller.selectedOptionList.contains(option),
                     onChanged: (bool? value) {
                       if (value == true) {
                         widget.controller.selectedOptionList.add(option);
@@ -108,7 +109,8 @@ class _DayOfTheWeekState extends State<DayOfTheWeek> {
                         widget.controller.selectedOptionList.remove(option);
                       }
                       widget.controller.updateSelectedOption();
-                      widget.onSelectionChanged?.call(widget.controller.selectedOptionList);
+                      widget.onSelectionChanged
+                          ?.call(widget.controller.selectedOptionList);
                     },
                     controlAffinity: ListTileControlAffinity.leading,
                     activeColor: Colors.orange.shade900,

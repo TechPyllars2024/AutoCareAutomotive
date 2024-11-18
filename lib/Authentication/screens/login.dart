@@ -39,7 +39,6 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
   }
 
-
   void loginUser() async {
     setState(() {
       isLoadingLogin = true;
@@ -51,7 +50,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (res == "SUCCESS") {
-
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null && user.emailVerified) {
         Navigator.of(context).pushReplacement(
@@ -72,7 +70,6 @@ class _LoginScreenState extends State<LoginScreen> {
       Utils.showSnackBar(res);
     }
   }
-
 
   Future<void> logInWithGoogle() async {
     setState(() {
@@ -100,32 +97,30 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.grey.shade100,
       resizeToAvoidBottomInset: true,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
             child: const CarImageWidget(
-                imagePath: 'lib/Authentication/assets/images/repair1.jpg')
+                    imagePath: 'lib/Authentication/assets/images/repair1.jpg')
                 .animate()
                 .fadeIn(duration: const Duration(seconds: 2)),
           ),
-
-
           Expanded(
-
             child: Container(
               height: MediaQuery.of(context).size.height * 0.6,
               padding: const EdgeInsets.all(20),
               decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30)),
               ),
               child: SingleChildScrollView(
                 child: Padding(
@@ -136,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Container(
                         margin: const EdgeInsets.only(bottom: 12),
                         child: RichText(
-                          text:  TextSpan(
+                          text: TextSpan(
                             children: [
                               const TextSpan(
                                 text: "Auto",
@@ -156,7 +151,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ],
                           ),
-                        ).animate().fadeIn(duration: const Duration(seconds: 3)),
+                        )
+                            .animate()
+                            .fadeIn(duration: const Duration(seconds: 3)),
                       ),
                       TextFieldInput(
                         icon: Icons.email,
@@ -197,13 +194,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 13,
-                                  fontWeight: FontWeight.w500
-                              ),
+                                  fontWeight: FontWeight.w500),
                             ),
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) =>
-                                const ForgotPasswordScreen(),
+                                    const ForgotPasswordScreen(),
                               ),
                             ),
                           ),
@@ -231,16 +227,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintText: 'Log In with Google',
                       ),
 
-
-
                       SizedBox(height: size.height * 0.06),
 
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: TextButton(
-                          onPressed: () {
-
-                          },
+                          onPressed: () {},
                           child: RichText(
                             text: TextSpan(
                               text: "Don't have an account? ",
@@ -248,18 +240,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: <TextSpan>[
                                 TextSpan(
                                   text: 'Sign Up',
-                                  style:  TextStyle(
+                                  style: TextStyle(
                                     color: Colors.orange.shade900,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                            const SignupScreen()),
+                                                const SignupScreen()),
                                       );
                                     },
                                 ),

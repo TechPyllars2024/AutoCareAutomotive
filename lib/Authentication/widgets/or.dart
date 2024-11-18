@@ -5,25 +5,25 @@ class Or extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Row(
+    return Row(
       children: <Widget>[
         Expanded(
           child: Divider(
-          color: Colors.grey.shade700,
-          thickness: 1,
+            color: Colors.grey.shade700,
+            thickness: 1,
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
-          'or',
-          style: TextStyle(color: Colors.grey.shade700),
+            'or',
+            style: TextStyle(color: Colors.grey.shade700),
           ),
         ),
         Expanded(
           child: Divider(
-          color: Colors.grey.shade700,
-          thickness: 1,
+            color: Colors.grey.shade700,
+            thickness: 1,
           ),
         ),
       ],
