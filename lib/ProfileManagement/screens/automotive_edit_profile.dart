@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:autocare_automotiveshops/ProfileManagement/services/profile_service.dart';
+import 'package:logger/logger.dart';
 import '../widgets/button.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
@@ -10,7 +11,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../models/automotive_shop_profile_model.dart';
 import '../services/automotive_shop_edit_profile_services.dart';
-import '../widgets/numberOfBookings.dart';
 
 class AutomotiveEditProfileScreen extends StatefulWidget {
   const AutomotiveEditProfileScreen({super.key, this.child});
@@ -36,17 +36,17 @@ class _AutomotiveEditProfileScreenState
   final TextEditingController _locationController = TextEditingController();
   final AutomotiveShopEditProfileServices _automotiveShopEditProfileServices =
       AutomotiveShopEditProfileServices();
-
+  final Logger logger = Logger();
   final double coverHeight = 160;
   final double profileHeight = 100;
   TimeOfDay? _openingTime;
   TimeOfDay? _closingTime;
-  late List<String> _daysOfTheWeek;
-  late List<String> _serviceSpecialization;
+  List<String>? _daysOfTheWeek;
+  List<String>? _serviceSpecialization;
   late String _verificationStatus = '';
   late double _totalRatings;
   late int _numberOfRatings;
-  int _numberOfBookingPerHour = 1;
+  int? _numberOfBookingPerHour = 1;
   String? uid;
   AutomotiveProfileModel? editProfile;
   late Map<String, Map<String, int>> remainingSlots;
@@ -67,8 +67,9 @@ class _AutomotiveEditProfileScreenState
     }
   }
 
+  bool isLoading = true;
+
   Future<void> _loadProfileData() async {
-    if (uid != null) {
       final fetchedProfile =
           await ProfileService().fetchProfileData();
       setState(() {
@@ -79,16 +80,77 @@ class _AutomotiveEditProfileScreenState
           _shopNameController.text = editProfile!.shopName;
           _locationController.text = editProfile!.location;
           _daysOfTheWeek = editProfile!.daysOfTheWeek;
+
+          // Set the selected days in the controller
+          if (_daysOfTheWeek != null) {
+            daysOfTheWeekController.selectedOptionList.value = _daysOfTheWeek!;
+            daysOfTheWeekController.updateSelectedOption(); // Update the selected option text based on the list
+          }
+
           _serviceSpecialization = editProfile!.serviceSpecialization;
+
+          logger.i('Service Specialization: $_serviceSpecialization');
+          logger.i('Days of the Week: $_daysOfTheWeek');
+
           _verificationStatus = editProfile!.verificationStatus;
           _totalRatings = editProfile!.totalRatings;
           _numberOfRatings = editProfile!.numberOfRatings;
           _numberOfBookingPerHour = editProfile!.numberOfBookingsPerHour;
           remainingSlots = editProfile!.remainingSlots;
+          isLoading = false;
+
+          final times = editProfile!.operationTime.split(' - ');
+
+          if (times.length == 2) {
+            _openingTime = _parseTimeOfDay(times[0]) ?? const TimeOfDay(hour: 12, minute: 0);  // Fallback to 12:00 AM if null
+            _closingTime = _parseTimeOfDay(times[1]) ?? const TimeOfDay(hour: 17, minute: 0); // Fallback to 5:00 PM if null
+          } else {
+            // If the format is incorrect, fallback to defaults
+            _openingTime = const TimeOfDay(hour: 12, minute: 0);  // Default to 12:00 AM
+            _closingTime = const TimeOfDay(hour: 17, minute: 0); // Default to 5:00 PM
+          }
         }
       });
+  }
+
+  TimeOfDay? _parseTimeOfDay(String time) {
+    try {
+      final sanitizedTime = time.trim().replaceAll('\u00A0', ' ').replaceAll(RegExp(r'\s+'), ' ');
+      final timeParts = sanitizedTime.split(' ');
+
+      if (timeParts.length != 2) {
+        logger.i("Invalid time format. Expected 'HH:MM AM/PM'");
+        return null; // Return null if the format is not correct
+      }
+
+      final timeString = timeParts[0];
+      final period = timeParts[1].toUpperCase();
+
+      // Ensure the period is AM or PM
+      if (period != 'AM' && period != 'PM') {
+        logger.i("Invalid period. Expected 'AM' or 'PM'.");
+        return null;
+      }
+
+      final timeComponents = timeString.split(':');
+      if (timeComponents.length != 2) {
+        logger.i("Invalid time format. Expected 'HH:MM'.");
+        return null;
+      }
+
+      int hour = int.parse(timeComponents[0]);
+      int minute = int.parse(timeComponents[1]);
+
+      if (period == 'PM' && hour != 12) hour += 12;  // Convert to 24-hour format
+      if (period == 'AM' && hour == 12) hour = 0;    // Handle midnight case
+
+      return TimeOfDay(hour: hour, minute: minute);
+    } catch (e) {
+      logger.i("Error parsing time: $e");
+      return null;
     }
   }
+
 
   Future<void> _pickCoverImage() async {
     final image = await _automotiveShopEditProfileServices.pickCoverImage();
@@ -153,7 +215,7 @@ class _AutomotiveEditProfileScreenState
           verificationStatus: _verificationStatus,
           totalRatings: _totalRatings,
           numberOfRatings: _numberOfRatings,
-          numberOfBookingsPerHour: _numberOfBookingPerHour,
+          numberOfBookingsPerHour: _numberOfBookingPerHour!,
           remainingSlots: remainingSlots
         );
 
@@ -180,6 +242,9 @@ class _AutomotiveEditProfileScreenState
   @override
   Widget build(BuildContext context) {
     final double top = coverHeight - profileHeight / 2;
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
@@ -187,7 +252,7 @@ class _AutomotiveEditProfileScreenState
           'Edit Your Profile',
           style: TextStyle(fontWeight: FontWeight.w900),
         ),
-        backgroundColor: Colors.grey.shade300,
+        backgroundColor: Colors.grey.shade100,
         foregroundColor: Colors.black,
       ),
       body: SafeArea(
@@ -357,134 +422,147 @@ class _AutomotiveEditProfileScreenState
         ],
       );
 
-  Widget timeSelection() => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Operating hours',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+  Widget timeSelection() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Operating hours',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text('Open'),
+                    const SizedBox(height: 5),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 55),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: TimePickerDisplay(
+                        initialTime: _openingTime ?? const TimeOfDay(hour: 9, minute: 0),  // Default time if not initialized
+                        onTimeSelected: (selectedTime) {
+                          setState(() {
+                            _openingTime = selectedTime;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text('Open'),
-                      const SizedBox(height: 5),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 55),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: Colors.grey),
-                        ),
-                        child: TimePickerDisplay(
-                          initialTime: const TimeOfDay(hour: 0, minute: 0),
-                          onTimeSelected: (selectedTime) {
-                            setState(() {
-                              _openingTime = selectedTime;
-                            });
-                          },
-                        ),
+              const SizedBox(width: 5),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text('Close'),
+                    const SizedBox(height: 5),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 55),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(color: Colors.grey),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 5),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text('Close'),
-                      const SizedBox(height: 5),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 55),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: Colors.grey),
-                        ),
-                        child: TimePickerDisplay(
-                          initialTime: const TimeOfDay(hour: 0, minute: 0),
-                          onTimeSelected: (selectedTime) {
-                            setState(() {
-                              _closingTime = selectedTime;
-                            });
-                          },
-                        ),
+                      child: TimePickerDisplay(
+                        initialTime: _closingTime ?? const TimeOfDay(hour: 17, minute: 0), // Default time if not initialized
+                        onTimeSelected: (selectedTime) {
+                          setState(() {
+                            _closingTime = selectedTime;
+                          });
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ],
-        ),
-      );
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget serviceSpecialization() => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Select Service Specialization',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            CustomDropdown(
-              options: CategoryList.categories,
-              hintText: 'Service Specialization',
-              controller: dropdownController,
-              onSelectionChanged: (selectedOptions) {_serviceSpecialization;},
-            ),
-          ],
+    padding: const EdgeInsets.all(8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Select Service Specialization',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      );
+        const SizedBox(height: 8),
+        CustomDropdown(
+          options: CategoryList.categories,
+          hintText: 'Service Specialization',
+          controller: dropdownController,
+          initialSelectedOptions: _serviceSpecialization ?? [],
+          onSelectionChanged: (selectedOptions) {
+            setState(() {
+              _serviceSpecialization = selectedOptions.cast<String>();
+            });
+          },
+        ),
+      ],
+    ),
+  );
 
   Widget dayOfTheWeekSelection() => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Select Days of the Week',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            DayOfTheWeek(
-              options: const [
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday',
-                'Sunday'
-              ],
-              hintText: 'Select Days',
-              controller: daysOfTheWeekController,
-              onSelectionChanged: (selectedOptions) {_daysOfTheWeek;},
-            ),
-          ],
+    padding: const EdgeInsets.all(8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Select Days of the Week',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      );
+        DayOfTheWeek(
+          options: const [
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+            'Sunday'
+          ],
+          hintText: 'Select Days',
+          controller: daysOfTheWeekController,
+          initialSelectedOptions: _daysOfTheWeek ?? [],
+          onSelectionChanged: (selectedOptions) {
+            setState(() {
+              _daysOfTheWeek = selectedOptions;
+            });
+          },
+        ),
+      ],
+    ),
+  );
 
   Widget numberOfBookingsSelection() => Padding(
     padding: const EdgeInsets.all(8.0),
@@ -498,15 +576,27 @@ class _AutomotiveEditProfileScreenState
             fontWeight: FontWeight.bold,
           ),
         ),
-        NumberInputController(
-          initialValue: _numberOfBookingPerHour,
-          min: 1,
-          max: 10,
-          onValueChanged: (value) {
-            setState(() {
-              _numberOfBookingPerHour = value;
-            });
-          },
+        Row(
+          children: [
+            Expanded(
+              child: Slider(
+                value: _numberOfBookingPerHour!.toDouble(),
+                min: 1,
+                max: 10,
+                divisions: 9, // For 1 to 10
+                label: _numberOfBookingPerHour.toString(),
+                onChanged: (double value) {
+                  setState(() {
+                    _numberOfBookingPerHour = value.toInt();
+                  });
+                },
+              ),
+            ),
+            Text(
+              '$_numberOfBookingPerHour',
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
         ),
       ],
     ),
