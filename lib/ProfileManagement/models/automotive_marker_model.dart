@@ -1,4 +1,5 @@
 class MarkerModel {
+  String serviceProviderUid;
   String nameOfThePlace;
   double latitude;
   double longitude;
@@ -11,6 +12,7 @@ class MarkerModel {
     required this.longitude,
     required this.title,
     required this.snippet,
+    required this.serviceProviderUid
   });
 
   /// Converts the model to a map for Firestore storage
@@ -21,6 +23,7 @@ class MarkerModel {
       'longitude': longitude,
       'title': title,
       'snippet': snippet,
+      'serviceProviderUid': serviceProviderUid
     };
   }
 
@@ -32,6 +35,7 @@ class MarkerModel {
       longitude: map['longitude'] ?? 0.0,
       title: map['title'] ?? '',
       snippet: map['snippet'] ?? '',
+      serviceProviderUid: map['serviceProviderUid'] ?? ''
     );
   }
 }
