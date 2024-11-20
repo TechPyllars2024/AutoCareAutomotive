@@ -1,4 +1,5 @@
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_pin_location.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -230,6 +231,24 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                         );
                       }
                     },
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: ProfileMenuWidget(
+                      title: "Map Page",
+                      icon: Icons.logout,
+                      onPressed: () async {
+                        try {
+                          await AuthenticationMethodSignOut().signOut();
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                                builder: (context) => const MapPage()),
+                          );
+                        } catch (e) {
+                          Utils.showSnackBar('Error Signing Out: $e');
+                        }
+                      },
+                    ),
                   ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 10),
