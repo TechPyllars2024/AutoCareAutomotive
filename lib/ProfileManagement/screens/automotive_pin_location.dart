@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:logger/logger.dart';
 import '../models/automotive_marker_model.dart';
 import '../services/pin_location.dart';
+import 'automotive_complete_profile.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key, this.child});
@@ -16,16 +20,39 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   late GoogleMapController mapController;
   final Set<Marker> _markers = {};
-  final LatLng _initialPosition =
-      const LatLng(10.3157, 123.8854); // Cebu, PH coordinates
   final MapService mapService = MapService();
   String nameOfThePlace = '';
-  LatLng? _tempMarkerPosition;
+  LatLng? _centerPosition;
+  User? user = FirebaseAuth.instance.currentUser;
+  final Logger logger = Logger();
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _loadMarkers();
+    _initializeLocationAndFetchStations();
+  }
+
+  Future<void> _initializeLocationAndFetchStations() async {
+    final initialPosition = await _getUserCurrentLocation();
+
+    if (initialPosition != null) {
+      setState(() {
+        _centerPosition =
+            LatLng(initialPosition.latitude, initialPosition.longitude);
+      });
+    }
+  }
+
+  Future<Position?> _getUserCurrentLocation() async {
+    try {
+      await Geolocator.requestPermission();
+      return await Geolocator.getCurrentPosition();
+    } catch (e) {
+      logger.i("Error getting location: $e");
+      return null;
+    }
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -33,15 +60,34 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _loadMarkers() async {
-    final markers = await mapService.fetchMarkersFromFirestore();
+    if (user == null) return;
+
+    final existingMarker = await mapService.fetchMarkerByUserId(user!.uid);
+
     setState(() {
-      _markers.addAll(markers);
+      if (existingMarker != null) {
+        _centerPosition =
+            LatLng(existingMarker.latitude, existingMarker.longitude);
+        logger.i(_centerPosition);
+        nameOfThePlace = existingMarker.nameOfThePlace;
+        _markers.add(
+          Marker(
+            markerId: MarkerId(existingMarker.latitude.toString() +
+                existingMarker.longitude.toString()),
+            position: _centerPosition!,
+            infoWindow: InfoWindow(
+              title: existingMarker.nameOfThePlace,
+              snippet:
+                  "Latitude: ${_centerPosition!.latitude}, Longitude: ${_centerPosition!.longitude}",
+            ),
+          ),
+        );
+      }
     });
   }
 
   Future<void> _getPlaceName(LatLng position) async {
     try {
-      // Fetch place details using latitude and longitude
       List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
@@ -50,7 +96,6 @@ class _MapPageState extends State<MapPage> {
       if (placemarks.isNotEmpty) {
         final Placemark place = placemarks.first;
 
-        // Construct a readable address
         final placeName =
             "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
 
@@ -58,7 +103,6 @@ class _MapPageState extends State<MapPage> {
           nameOfThePlace = placeName;
         });
 
-        // Display the address
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Place: $placeName")),
         );
@@ -70,96 +114,119 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
-  void _startAddingMarker(LatLng initialPosition) {
-    setState(() {
-      _tempMarkerPosition = initialPosition;
-      _markers.add(
-        Marker(
-          markerId: const MarkerId("temporary_marker"),
-          position: initialPosition,
-          draggable: true,
-          onDragEnd: (newPosition) {
-            _tempMarkerPosition = newPosition; // Update temporary position
-          },
-          infoWindow: const InfoWindow(title: "Drag to your location"),
-        ),
-      );
-    });
-  }
+  void _confirmMarkerPlacement(BuildContext context) async {
+    if (isLoading) return;
 
-  void _confirmMarkerPlacement(BuildContext context) {
-    if (_tempMarkerPosition == null) return;
+    final position = _centerPosition;
 
+    // Show a confirmation dialog
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Confirm Marker Placement"),
+          title: const Text("Confirm Marker Placement", style: TextStyle(fontSize: 18),),
           content: Text(
             "Do you want to add a marker at this location?\n\n"
             "Name of the place: $nameOfThePlace\n\n"
-            "Latitude: ${_tempMarkerPosition!.latitude}\n"
-            "Longitude: ${_tempMarkerPosition!.longitude}",
+            "Latitude: ${position!.latitude}\n"
+            "Longitude: ${position.longitude}",
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
+                Navigator.of(context).pop(); // Close the dialog
               },
               child: const Text("Cancel"),
             ),
             TextButton(
               onPressed: () async {
-                if (_tempMarkerPosition == null) return;
+                Navigator.of(context).pop();
 
-                try {
-                  // Fetch the place name for the selected location
-                  await _getPlaceName(_tempMarkerPosition!);
+                // Proceed with marker placement
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const AutomotiveCompleteProfileScreen(),
+                  ),
+                );
 
-                  // Create a MarkerModel instance
-                  final marker = MarkerModel(
-                    nameOfThePlace: nameOfThePlace,
-                    latitude: _tempMarkerPosition!.latitude,
-                    longitude: _tempMarkerPosition!.longitude,
-                    title: "Custom Marker",
-                    snippet:
-                        "Latitude: ${_tempMarkerPosition!.latitude}, Longitude: ${_tempMarkerPosition!.longitude}",
-                  );
+                final existingMarker =
+                    await mapService.fetchMarkerByUserId(user!.uid);
 
-                  // Add the marker to Firestore
-                  await mapService.addMarker(marker);
+                if (existingMarker != null) {
+                  // Update existing marker
+                  await mapService.updateMarker(
+                      existingMarker, position, nameOfThePlace);
 
                   setState(() {
-                    // Add the marker to the map
+                    // Remove the old marker
+                    _markers.removeWhere((marker) =>
+                        marker.markerId.value ==
+                        existingMarker.latitude.toString() +
+                            existingMarker.longitude.toString());
+
+                    nameOfThePlace = _getPlaceName(position) as String;
+                    // Add the updated marker
                     _markers.add(
                       Marker(
-                        markerId: MarkerId(_tempMarkerPosition.toString()),
-                        position: _tempMarkerPosition!,
+                        markerId: MarkerId(position.toString()),
+                        position: position,
                         infoWindow: InfoWindow(
                           title: nameOfThePlace,
                           snippet:
-                              "Latitude: ${_tempMarkerPosition!.latitude}, Longitude: ${_tempMarkerPosition!.longitude}",
+                              "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
                         ),
                       ),
                     );
-
-                    // Clear the temporary marker
-                    _tempMarkerPosition = null;
-                    _markers.removeWhere(
-                        (m) => m.markerId.value == "temporary_marker");
                   });
 
-                  // Close the dialog after successful marker addition
-                  Navigator.of(context).pop();
-                } catch (e) {
-                  // Handle any errors that occur during the process
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Error adding marker: $e")),
+                    const SnackBar(content: Text("Marker updated!")),
+                  );
+
+                  // Pop the dialog or screen
+                  Navigator.of(context).pop();
+
+                  // Ensure loading state is reset
+                  setState(() {
+                    isLoading = false;
+                  });
+                } else {
+                  // Add a new marker
+                  final marker = MarkerModel(
+                    serviceProviderUid: user!.uid,
+                    nameOfThePlace: nameOfThePlace,
+                    latitude: position.latitude,
+                    longitude: position.longitude,
+                    title: "Custom Marker",
+                    snippet:
+                        "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
+                  );
+
+                  await mapService.addMarker(marker);
+
+                  setState(() {
+                    nameOfThePlace = _getPlaceName(position) as String;
+                    _markers.add(
+                      Marker(
+                        markerId: MarkerId(position.toString()),
+                        position: position,
+                      ),
+                    );
+                    isLoading = false;
+                  });
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Marker added!")),
                   );
                 }
+
+                setState(() {
+                  isLoading = false; // Reset loading state
+                });
               },
-              child: const Text("Confirm"),
-            )
+              child: Text("Confirm", style: TextStyle(color: Colors.orange.shade900),),
+            ),
           ],
         );
       },
@@ -170,31 +237,63 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Google Maps Integration'),
+        title: const Text('Pin Your Location',
+            style: TextStyle(
+              fontWeight: FontWeight.w900,
+            )),
       ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: GoogleMap(
-          onMapCreated: _onMapCreated,
-          markers: _markers,
-          onTap: (position) {
-            _startAddingMarker(position); // Start adding a marker
-          },
-          initialCameraPosition: CameraPosition(
-            target: _initialPosition,
-            zoom: 15.0,
-          ),
-        ),
-      ),
-      floatingActionButton: _tempMarkerPosition != null
-          ? FloatingActionButton(
-              onPressed: () {
-                _confirmMarkerPlacement(context); // Confirm placement
+      body: _centerPosition == null
+          ? const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 8),
+                  Text("Getting your location...",
+                      style: TextStyle(fontSize: 16)),
+                ],
+              ),
+            ) // Show loading state with message
+          : Stack(
+              children: [
+                GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  onCameraMove: (position) {
+                    setState(() {
+                      _centerPosition = position.target;
+                    });
+                  },
+                  initialCameraPosition: CameraPosition(
+                    target: _centerPosition!,
+                    zoom: 20.0,
+                  ),
+                  markers: _markers,
+                  myLocationEnabled: true,
+                ),
+                Center(
+                  child: Icon(
+                    Icons.location_pin,
+                    color: Colors.red.withOpacity(0.7),
+                    size: 50.0,
+                  ),
+                ),
+              ],
+            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: isLoading
+            ? null
+            : () async {
+                _confirmMarkerPlacement(context);
               },
-              child: const Icon(Icons.check),
-            )
-          : null,
+        backgroundColor: isLoading ? Colors.grey : Colors.orange.shade900,
+        child: isLoading
+            ? const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )
+            : const Icon(Icons.check),
+      ),
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.centerFloat, // Center the FAB
     );
   }
 }
