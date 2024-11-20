@@ -31,6 +31,50 @@ class MapService {
     }
   }
 
+  Future<void> updateMarker(MarkerModel existingMarker, LatLng newPosition, String placeName) async {
+    // Find the document where serviceProviderUid matches the existingMarker's serviceProviderUid
+    final snapshot = await firestore
+        .collection('markers')
+        .where('serviceProviderUid', isEqualTo: existingMarker.serviceProviderUid)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      final documentId = snapshot.docs.first.id; // Get the document ID from the query result
+
+      await firestore.collection('markers').doc(documentId).update({
+        'nameOfThePlace': placeName,
+        'latitude': newPosition.latitude,
+        'longitude': newPosition.longitude,
+      });
+    } else {
+      // Handle the case where the marker with the provided serviceProviderUid doesn't exist
+      throw Exception('Marker not found for this service provider UID');
+    }
+  }
+
+
+  Future<MarkerModel?> fetchMarkerByUserId(String userId) async {
+    // Query the collection to find the document where serviceProviderUid matches the userId
+    final snapshot = await firestore
+        .collection('markers')
+        .where('serviceProviderUid', isEqualTo: userId)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      final data = snapshot.docs.first.data();
+      return MarkerModel(
+        serviceProviderUid: userId,
+        nameOfThePlace: data['nameOfThePlace'],
+        latitude: data['latitude'],
+        longitude: data['longitude'],
+        title: data['title'],
+        snippet: data['snippet'],
+      );
+    }
+    return null; // Return null if no document matches the userId
+  }
+
+
   /// Fetch markers from Firestore
   Future<List<Marker>> fetchMarkersFromFirestore() async {
     try {
