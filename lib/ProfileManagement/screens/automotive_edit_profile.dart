@@ -307,41 +307,44 @@ class _AutomotiveEditProfileScreenState
 
   // Input fields for the profile
   Widget buildInputs() => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _shopNameController,
-              decoration: InputDecoration(
-                hintText: 'Shop Name',
-                border: const OutlineInputBorder(),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Colors.orange.shade900, width: 2),
-                ),
-                enabledBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 1),
-                ),
-              ),
+    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Shop Name TextField with Label
+        const Text('Shop Name', style: TextStyle(fontSize: 16,
+            fontWeight: FontWeight.bold)),
+        TextField(
+          controller: _shopNameController,
+          decoration: InputDecoration(
+            hintText: 'Enter your shop name',
+            border: const OutlineInputBorder(),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.orange.shade900),
             ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _locationController,
-              decoration: InputDecoration(
-                hintText: 'Location',
-                border: const OutlineInputBorder(),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Colors.orange.shade900, width: 2),
-                ),
-                enabledBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 1),
-                ),
-              ),
-            ),
-          ],
+            contentPadding: const EdgeInsets.all(12),
+          ),
         ),
-      );
+        const SizedBox(height: 10),
+
+        // Location TextField with Label
+        const Text('Location', style: TextStyle(fontSize: 16,
+            fontWeight: FontWeight.bold)),
+        TextField(
+          controller: _locationController,
+          decoration: InputDecoration(
+            hintText: 'Enter location',
+            border: const OutlineInputBorder(),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.orange.shade900),
+            ),
+            contentPadding: const EdgeInsets.all(12),
+          ),
+        ),
+        const SizedBox(height: 10),
+        ],
+    ),
+  );
 
   // Cover image for the profile
   Widget buildCoverImage() => Stack(
@@ -433,192 +436,213 @@ class _AutomotiveEditProfileScreenState
       );
 
   // Time selection for the profile
-  Widget timeSelection() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Operating hours',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+  Widget timeSelection() => Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Operating hours',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text('Open', style: TextStyle(fontSize: 14),),
+                  const SizedBox(height: 5),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 55),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: TimePickerDisplay(
+                      initialTime: const TimeOfDay(hour: 0, minute: 0),
+                      onTimeSelected: (selectedTime) {
+                        setState(() {
+                          _openingTime = selectedTime;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text('Open'),
-                    const SizedBox(height: 5),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 55),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: TimePickerDisplay(
-                        initialTime: _openingTime ??
-                            const TimeOfDay(
-                                hour: 9,
-                                minute: 0), // Default time if not initialized
-                        onTimeSelected: (selectedTime) {
-                          setState(() {
-                            _openingTime = selectedTime;
-                          });
-                        },
-                      ),
+            const SizedBox(width: 5),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text('Close', style: TextStyle(fontSize: 14),),
+                  const SizedBox(height: 5),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 55),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(color: Colors.grey),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 5),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text('Close'),
-                    const SizedBox(height: 5),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 55),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: TimePickerDisplay(
-                        initialTime: _closingTime ??
-                            const TimeOfDay(
-                                hour: 17,
-                                minute: 0), // Default time if not initialized
-                        onTimeSelected: (selectedTime) {
-                          setState(() {
-                            _closingTime = selectedTime;
-                          });
-                        },
-                      ),
+                    child: TimePickerDisplay(
+                      initialTime: const TimeOfDay(hour: 0, minute: 0),
+                      onTimeSelected: (selectedTime) {
+                        setState(() {
+                          _closingTime = selectedTime;
+                        });
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 
   // Service specialization for the profile
   Widget serviceSpecialization() => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Select Service Specialization',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            CustomDropdown(
-              options: CategoryList.categories,
-              hintText: 'Service Specialization',
-              controller: dropdownController,
-              initialSelectedOptions: _serviceSpecialization ?? [],
-              onSelectionChanged: (selectedOptions) {
-                setState(() {
-                  _serviceSpecialization = selectedOptions.cast<String>();
-                });
-              },
-            ),
-          ],
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Select Service Specialization',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      );
+        CustomDropdown(
+          options: CategoryList.categories,
+          hintText: 'Service Specialization',
+          controller: dropdownController,
+          initialSelectedOptions: const [],
+          onSelectionChanged: (selectedOptions) {
+            setState(() {
+              _serviceSpecialization = selectedOptions.cast<String>();
+            });
+          },
+        ),
+      ],
+    ),
+  );
 
   // Days of the week selection for the profile
   Widget dayOfTheWeekSelection() => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Select Days of the Week',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            DayOfTheWeek(
-              options: const [
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday',
-                'Sunday'
-              ],
-              hintText: 'Select Days',
-              controller: daysOfTheWeekController,
-              initialSelectedOptions: _daysOfTheWeek ?? [],
-              onSelectionChanged: (selectedOptions) {
-                setState(() {
-                  _daysOfTheWeek = selectedOptions;
-                });
-              },
-            ),
-          ],
+    padding: const EdgeInsets.all(16.0), // Increased padding for better spacing
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Days of the Week',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black, // Slightly darker for better contrast
+          ),
         ),
-      );
+
+        // Improved hint text with a more descriptive placeholder
+        Text(
+          'Choose your preferred days of the week:',
+          style: TextStyle(
+            color: Colors.grey[700], // Light gray for description
+            fontSize: 12,
+          ),
+        ),
+
+        // Day of the Week Selector
+        DayOfTheWeek(
+          options: const [
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+            'Sunday'
+          ],
+          hintText: 'Select Days',
+          controller: daysOfTheWeekController,
+          initialSelectedOptions: const [],
+          onSelectionChanged: (selectedOptions) {
+            // Optionally handle the selection change here
+          },
+        ),
+      ],
+    ),
+  );
 
   // Number of bookings per hour selection for the profile
   Widget numberOfBookingsSelection() => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    padding: const EdgeInsets.all(16.0), // Increased padding for better spacing
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Number of Bookings per Hour',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Row(
           children: [
-            const Text(
-              'Number of Bookings per Hour',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+            Expanded(
+              child: Slider(
+                value: _numberOfBookingPerHour!.toDouble(),
+                min: 1,
+                max: 10,
+                divisions: 9, // For 1 to 10
+                label: _numberOfBookingPerHour.toString(),
+                activeColor: Colors.orange.shade900, // Slider color when active
+                inactiveColor: Colors.grey.shade300, // Slider color when inactive
+                onChanged: (double value) {
+                  setState(() {
+                    _numberOfBookingPerHour = value.toInt();
+                  });
+                },
               ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: Slider(
-                    value: _numberOfBookingPerHour!.toDouble(),
-                    min: 1,
-                    max: 10,
-                    divisions: 9, // For 1 to 10
-                    label: _numberOfBookingPerHour.toString(),
-                    onChanged: (double value) {
-                      setState(() {
-                        _numberOfBookingPerHour = value.toInt();
-                      });
-                    },
-                  ),
-                ),
-                Text(
-                  '$_numberOfBookingPerHour',
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ],
+            const SizedBox(width: 8), // Space between slider and number text
+            Text(
+              '$_numberOfBookingPerHour',
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
           ],
         ),
-      );
+        const SizedBox(height: 5),
+        Row(
+          children: [
+            const Icon(Icons.info_outline, size: 14, color: Colors.grey), // Info icon
+            const SizedBox(width: 5),
+            Text(
+              'Adjust the number of bookings allowed per hour.',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }
