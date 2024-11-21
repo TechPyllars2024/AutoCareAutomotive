@@ -29,290 +29,269 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
   void _addOrUpdateService(BuildContext context, {ServiceModel? service}) {
     final nameController = TextEditingController(text: service?.name);
     final descriptionController =
-    TextEditingController(text: service?.description);
-
+        TextEditingController(text: service?.description);
     final priceController =
-    TextEditingController(text: service?.price.toString());
+        TextEditingController(text: service?.price.toString());
 
     String category = service?.category.isNotEmpty == true
         ? service!.category[0]
         : 'Electrical Works';
 
+    String? imageUrl = service?.servicePicture;
+
     showDialog(
       context: context,
       builder: (context) {
         return StatefulBuilder(
-
           builder: (context, setState) {
-            return WillPopScope(
-              onWillPop: () async {
-                setState(() {
-                  _selectedImage =
-                  null;
-                });
-                return true;
-              },
-              child: AlertDialog(
-                backgroundColor: Colors.white,
-                title: Text(
-                  service == null ? 'Add Service' : 'Update Service',
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                content: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(height: 4),
-
-                      if (_selectedImage != null)
-                        Container(
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              title: Text(
+                service == null ? 'Add Service' : 'Update Service',
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 4),
+                    if (_selectedImage != null || imageUrl != null)
+                      Container(
+                        height: 150,
+                        width: double.infinity,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade400),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: _selectedImage != null
+                              ? Image.file(
+                                  _selectedImage!,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.network(
+                                  imageUrl!,
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                      )
+                    else
+                      Container(
+                          color: Colors.grey.shade200,
                           height: 150,
                           width: double.infinity,
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade400),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-
-                              _selectedImage!,
-
-                              fit: BoxFit
-                                  .cover,
-                            ),
-                          ),
-                        )
-                      else
-                        Container(
-                            color: Colors.grey.shade200,
-                            height: 150,
-                            width: double.infinity,
-                            child: const Center(
-                                child: Text('No image selected',
-                                    style: TextStyle(color: Colors.grey)))),
-
-                      const SizedBox(height: 12),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          minimumSize: const Size(250, 45),
-                          backgroundColor: Colors.deepOrange.shade700,
-                        ),
-                        onPressed: () async {
-                          final source = await _pickImageSource();
-                          if (source != null) {
-                            File? pickedImage =
-                            await _imageService.pickImage(source);
-                            setState(() {
-                              _selectedImage =
-                                  pickedImage;
-                            });
-                          }
-                        },
-                        child: const Text(
-                          'Pick Image',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.white),
-                        ),
+                          child: const Center(
+                              child: Text('No image selected',
+                                  style: TextStyle(color: Colors.grey)))),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        minimumSize: const Size(250, 45),
+                        backgroundColor: Colors.deepOrange.shade700,
                       ),
-
-                      TextField(
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(10),
-                        ],
-                        controller: nameController,
-                        onChanged: (text) {
-                          setState(() {});
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Name',
-                          labelStyle: TextStyle(
-                            color: nameController.text.isEmpty
-                                ? Colors.black
-                                : Colors.orange.shade900,
-                          ),
-                          border: const OutlineInputBorder(),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.orange.shade900, width: 2),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.grey.shade600, width: 1),
-                          ),
-                        ),
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      TextField(
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(20),
-                        ],
-                        controller: descriptionController,
-                        onChanged: (text) {
-                          setState(() {});
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Description',
-                          labelStyle: TextStyle(
-                            color: descriptionController.text.isEmpty
-                                ? Colors.black
-                                : Colors.orange.shade900,
-                          ),
-                          border: const OutlineInputBorder(),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.orange.shade900, width: 2),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.grey.shade600, width: 1),
-                          ),
-                        ),
-                      ),
-
-                      TextField(
-                        controller: priceController,
-                        keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true),
-                        onChanged: (value) {
-                          setState(() {});
-                          final price = double.tryParse(value);
-                          if (price != null && price <= 0) {
-                            priceController.clear();
-                          }
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Price',
-                          labelStyle: TextStyle(
-                            color: priceController.text.isEmpty
-                                ? Colors.black
-                                : Colors.orange.shade900,
-                          ),
-                          hintText: 'Enter price greater than 0',
-                          border: const OutlineInputBorder(),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.orange.shade900, width: 2),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.grey.shade600, width: 1),
-                          ),
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'^\d*\.?\d*')),
-                          LengthLimitingTextInputFormatter(7)
-                        ],
-                      ),
-
-                      DropdownButtonFormField<String>(
-                        value: category,
-                        isExpanded: true,
-                        decoration: InputDecoration(
-                          hintText: 'Select a category',
-                          border: const OutlineInputBorder(),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.orange.shade900, width: 2),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.grey.shade600, width: 1),
-                          ),
-                        ),
-                        onChanged: (newValue) {
+                      onPressed: () async {
+                        final source = await _pickImageSource();
+                        if (source != null) {
+                          File? pickedImage =
+                              await _imageService.pickImage(source);
                           setState(() {
-                            category = newValue!;
+                            _selectedImage = pickedImage;
                           });
-                        },
-                        items: CategoryList.categories
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(
-                                  color: Colors.grey.shade800,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          );
-                        }).toList(),
+                        }
+                      },
+                      child: const Text(
+                        'Pick Image',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white),
                       ),
-                    ],
-                  ),
+                    ),
+                    TextField(
+                      controller: nameController,
+                      onChanged: (text) {
+                        setState(() {});
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Name',
+                        labelStyle: TextStyle(
+                          color: nameController.text.isEmpty
+                              ? Colors.black
+                              : Colors.orange.shade900,
+                        ),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.orange.shade900, width: 2),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade600, width: 1),
+                        ),
+                      ),
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                    TextField(
+                      controller: descriptionController,
+                      onChanged: (text) {
+                        setState(() {});
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Description',
+                        labelStyle: TextStyle(
+                          color: descriptionController.text.isEmpty
+                              ? Colors.black
+                              : Colors.orange.shade900,
+                        ),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.orange.shade900, width: 2),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade600, width: 1),
+                        ),
+                      ),
+                    ),
+                    TextField(
+                      controller: priceController,
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) {
+                        setState(() {});
+                        final price = double.tryParse(value);
+                        if (price != null && price <= 0) {
+                          priceController.clear();
+                        }
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Price',
+                        labelStyle: TextStyle(
+                          color: priceController.text.isEmpty
+                              ? Colors.black
+                              : Colors.orange.shade900,
+                        ),
+                        hintText: 'Enter price greater than 0',
+                        border: const OutlineInputBorder(),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.orange.shade900, width: 2),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade600, width: 1),
+                        ),
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d*\.?\d*')),
+                      ],
+                    ),
+                    DropdownButtonFormField<String>(
+                      value: category,
+                      isExpanded: true,
+                      decoration: InputDecoration(
+                        hintText: 'Select a category',
+                        border: const OutlineInputBorder(),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.orange.shade900, width: 2),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade600, width: 1),
+                        ),
+                      ),
+                      onChanged: (newValue) {
+                        setState(() {
+                          category = newValue!;
+                        });
+                      },
+                      items: CategoryList.categories
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                                color: Colors.grey.shade800,
+                                fontWeight: FontWeight.w400),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ),
-                actions: [
-                  TextButton(
-                    child: const Text('Cancel',
-                        style: TextStyle(color: Colors.grey)),
-                    onPressed: () {
+              ),
+              actions: [
+                TextButton(
+                  child: const Text('Cancel',
+                      style: TextStyle(color: Colors.grey)),
+                  onPressed: () {
+                    setState(() {
+                      _selectedImage = null;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: _isLoading
+                      ? SizedBox(
+                          height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.orange.shade900),
+                            strokeWidth: 3,
+                          ),
+                        ) // Show loading indicator
+                      : Text(service == null ? 'Add' : 'Update',
+                          style: TextStyle(
+                              color: Colors.orange.shade900,
+                              fontWeight: FontWeight.bold)),
+                  onPressed: () async {
+                    if (nameController.text.isNotEmpty &&
+                        descriptionController.text.isNotEmpty &&
+                        priceController.text.isNotEmpty &&
+                        priceController.text != '0.00' &&
+                        _selectedImage != null) {
                       setState(() {
+                        _isLoading = true; // Set loading state to true
+                      });
+
+                      if (service == null) {
+                        await _serviceManagement.addService(
+                          serviceProviderId: user!.uid,
+                          name: nameController.text,
+                          description: descriptionController.text,
+                          price: double.parse(priceController.text),
+                          category: category,
+                          imageFile: _selectedImage,
+                        );
+                      } else {
+                        await _serviceManagement.updateService(
+                          serviceId: service.serviceId,
+                          name: nameController.text,
+                          description: descriptionController.text,
+                          price: double.parse(priceController.text),
+                          category: category,
+                          imageFile: _selectedImage,
+                        );
+                      }
+                      setState(() {
+                        _isLoading = false;
                         _selectedImage = null;
                       });
+
                       Navigator.of(context).pop();
-                    },
-                  ),
-                  TextButton(
-                    child: _isLoading
-                        ? SizedBox(
-                      height: 18,
-                      width: 18,
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.orange
-                            .shade900),
-                        strokeWidth: 3,
-                      ),
-                    ) // Show loading indicator
-                        : Text(service == null ? 'Add' : 'Update',
-                        style: TextStyle(
-                            color: Colors.orange.shade900,
-                            fontWeight: FontWeight.bold)),
-                    onPressed: () async {
-                      if (nameController.text.isNotEmpty &&
-                          descriptionController.text.isNotEmpty &&
-                          priceController.text.isNotEmpty &&
-                          priceController.text != '0.00' &&
-                          _selectedImage != null) {
-                        setState(() {
-                          _isLoading = true; // Set loading state to true
-                        });
-
-                        if (service == null) {
-                          await _serviceManagement.addService(
-                            serviceProviderId: user!.uid,
-                            name: nameController.text,
-                            description: descriptionController.text,
-                            price: double.parse(priceController.text),
-                            category: category,
-                            imageFile: _selectedImage,
-                          );
-                        } else {
-                          await _serviceManagement.updateService(
-                            serviceId: service.serviceId,
-                            name: nameController.text,
-                            description: descriptionController.text,
-                            price: double.parse(priceController.text),
-                            category: category,
-                            imageFile: _selectedImage,
-                          );
-                        }
-
-                        setState(() {
-                          _isLoading = false;
-                          _selectedImage = null;
-                        });
-
-                        Navigator.of(context).pop();
-                      }
-                    },
-                  ),
-                ],
-              ),
+                    }
+                  },
+                ),
+              ],
             );
           },
         );
@@ -341,7 +320,6 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
       },
     );
   }
-
 
   void _showServiceOptions(BuildContext context, ServiceModel service) {
     showDialog(
@@ -384,7 +362,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
         title: Text(
           'Manage Services',
           style:
-          TextStyle(fontWeight: FontWeight.w900, color: Colors.grey[800]),
+              TextStyle(fontWeight: FontWeight.w900, color: Colors.grey[800]),
         ),
         backgroundColor: Colors.grey.shade100,
         elevation: 0,
@@ -409,15 +387,13 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
-                childAspectRatio:
-                3 / 4,
+                childAspectRatio: 3 / 4,
               ),
               itemCount: services.length,
               itemBuilder: (context, index) {
                 final service = services[index];
                 return GestureDetector(
                   onTap: () => _showServiceOptions(context, service),
-
                   child: Card(
                     color: Colors.white,
                     elevation: 5,
@@ -435,17 +411,12 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                               topRight: Radius.circular(16.0),
                             ),
                             child: Image.network(
-                              service
-                                  .servicePicture,
+                              service.servicePicture,
                               width: double.infinity,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
-
-                                return const Icon(
-                                  Icons.broken_image,
-                                  size: 60,
-                                  color: Colors.grey,
-                                );
+                                return const Icon(Icons.error,
+                                    size: 60, color: Colors.red);
                               },
                             ),
                           ),
@@ -463,8 +434,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                                   color: Colors.grey[800],
                                 ),
                                 maxLines: 1,
-                                overflow:
-                                TextOverflow.ellipsis,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 4.0),
                               Text(

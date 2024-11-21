@@ -83,20 +83,22 @@ class ServicesCarousel extends StatelessWidget {
                                 clipBehavior: Clip.antiAlias,
                                 child: service.servicePicture.isNotEmpty
                                     ? Image.network(
-                                  service.servicePicture,
-                                  height: 100,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                )
+                                        service.servicePicture,
+                                        height: 100,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      )
                                     : const Placeholder(),
                               ),
                             ),
                             Expanded(
                               flex: 2,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       service.name,
@@ -126,7 +128,7 @@ class ServicesCarousel extends StatelessWidget {
                     initialPage: 0,
                     enableInfiniteScroll: enableInfiniteScroll,
                     autoPlay: true,
-                    autoPlayInterval: const Duration(seconds: 3), 
+                    autoPlayInterval: const Duration(seconds: 3),
                   ),
                 ),
               ),

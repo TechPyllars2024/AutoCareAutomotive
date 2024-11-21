@@ -1,6 +1,5 @@
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage1.dart';
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage2.dart';
-import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage3.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../ProfileManagement/screens/automotive_complete_profile.dart';
@@ -49,7 +48,6 @@ class _OnboardingState extends State<Onboarding> {
               Onboardingpage1(),
               Onboardingpage2(),
               AutomotiveCompleteProfileScreen(),
-              Onboardingpage3(),
             ],
           ),
           Positioned(
@@ -63,13 +61,16 @@ class _OnboardingState extends State<Onboarding> {
                   currentPageIndex == 0
                       ? const Text("       ")
                       : GestureDetector(
-                    onTap: () {
-                      _controller.previousPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeIn);
-                    },
-                    child: const Icon(Icons.navigate_before, size: 30,),
-                  ),
+                          onTap: () {
+                            _controller.previousPage(
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeIn);
+                          },
+                          child: const Icon(
+                            Icons.navigate_before,
+                            size: 30,
+                          ),
+                        ),
                   SmoothPageIndicator(
                     controller: _controller,
                     count: 4,
@@ -83,13 +84,16 @@ class _OnboardingState extends State<Onboarding> {
                   (currentPageIndex == 2 || currentPageIndex == 3)
                       ? const Text("        ")
                       : GestureDetector(
-                    onTap: () {
-                      _controller.nextPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeIn);
-                    },
-                    child: const Icon(Icons.navigate_next, size: 30,),
-                  ),
+                          onTap: () {
+                            _controller.nextPage(
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeIn);
+                          },
+                          child: const Icon(
+                            Icons.navigate_next,
+                            size: 30,
+                          ),
+                        ),
                 ],
               ),
             ),
@@ -98,5 +102,4 @@ class _OnboardingState extends State<Onboarding> {
       ),
     );
   }
-
 }

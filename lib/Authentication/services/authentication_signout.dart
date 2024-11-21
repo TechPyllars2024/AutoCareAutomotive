@@ -6,7 +6,6 @@ class AuthenticationMethodSignOut {
   final FirebaseAuth auth;
   final GoogleSignIn googleSignIn;
 
-  // Constructor
   AuthenticationMethodSignOut({
     FirebaseAuth? auth,
     GoogleSignIn? googleSignIn,

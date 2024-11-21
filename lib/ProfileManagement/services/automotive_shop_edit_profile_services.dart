@@ -32,37 +32,40 @@ class AutomotiveShopEditProfileServices {
   }
 
   Future<AutomotiveProfileModel?> fetchProfileData(String uid) async {
-    final doc = await _firestore.collection('automotiveShops_profile').doc(uid).get();
+    final doc =
+        await _firestore.collection('automotiveShops_profile').doc(uid).get();
     if (doc.exists) {
-      return AutomotiveProfileModel.fromDocument(doc.data() as Map<String, dynamic>, doc.id);
+      return AutomotiveProfileModel.fromDocument(
+          doc.data() as Map<String, dynamic>, doc.id);
     }
     return null;
   }
 
-  Future<void> saveProfile({
-    required String uid,
-    required String serviceProviderUid,
-    required String shopName,
-    required String location,
-    required File? coverImage,
-    required File? profileImage,
-    required List<String> daysOfTheWeek,
-    required String operationTime,
-    required List<String> serviceSpecialization,
-    required String verificationStatus,
-    required double totalRatings,
-    required int numberOfRatings,
-    required int numberOfBookingsPerHour,
-    required Map<String, Map<String, int>> remainingSlots
-  }) async {
+  Future<void> saveProfile(
+      {required String uid,
+      required String serviceProviderUid,
+      required String shopName,
+      required String location,
+      required File? coverImage,
+      required File? profileImage,
+      required List<String> daysOfTheWeek,
+      required String operationTime,
+      required List<String> serviceSpecialization,
+      required String verificationStatus,
+      required double totalRatings,
+      required int numberOfRatings,
+      required int numberOfBookingsPerHour,
+      required Map<String, Map<String, int>> remainingSlots}) async {
     final Map<String, dynamic> updatedData = {};
 
     if (coverImage != null) {
-      updatedData['coverImage'] = await uploadImage(coverImage, 'automotiveCoverImages/$uid.jpg');
+      updatedData['coverImage'] =
+          await uploadImage(coverImage, 'automotiveCoverImages/$uid.jpg');
     }
 
     if (profileImage != null) {
-      updatedData['profileImage'] = await uploadImage(profileImage, 'automotiveProfileImages/$uid.jpg');
+      updatedData['profileImage'] =
+          await uploadImage(profileImage, 'automotiveProfileImages/$uid.jpg');
     }
 
     updatedData['serviceProviderUid'] = serviceProviderUid;

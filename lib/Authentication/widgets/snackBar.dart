@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../../main.dart';
 
 class Utils {
-  static showSnackBar(String? text, {Color backgroundColor = Colors.red, Duration duration = const Duration(seconds: 4)}) {
+  static showSnackBar(String? text,
+      {Color backgroundColor = Colors.red,
+      Duration duration = const Duration(seconds: 4)}) {
     if (text == null) return;
 
     final snackBar = SnackBar(

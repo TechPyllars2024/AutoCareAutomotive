@@ -19,7 +19,7 @@ class TextFieldPassword extends StatefulWidget {
   });
 
   @override
-  _TextFieldPasswordState createState() => _TextFieldPasswordState();
+  State<TextFieldPassword> createState() => _TextFieldPasswordState();
 }
 
 class _TextFieldPasswordState extends State<TextFieldPassword> {
@@ -35,12 +35,10 @@ class _TextFieldPasswordState extends State<TextFieldPassword> {
         children: [
           SizedBox(
             height: 45,
-
             child: TextField(
               style: const TextStyle(fontSize: 15),
               controller: widget.textEditingController,
-              obscureText: widget.isPass &&
-                  !_isPasswordVisible,
+              obscureText: widget.isPass && !_isPasswordVisible,
               keyboardType: widget.textInputType,
               decoration: InputDecoration(
                 labelText: widget.hintText,
@@ -48,41 +46,39 @@ class _TextFieldPasswordState extends State<TextFieldPassword> {
                     ? Icon(widget.icon, color: Colors.grey.shade800, size: 18)
                     : null,
                 labelStyle:
-                const TextStyle(color: Color.fromARGB(255, 77, 76, 76)),
+                    const TextStyle(color: Color.fromARGB(255, 77, 76, 76)),
                 suffixIcon: widget.isPass
                     ? IconButton(
-                  icon: Icon(
-                    _isPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Colors.grey.shade800,
-                    size: 18,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isPasswordVisible = !_isPasswordVisible;
-                    });
-                  },
-                )
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.grey.shade800,
+                          size: 18,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      )
                     : null,
-                border:  OutlineInputBorder(
+                border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15.0),
                   borderSide: const BorderSide(color: Colors.grey),
                 ),
-                enabledBorder:  OutlineInputBorder(
+                enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15.0),
                   borderSide: const BorderSide(color: Colors.grey),
                 ),
-                focusedBorder:  OutlineInputBorder(
+                focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15.0),
-                  borderSide: const BorderSide(color: Colors.grey),
+                  borderSide: BorderSide(color: Colors.orange.shade900),
                 ),
-
               ),
               onChanged: (value) {
                 setState(() {
-                  errorMessage =
-                      widget.validator?.call(value);
+                  errorMessage = widget.validator?.call(value);
                 });
               },
             ),
