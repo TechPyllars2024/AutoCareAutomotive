@@ -1,6 +1,12 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage3.dart';
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_pin_location.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:logger/logger.dart';
+import '../services/pin_location.dart';
 import '../widgets/button.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/timeSelection.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/widgets/dropdown.dart';
@@ -24,6 +30,7 @@ class AutomotiveCompleteProfileScreen extends StatefulWidget {
 
 class _AutomotiveCompleteProfileScreenState
     extends State<AutomotiveCompleteProfileScreen> {
+  final Logger logger = Logger();
   final DropdownController dropdownController = Get.put(DropdownController());
   final DaysOfTheWeekController daysOfTheWeekController =
       Get.put(DaysOfTheWeekController());
@@ -45,12 +52,129 @@ class _AutomotiveCompleteProfileScreenState
   int _numberOfBookingPerHour = 1;
   Map<String, Map<String, int>> remainingSlots = {};
   List<String>? _serviceSpecialization;
+  late GoogleMapController mapController;
+  LatLng? _initialLocation;
+  User? user = FirebaseAuth.instance.currentUser;
+  final MapService mapService = MapService();
+  final Set<Marker> _markers = {};
+  Timer? _locationUpdateTimer;
+
+  @override
+  void dispose() {
+    _shopNameController.dispose();
+    _locationController.dispose();
+    _locationUpdateTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
     _getCurrentUser();
+    _initializeLocationAndFetchStations();
+    _updateMarkers();
+    _startLocationUpdates();
     _loadProfileData();
+    logger.i(_markers);
+  }
+
+  // Start periodic location updates using Timer
+  void _startLocationUpdates() {
+    _locationUpdateTimer =
+        Timer.periodic(const Duration(seconds: 3), (timer) async {
+      await _updateMarkers();
+    });
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
+
+  Future<void> _initializeLocationAndFetchStations() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final initialPosition = await _getUserCurrentLocation();
+
+    if (initialPosition != null) {
+      setState(() {
+        _initialLocation =
+            LatLng(initialPosition.latitude, initialPosition.longitude);
+      });
+    } else {
+      // Handle error if no location is found (optional)
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<Position?> _getUserCurrentLocation() async {
+    try {
+      await Geolocator.requestPermission();
+      return await Geolocator.getCurrentPosition();
+    } catch (e) {
+      logger.i("Error getting location: $e");
+      return null;
+    }
+  }
+
+  Future<void> _updateMarkers() async {
+    if (user == null) return;
+
+    try {
+      // Fetch marker data based on the user ID.
+      final existingMarker = await mapService.fetchMarkerByUserId(user!.uid);
+
+      if (existingMarker != null) {
+        final newLocation =
+            LatLng(existingMarker.latitude, existingMarker.longitude);
+
+        // Only update if the location has changed
+        if (_initialLocation == null || newLocation != _initialLocation) {
+          setState(() {
+            _initialLocation = newLocation;
+            _markers.clear();
+            _markers.add(Marker(
+              markerId: MarkerId(existingMarker.latitude.toString() +
+                  existingMarker.longitude.toString()),
+              position: _initialLocation!,
+              infoWindow: InfoWindow(
+                title: existingMarker.nameOfThePlace,
+                snippet:
+                    "Latitude: ${_initialLocation!.latitude}, Longitude: ${_initialLocation!.longitude}",
+              ),
+            ));
+          });
+          logger.i("Marker updated at: $_initialLocation");
+
+          // Animate the camera to the new marker location
+          mapController.animateCamera(
+            CameraUpdate.newLatLng(
+                _initialLocation!), // Move camera to the new location
+          );
+        }
+      } else {
+        logger.e('No marker found for this user.');
+      }
+    } catch (e) {
+      logger.e('Error loading marker: $e');
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide loading indicator once done.
+      });
+    }
+  }
+
+  void _onTap(LatLng location) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MapPage(), // Replace with actual screen
+      ),
+    );
   }
 
   // Get the current user
@@ -74,7 +198,6 @@ class _AutomotiveCompleteProfileScreenState
           _coverImageUrl = editProfile!.coverImage;
           _profileImageUrl = editProfile!.profileImage;
           _shopNameController.text = editProfile!.shopName;
-          _locationController.text = editProfile!.location;
         }
       });
     }
@@ -116,6 +239,22 @@ class _AutomotiveCompleteProfileScreenState
 
       if (_openingTime == null || _closingTime == null) {
         emptyFields.add('Operating hours');
+      }
+
+      if (dropdownController.selectedOptionList.isEmpty) {
+        emptyFields.add('Service Specialization');
+      }
+
+      if (daysOfTheWeekController.selectedOptionList.isEmpty) {
+        emptyFields.add('Days of the Week');
+      }
+
+      if (_numberOfBookingPerHour == 0) {
+        emptyFields.add('Number of Bookings per Hour');
+      }
+
+      if (_markers.isEmpty) {
+        emptyFields.add('Markers');
       }
 
       if (emptyFields.isNotEmpty) {
@@ -203,13 +342,14 @@ class _AutomotiveCompleteProfileScreenState
                 padding: EdgeInsets.zero,
                 children: [
                   buildTopSection(top),
+                  const SizedBox(height: 10),
                   buildInputs(),
                   dayOfTheWeekSelection(),
                   timeSelection(),
                   numberOfBookingsSelection(),
                   serviceSpecialization(),
                   buildSaveButton(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -256,25 +396,80 @@ class _AutomotiveCompleteProfileScreenState
 
   // Inputs
   Widget buildInputs() => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _shopNameController,
-              decoration: const InputDecoration(
-                hintText: 'Shop Name',
-              ),
+    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Shop Name TextField with Label
+        const Text('Shop Name', style: TextStyle(fontSize: 16,
+            fontWeight: FontWeight.bold)),
+        TextField(
+          controller: _shopNameController,
+          decoration: InputDecoration(
+            hintText: 'Enter your shop name',
+            border: const OutlineInputBorder(),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.orange.shade900),
             ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _locationController,
-              decoration: const InputDecoration(
-                hintText: 'Location',
-              ),
-            ),
-          ],
+            contentPadding: const EdgeInsets.all(12),
+          ),
         ),
-      );
+        const SizedBox(height: 10),
+
+        // Location TextField with Label
+        const Text('Location', style: TextStyle(fontSize: 16,
+            fontWeight: FontWeight.bold)),
+        TextField(
+          controller: _locationController,
+          decoration: InputDecoration(
+            hintText: 'Enter location',
+            border: const OutlineInputBorder(),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.orange.shade900),
+            ),
+            contentPadding: const EdgeInsets.all(12),
+          ),
+        ),
+        const SizedBox(height: 10),
+
+        // "Pin Your Location Here" label
+        const Padding(
+          padding: EdgeInsets.only(bottom: 8.0),
+          child: Text(
+            'Pin Your Location Here:',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+
+        // Google Map for pinning location
+        _isLoading
+            ? const Center(
+          child: CircularProgressIndicator(), // Show loading until location is set
+        )
+            : (_initialLocation == null
+            ? const Center(child: Text('Location not available'))
+            : SizedBox(
+          height: 200, // Adjust the size for a better visual appearance
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            elevation: 4.0,
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: _initialLocation ?? const LatLng(0.0, 0.0),
+                zoom: 20.0,
+              ),
+              onMapCreated: _onMapCreated,
+              onTap: _onTap,
+              markers: Set.from(_markers),
+            ),
+          ),
+        )),
+      ],
+    ),
+  );
+
 
   // Cover image
   Widget buildCoverImage() => Stack(
@@ -367,19 +562,18 @@ class _AutomotiveCompleteProfileScreenState
 
   // Time selection
   Widget timeSelection() => Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               'Operating hours',
               style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -387,7 +581,7 @@ class _AutomotiveCompleteProfileScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text('Open'),
+                      const Text('Open', style: TextStyle(fontSize: 14),),
                       const SizedBox(height: 5),
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -414,7 +608,7 @@ class _AutomotiveCompleteProfileScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text('Close'),
+                      const Text('Close', style: TextStyle(fontSize: 14),),
                       const SizedBox(height: 5),
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -444,19 +638,17 @@ class _AutomotiveCompleteProfileScreenState
 
   // Service specialization
   Widget serviceSpecialization() => Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               'Select Service Specialization',
               style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
             CustomDropdown(
               options: CategoryList.categories,
               hintText: 'Service Specialization',
@@ -474,71 +666,110 @@ class _AutomotiveCompleteProfileScreenState
 
   // Days of the week selection
   Widget dayOfTheWeekSelection() => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Select Days of the Week',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            DayOfTheWeek(
-                options: const [
-                  'Monday',
-                  'Tuesday',
-                  'Wednesday',
-                  'Thursday',
-                  'Friday',
-                  'Saturday',
-                  'Sunday'
-                ],
-                hintText: 'Select Days',
-                controller: daysOfTheWeekController,
-                initialSelectedOptions: const [],
-                onSelectionChanged: (selectedOptions) {}),
-          ],
+    padding: const EdgeInsets.all(16.0), // Increased padding for better spacing
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Days of the Week',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black, // Slightly darker for better contrast
+          ),
         ),
-      );
+
+        // Improved hint text with a more descriptive placeholder
+        Text(
+          'Choose your preferred days of the week:',
+          style: TextStyle(
+            color: Colors.grey[700], // Light gray for description
+            fontSize: 12,
+          ),
+        ),
+
+        // Day of the Week Selector
+        DayOfTheWeek(
+          options: const [
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+            'Sunday'
+          ],
+          hintText: 'Select Days',
+          controller: daysOfTheWeekController,
+          initialSelectedOptions: const [],
+          onSelectionChanged: (selectedOptions) {
+            // Optionally handle the selection change here
+          },
+        ),
+      ],
+    ),
+  );
+
 
   // Number of bookings per hour selection
   Widget numberOfBookingsSelection() => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    padding: const EdgeInsets.all(16.0), // Increased padding for better spacing
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Number of Bookings per Hour',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Row(
           children: [
-            const Text(
-              'Number of Bookings per Hour',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+            Expanded(
+              child: Slider(
+                value: _numberOfBookingPerHour.toDouble(),
+                min: 1,
+                max: 10,
+                divisions: 9, // For 1 to 10
+                label: _numberOfBookingPerHour.toString(),
+                activeColor: Colors.orange.shade900, // Slider color when active
+                inactiveColor: Colors.grey.shade300, // Slider color when inactive
+                onChanged: (double value) {
+                  setState(() {
+                    _numberOfBookingPerHour = value.toInt();
+                  });
+                },
               ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: Slider(
-                    value: _numberOfBookingPerHour.toDouble(),
-                    min: 1,
-                    max: 10,
-                    divisions: 9, // For 1 to 10
-                    label: _numberOfBookingPerHour.toString(),
-                    onChanged: (double value) {
-                      setState(() {
-                        _numberOfBookingPerHour = value.toInt();
-                      });
-                    },
-                  ),
-                ),
-                Text(
-                  '$_numberOfBookingPerHour',
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ],
+            const SizedBox(width: 8), // Space between slider and number text
+            Text(
+              '$_numberOfBookingPerHour',
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
           ],
         ),
-      );
+        const SizedBox(height: 5),
+        Row(
+          children: [
+            const Icon(Icons.info_outline, size: 14, color: Colors.grey), // Info icon
+            const SizedBox(width: 5),
+            Text(
+              'Adjust the number of bookings allowed per hour.',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+
 }

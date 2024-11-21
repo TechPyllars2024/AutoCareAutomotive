@@ -41,11 +41,13 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
+        backgroundColor: Colors.grey.shade100,
         automaticallyImplyLeading: false,
         title: const Text(
           'Messages',
-          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.black),
+          style: TextStyle(fontWeight: FontWeight.w900),
         ),
       ),
       body: _currentUserId.isEmpty
