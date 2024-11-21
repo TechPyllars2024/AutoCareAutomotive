@@ -458,7 +458,7 @@ class _AutomotiveCompleteProfileScreenState
             child: GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: _initialLocation ?? const LatLng(0.0, 0.0),
-                zoom: 20.0,
+                zoom: 18.0,
               ),
               onMapCreated: _onMapCreated,
               onTap: _onTap,
