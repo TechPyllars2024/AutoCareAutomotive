@@ -143,12 +143,7 @@ class _MapPageState extends State<MapPage> {
                 Navigator.of(context).pop();
 
                 // Proceed with marker placement
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        const AutomotiveCompleteProfileScreen(),
-                  ),
-                );
+                Navigator.of(context).pop();
 
                 final existingMarker =
                     await mapService.fetchMarkerByUserId(user!.uid);
@@ -237,6 +232,7 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.grey.shade100,
         title: const Text('Pin Your Location',
             style: TextStyle(
               fontWeight: FontWeight.w900,

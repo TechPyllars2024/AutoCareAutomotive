@@ -59,6 +59,25 @@ class _AutomotiveCompleteProfileScreenState
   final Set<Marker> _markers = {};
   Timer? _locationUpdateTimer;
 
+  @override
+  void dispose() {
+    _shopNameController.dispose();
+    _locationController.dispose();
+    _locationUpdateTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentUser();
+    _initializeLocationAndFetchStations();
+    _updateMarkers();
+    _startLocationUpdates();
+    _loadProfileData();
+    logger.i(_markers);
+  }
+
   // Start periodic location updates using Timer
   void _startLocationUpdates() {
     _locationUpdateTimer =
@@ -103,7 +122,7 @@ class _AutomotiveCompleteProfileScreenState
   }
 
   Future<void> _updateMarkers() async {
-    if (user == null) return; // Ensure the user is authenticated.
+    if (user == null) return;
 
     try {
       // Fetch marker data based on the user ID.
@@ -116,8 +135,8 @@ class _AutomotiveCompleteProfileScreenState
         // Only update if the location has changed
         if (_initialLocation == null || newLocation != _initialLocation) {
           setState(() {
-            _initialLocation = newLocation; // Update location only if changed
-            _markers.clear(); // Clear the previous markers
+            _initialLocation = newLocation;
+            _markers.clear();
             _markers.add(Marker(
               markerId: MarkerId(existingMarker.latitude.toString() +
                   existingMarker.longitude.toString()),
@@ -302,25 +321,6 @@ class _AutomotiveCompleteProfileScreenState
   }
 
   @override
-  void dispose() {
-    _shopNameController.dispose();
-    _locationController.dispose();
-    _locationUpdateTimer?.cancel();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentUser();
-    _loadProfileData();
-    _initializeLocationAndFetchStations();
-    _updateMarkers();
-    _startLocationUpdates();
-    logger.i(_markers);
-  }
-
-  @override
   Widget build(BuildContext context) {
     final double top = coverHeight - profileHeight / 2;
     double bottomPadding =
@@ -458,7 +458,7 @@ class _AutomotiveCompleteProfileScreenState
             child: GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: _initialLocation ?? const LatLng(0.0, 0.0),
-                zoom: 18.0,
+                zoom: 20.0,
               ),
               onMapCreated: _onMapCreated,
               onTap: _onTap,
