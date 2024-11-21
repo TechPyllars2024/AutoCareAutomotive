@@ -6,7 +6,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:logger/logger.dart';
 import '../models/automotive_marker_model.dart';
 import '../services/pin_location.dart';
-import 'automotive_complete_profile.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key, this.child});
