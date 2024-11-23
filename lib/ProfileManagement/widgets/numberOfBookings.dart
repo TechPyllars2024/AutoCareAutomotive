@@ -54,14 +54,10 @@ class _NumberInputControllerState extends State<NumberInputController> {
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
-              color: _hasError
-                  ? Colors.red
-                  : Colors.black, // Set border color based on error state
+              color: _hasError ? Colors.red : Colors.black, // Set border color based on error state
             ),
           ),
-          errorText: _hasError
-              ? 'Value exceeds maximum of ${widget.max}'
-              : null, // Show error message
+          errorText: _hasError ? 'Value exceeds maximum of ${widget.max}' : null, // Show error message
         ),
         onChanged: _onChanged,
       ),

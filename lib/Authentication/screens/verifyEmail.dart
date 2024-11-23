@@ -29,7 +29,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       isEmailVerified = user.emailVerified;
 
       if (!isEmailVerified) {
-        // Start periodic check for email verification but don't resend automatically
+
         timer = Timer.periodic(
           const Duration(seconds: 3),
           (_) => checkEmailVerified(),
@@ -70,12 +70,11 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
           canResendEmail = false;
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Verification email sent. Please check your inbox.'),
-            backgroundColor: Colors.green, // Set background color to green
-          ),
+        const SnackBar(
+          content: Text("Verification email sent. Please check your inbox."),
+          backgroundColor: Colors.green,
         );
+
 
         await Future.delayed(const Duration(seconds: 30));
 
@@ -85,10 +84,12 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'too-many-requests') {
+
         Utils.showSnackBar("Too many requests. Please try again later.");
         setState(() {
           canResendEmail = false;
         });
+
 
         await Future.delayed(const Duration(seconds: 60));
 
@@ -112,13 +113,8 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     return isEmailVerified
         ? const Onboarding()
         : Scaffold(
-            backgroundColor: Colors.grey.shade100,
             appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: const Text(
-                'Verify Email',
-                style: TextStyle(fontWeight: FontWeight.w900),
-              ),
+              title: const Text('Verify Email', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.all(20),
@@ -140,12 +136,12 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                   isLoading
                       ? const CircularProgressIndicator()
                       : ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            minimumSize: const Size(400, 45),
-                            backgroundColor: Colors.deepOrange.shade700,
-                          ),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      minimumSize: const Size(400, 45),
+                      backgroundColor: Colors.deepOrange.shade700,
+                    ),
                           icon: const Icon(Icons.email,
                               size: 20, color: Colors.white),
                           label: const Text('Resend Email',

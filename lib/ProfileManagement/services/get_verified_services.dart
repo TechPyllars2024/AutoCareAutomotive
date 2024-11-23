@@ -15,6 +15,7 @@ class GetVerifiedServices {
   final Logger logger = Logger();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+
   Future<String?> pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -41,8 +42,7 @@ class GetVerifiedServices {
     String fileName = file.path.split('/').last;
 
     try {
-      Reference storageRef =
-          FirebaseStorage.instance.ref().child('getVerified/$fileName');
+      Reference storageRef = FirebaseStorage.instance.ref().child('getVerified/$fileName');
       UploadTask uploadTask = storageRef.putFile(file);
 
       TaskSnapshot taskSnapshot = await uploadTask;
@@ -54,8 +54,7 @@ class GetVerifiedServices {
 
   Future<void> saveVerificationData(String fileUrl) async {
     try {
-      AutomotiveProfileModel? profile =
-          await _profileService.fetchProfileData();
+      AutomotiveProfileModel? profile = await _profileService.fetchProfileData();
 
       if (profile != null) {
         final verificationData = VerificationModel(

@@ -88,25 +88,25 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
           style: TextStyle(fontWeight: FontWeight.w900),
         ),
         backgroundColor: Colors.grey.shade100,
-        actions: [
-          IconButton(
-            icon: Container(
-              decoration: BoxDecoration(
-                color: Colors.orange.shade900,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              padding: const EdgeInsets.all(6.0),
-              child: const Center(
-                child: Icon(
-                  Icons.edit,
-                  color: Colors.white,
-                  size: 25,
-                ),
-              ),
-            ),
-            onPressed: editProfile,
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: Container(
+        //       decoration: BoxDecoration(
+        //         color: Colors.orange.shade900,
+        //         borderRadius: BorderRadius.circular(12.0),
+        //       ),
+        //       padding: const EdgeInsets.all(6.0),
+        //       child: const Center(
+        //         child: Icon(
+        //           Icons.edit,
+        //           color: Colors.white,
+        //           size: 25,
+        //         ),
+        //       ),
+        //     ),
+        //     onPressed: editProfile,
+        //   ),
+        // ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -220,8 +220,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      VerificationStatusScreen(uid: user!.uid),
+                                  builder: (context) => VerificationStatusScreen(uid: user!.uid),
                                 ),
                               );
                               _checkVerificationStatus();
@@ -299,8 +298,7 @@ class ProfileDetailsWidget extends StatelessWidget {
                   size: 15,
                 ),
                 const SizedBox(width: 4),
-                Expanded(
-                  // or Flexible
+                Expanded(  // or Flexible
                   child: Text(
                     (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
                     overflow: TextOverflow.ellipsis,

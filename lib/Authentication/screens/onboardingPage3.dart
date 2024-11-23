@@ -4,9 +4,7 @@ import 'dart:async';
 import '../../Navigation Bar/navbar.dart';
 
 class Onboardingpage3 extends StatefulWidget {
-  const Onboardingpage3({super.key, this.child});
-
-  final Widget? child;
+  const Onboardingpage3({super.key});
 
   @override
   State<Onboardingpage3> createState() => _Onboardingpage3State();
@@ -19,7 +17,7 @@ class _Onboardingpage3State extends State<Onboardingpage3> {
 
     Future.delayed(const Duration(seconds: 5), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const Navbar()));
+          context, MaterialPageRoute(builder: (context) => Navbar()));
     });
   }
 
@@ -32,8 +30,7 @@ class _Onboardingpage3State extends State<Onboardingpage3> {
         children: [
           Image.asset(
             'lib/Authentication/assets/images/autocareLogo.png',
-          )
-              .animate()
+          ).animate()
               .shimmer(delay: 500.ms, duration: 1000.ms)
               .fadeIn(duration: 500.ms),
           const SizedBox(height: 80),
@@ -44,10 +41,7 @@ class _Onboardingpage3State extends State<Onboardingpage3> {
           RichText(
             text: const TextSpan(
               text: 'Welcome to Auto',
-              style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
               children: <TextSpan>[
                 TextSpan(
                   text: 'Care',

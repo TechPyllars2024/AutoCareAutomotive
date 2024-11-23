@@ -15,6 +15,7 @@ class MyButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+
       onTap: isLoading ? null : onTap,
       child: Padding(
         padding: const EdgeInsets.only(top: 0.0),
@@ -22,17 +23,21 @@ class MyButtons extends StatelessWidget {
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(vertical: 10),
           width: double.infinity,
+
           decoration: ShapeDecoration(
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(15),
               ),
+
             ),
+
             color: Colors.orange.shade900,
           ),
           child: Stack(
             alignment: Alignment.center,
             children: [
+
               if (isLoading)
                 const SizedBox(
                   width: 20.0,

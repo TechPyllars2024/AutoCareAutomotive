@@ -16,7 +16,6 @@ class UserModel {
       'roles': roles,
     };
   }
-
   // Create UserModel from a Firestore document
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(

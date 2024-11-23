@@ -15,21 +15,22 @@ class AutomotiveProfileModel {
   final Map<String, Map<String, int>> remainingSlots;
 
   // Constructor for creating an instance of AutomotiveProfileModel
-  AutomotiveProfileModel(
-      {required this.uid,
-      required this.serviceProviderUid,
-      required this.shopName,
-      required this.location,
-      required this.coverImage,
-      required this.profileImage,
-      required this.daysOfTheWeek,
-      required this.operationTime,
-      required this.serviceSpecialization,
-      required this.verificationStatus,
-      required this.totalRatings,
-      required this.numberOfRatings,
-      required this.numberOfBookingsPerHour,
-      required this.remainingSlots});
+  AutomotiveProfileModel({
+    required this.uid,
+    required this.serviceProviderUid,
+    required this.shopName,
+    required this.location,
+    required this.coverImage,
+    required this.profileImage,
+    required this.daysOfTheWeek,
+    required this.operationTime,
+    required this.serviceSpecialization,
+    required this.verificationStatus,
+    required this.totalRatings,
+    required this.numberOfRatings,
+    required this.numberOfBookingsPerHour,
+    required this.remainingSlots
+  });
 
   // Convert the model to a map for storage or transfer
   Map<String, dynamic> toMap() {
@@ -52,24 +53,22 @@ class AutomotiveProfileModel {
   }
 
   // Create a model instance from a document snapshot
-  factory AutomotiveProfileModel.fromDocument(
-      Map<String, dynamic> doc, String uid) {
+  factory AutomotiveProfileModel.fromDocument(Map<String, dynamic> doc, String uid) {
     return AutomotiveProfileModel(
-        uid: uid,
-        serviceProviderUid: doc['serviceProviderUid'] as String? ?? '',
-        shopName: doc['shopName'] as String? ?? '',
-        location: doc['location'] as String? ?? '',
-        coverImage: doc['coverImage'] as String? ?? '',
-        profileImage: doc['profileImage'] as String? ?? '',
-        daysOfTheWeek: List<String>.from(doc['daysOfTheWeek'] ?? []),
-        operationTime: doc['operationTime'] as String? ?? '',
-        serviceSpecialization:
-            List<String>.from(doc['serviceSpecialization'] ?? []),
-        verificationStatus: doc['verificationStatus'] ?? '',
-        totalRatings: doc['totalRatings']?.toDouble() ?? 0.0,
-        numberOfRatings: doc['numberOfRatings'] ?? 0,
-        numberOfBookingsPerHour: doc['numberOfBookingsPerHour'] ?? 0,
-        remainingSlots:
-            Map<String, Map<String, int>>.from(doc['remainingSlots'] ?? {}));
+      uid: uid,
+      serviceProviderUid: doc['serviceProviderUid'] as String? ?? '',
+      shopName: doc['shopName'] as String? ?? '',
+      location: doc['location'] as String? ?? '',
+      coverImage: doc['coverImage'] as String? ?? '',
+      profileImage: doc['profileImage'] as String? ?? '',
+      daysOfTheWeek: List<String>.from(doc['daysOfTheWeek'] ?? []),
+      operationTime: doc['operationTime'] as String? ?? '',
+      serviceSpecialization: List<String>.from(doc['serviceSpecialization'] ?? []),
+      verificationStatus: doc['verificationStatus'] ?? '',
+      totalRatings: doc['totalRatings']?.toDouble() ?? 0.0,
+      numberOfRatings: doc['numberOfRatings'] ?? 0,
+      numberOfBookingsPerHour: doc['numberOfBookingsPerHour'] ?? 0,
+      remainingSlots: Map<String, Map<String, int>>.from(doc['remainingSlots'] ?? {})
+    );
   }
 }

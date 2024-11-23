@@ -19,7 +19,7 @@ class TextFieldInput extends StatefulWidget {
   });
 
   @override
-  State<TextFieldInput> createState() => _TextFieldInputState();
+  _TextFieldInputState createState() => _TextFieldInputState();
 }
 
 class _TextFieldInputState extends State<TextFieldInput> {
@@ -45,23 +45,25 @@ class _TextFieldInputState extends State<TextFieldInput> {
                     ? Icon(widget.icon, color: Colors.grey.shade800, size: 18)
                     : null,
                 labelStyle:
-                    const TextStyle(color: Color.fromARGB(255, 77, 76, 76)),
+                const TextStyle(color: Color.fromARGB(255, 77, 76, 76)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15.0),
-                  borderSide: const BorderSide(color: Colors.grey),
+                  borderSide: BorderSide(color: Colors.grey),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15.0),
-                  borderSide: const BorderSide(color: Colors.grey),
+                  borderSide: BorderSide(color: Colors.grey),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15.0),
-                  borderSide: BorderSide(color: Colors.orange.shade900),
+                  borderSide: BorderSide(color: Colors.grey),
                 ),
+
               ),
               onChanged: (value) {
                 setState(() {
-                  errorMessage = widget.validator?.call(value);
+                  errorMessage =
+                      widget.validator?.call(value);
                 });
               },
             ),

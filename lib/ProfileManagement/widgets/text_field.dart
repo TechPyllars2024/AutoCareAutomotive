@@ -27,21 +27,24 @@ class TextFieldInput extends StatelessWidget {
           color: Colors.grey[100],
           borderRadius: BorderRadius.circular(15),
         ),
+
         child: TextField(
           style: const TextStyle(fontSize: 20),
           controller: textEditingController,
           decoration: InputDecoration(
             labelText: hintText,
+
+
             labelStyle: const TextStyle(color: Color.fromARGB(255, 77, 76, 76)),
-            border: OutlineInputBorder(
+            border:  OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.circular(15),
             ),
-            enabledBorder: OutlineInputBorder(
+            enabledBorder:  OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.circular(15),
             ),
-            focusedBorder: OutlineInputBorder(
+            focusedBorder:  OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.circular(15),
             ),

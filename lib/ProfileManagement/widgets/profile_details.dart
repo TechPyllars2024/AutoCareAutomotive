@@ -22,14 +22,11 @@ class ProfileDetails extends StatelessWidget {
             const SizedBox(height: 5),
             Row(
               children: [
-                Icon(
-                  Icons.location_on,
-                  color: Colors.orange.shade900,
-                  size: 15,
-                ),
+                 Icon(Icons.location_on, color: Colors.orange.shade900, size: 15,),
                 const SizedBox(width: 4),
                 Text(
                   profile?.location ?? 'Location',
+
                 ),
               ],
             ),
@@ -42,8 +39,7 @@ class ProfileDetails extends StatelessWidget {
                   size: 15,
                 ),
                 const SizedBox(width: 4),
-                Expanded(
-                  // or Flexible
+                Expanded(  // or Flexible
                   child: Text(
                     (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
                     overflow: TextOverflow.ellipsis,
@@ -56,11 +52,7 @@ class ProfileDetails extends StatelessWidget {
             const SizedBox(height: 5),
             Row(
               children: [
-                Icon(
-                  Icons.schedule,
-                  color: Colors.orange.shade900,
-                  size: 15,
-                ),
+                 Icon(Icons.schedule, color: Colors.orange.shade900, size: 15,),
                 const SizedBox(width: 4),
                 Text(
                   profile?.operationTime ?? 'Operation Time',
@@ -74,23 +66,20 @@ class ProfileDetails extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.check,
-                      color: Colors.orange.shade900,
-                      size: 15,
-                    ),
+                     Icon(Icons.check, color: Colors.orange.shade900, size: 15,),
                     const SizedBox(width: 4),
+
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            (profile?.serviceSpecialization.join(', ') ??
-                                'Specialization'
-                                    ''),
+                            (profile?.serviceSpecialization.join(', ') ?? 'Specialization'
+                                ''),
                             overflow: TextOverflow.visible,
                             maxLines: 2,
                             softWrap: true,
+
                           ),
                         ],
                       ),

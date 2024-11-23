@@ -83,7 +83,9 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                 width: 300,
                 height: 300,
               ).animate().fadeIn(duration: const Duration(seconds: 1)),
+
               const SizedBox(height: 80),
+
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -94,6 +96,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                   ),
                 ],
               ),
+
               const SizedBox(height: 40),
               TextFormField(
                 controller: emailController,
@@ -118,9 +121,9 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
               isLoading
                   ? const CircularProgressIndicator()
                   : MyButtons(
-                      onTap: resetPassword,
-                      text: "Reset Password",
-                    ),
+                onTap: resetPassword,
+                text: "Reset Password",
+              ),
             ],
           ),
         ),
