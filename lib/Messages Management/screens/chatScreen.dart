@@ -315,10 +315,10 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.send, color: Colors.orange.shade900),
-                          onPressed: () {
+                          icon: Icon(Icons.send, color: _isLoading ? Colors.orange.shade900 : Colors.orange.shade900),
+                          onPressed: _isLoading ? null : () {
                             if (_pickedImage != null || _messageController.text.trim().isNotEmpty) {
-                              _sendMessage(imageFile: _pickedImage); // Send message or image
+                              _sendMessage(imageFile: _pickedImage);
                             }
                           },
                         ),
