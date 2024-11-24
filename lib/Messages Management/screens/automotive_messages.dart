@@ -98,7 +98,7 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
                           : null,
                     ),
                     title: Text(
-                      '$carOwnerFirstName$carOwnerLastName',
+                      '$carOwnerFirstName $carOwnerLastName',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
@@ -106,7 +106,7 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontWeight: isRead ? FontWeight.normal : FontWeight.bold,
+                        fontWeight: isRead ? FontWeight.bold : FontWeight.normal,
                       ),
                     ),
                     trailing: Text(

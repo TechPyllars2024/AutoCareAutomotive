@@ -28,9 +28,9 @@ class _ChatScreenState extends State<ChatScreen> {
   late Future<Map<String, dynamic>> _carOwnerData;
   late Future<StartConversationModel> _conversationData;
   String _senderId = '';
-  final String _carOwnerFirstName = '';
-  final String _carOwnerLastName = '';
-  final String _carOwnerProfilePhoto = '';
+  late String _carOwnerFirstName = '';
+  late String _carOwnerLastName = '';
+  late String _carOwnerProfilePhoto = '';
   File? _pickedImage;
   String? _conversationId;
   String _currentUserId = '';
@@ -40,12 +40,8 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _fetchCurrentUser();
-    _conversationData = _chatService.fetchStartConversationById(widget.conversationId);
-    _conversationData.then((conversation) {
-      setState(() {
-        _carOwnerData = _chatService.fetchCarOwnerByUid(conversation.senderId);
-      });
-    });
+    _initializeConversation();
+    _fetchCarOwnerDetails();
     _initializeConversation();
   }
 
@@ -74,6 +70,16 @@ class _ChatScreenState extends State<ChatScreen> {
         _conversationId = conversationId;
       });
     }
+  }
+
+  Future<void> _fetchCarOwnerDetails() async {
+    final conversation = await _chatService.fetchStartConversationById(widget.conversationId);
+    final carOwnerDetails = await _chatService.fetchCarOwnerByUid(conversation.senderId);
+    setState(() {
+      _carOwnerFirstName = carOwnerDetails['firstName'] ?? '';
+      _carOwnerLastName = carOwnerDetails['lastName'] ?? '';
+      _carOwnerProfilePhoto = carOwnerDetails['profileImage'] ?? '';
+    });
   }
 
   Future<void> _sendMessage({File? imageFile}) async {
@@ -129,63 +135,31 @@ class _ChatScreenState extends State<ChatScreen> {
         appBar: AppBar(
           backgroundColor: Colors.orange[900],
           iconTheme: const IconThemeData(color: Colors.white),
-          title: FutureBuilder<StartConversationModel>(
-            future: _chatService.fetchStartConversationById(widget.conversationId),
-            builder: (context, conversationSnapshot) {
-              if (conversationSnapshot.connectionState == ConnectionState.waiting) {
-                return const Text('Loading...', style: TextStyle(color: Colors.white));
-              } else if (conversationSnapshot.hasError) {
-                return const Text('Error loading conversation');
-              } else if (conversationSnapshot.hasData) {
-                final conversation = conversationSnapshot.data!;
-                return FutureBuilder<Map<String, dynamic>>(
-                  future: _chatService.fetchCarOwnerByUid(conversation.senderId),
-                  builder: (context, carOwnerSnapshot) {
-                    if (carOwnerSnapshot.connectionState == ConnectionState.waiting) {
-                      return const Text('Loading...', style: TextStyle(color: Colors.white));
-                    } else if (carOwnerSnapshot.hasError) {
-                      return const Text('Error loading provider');
-                    } else if (carOwnerSnapshot.hasData) {
-                      final data = carOwnerSnapshot.data!;
-                      final carOwnerFirstName = data['firstName'] ?? '';
-                      final carOwnerLastName = data['lastName'] ?? '';
-                      final carOwnerProfilePhoto = data['profileImage'] ?? '';
-
-                      return Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: carOwnerProfilePhoto.isNotEmpty
-                                ? NetworkImage(carOwnerProfilePhoto)
-                                : null,
-                            child: carOwnerProfilePhoto.isEmpty
-                                ? const Icon(Icons.person)
-                                : null,
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            '$carOwnerFirstName$carOwnerLastName',
-                            style: const TextStyle(fontSize: 18, color: Colors.white),
-                          ),
-                        ],
-                      );
-                    } else {
-                      return const Text('No provider data found');
-                    }
-                  },
-                );
-              } else {
-                return const Text('No conversation data found');
-              }
-            },
+          title: Row(
+            children: [
+              CircleAvatar(
+                backgroundImage: _carOwnerProfilePhoto.isNotEmpty
+                    ? NetworkImage(_carOwnerProfilePhoto)
+                    : null,
+                child: _carOwnerProfilePhoto.isEmpty
+                    ? const Icon(Icons.person)
+                    : null,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                '$_carOwnerFirstName $_carOwnerLastName',
+                style: const TextStyle(fontSize: 18, color: Colors.white),
+              ),
+            ],
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.call, color: Colors.white),
-              onPressed: () {
-                // Handle call action
-              },
-            ),
-          ],
+          // actions: [
+          //   IconButton(
+          //     icon: const Icon(Icons.call, color: Colors.white),
+          //     onPressed: () {
+          //       // Handle call action
+          //     },
+          //   ),
+          // ],
         ),
         body: Column(
           children: [
@@ -315,10 +289,10 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.send, color: Colors.orange.shade900),
-                          onPressed: () {
+                          icon: Icon(Icons.send, color: _isLoading ? Colors.orange.shade900 : Colors.orange.shade900),
+                          onPressed: _isLoading ? null : () {
                             if (_pickedImage != null || _messageController.text.trim().isNotEmpty) {
-                              _sendMessage(imageFile: _pickedImage); // Send message or image
+                              _sendMessage(imageFile: _pickedImage);
                             }
                           },
                         ),
