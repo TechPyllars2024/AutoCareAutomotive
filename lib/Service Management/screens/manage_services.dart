@@ -25,6 +25,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
   File? _selectedImage;
   String category = CategoryList.categories[0];
   bool _isLoading = false;
+  String? servicePictureUrl;
 
   void _addOrUpdateService(BuildContext context, {ServiceModel? service}) {
     final nameController = TextEditingController(text: service?.name);
@@ -132,6 +133,9 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                               BorderSide(color: Colors.grey.shade600, width: 1),
                         ),
                       ),
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(30),
+                      ],
                       style: const TextStyle(color: Colors.black),
                     ),
                     TextField(
@@ -139,6 +143,8 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                       onChanged: (text) {
                         setState(() {});
                       },
+                      maxLines: null,
+                      keyboardType: TextInputType.multiline,
                       decoration: InputDecoration(
                         labelText: 'Description',
                         labelStyle: TextStyle(
@@ -156,6 +162,9 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                               BorderSide(color: Colors.grey.shade600, width: 1),
                         ),
                       ),
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(120),
+                      ],
                     ),
                     TextField(
                       controller: priceController,
@@ -257,37 +266,63 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                     if (nameController.text.isNotEmpty &&
                         descriptionController.text.isNotEmpty &&
                         priceController.text.isNotEmpty &&
-                        priceController.text != '0.00' &&
-                        _selectedImage != null) {
+                        priceController.text != '0.00') {
                       setState(() {
-                        _isLoading = true; // Set loading state to true
+                        _isLoading = true; // Show loading indicator
                       });
 
-                      if (service == null) {
-                        await _serviceManagement.addService(
-                          serviceProviderId: user!.uid,
-                          name: nameController.text,
-                          description: descriptionController.text,
-                          price: double.parse(priceController.text),
-                          category: category,
-                          imageFile: _selectedImage,
+                      try {
+                        if (service == null) {
+                          // Adding a new service
+                          if (_selectedImage == null) {
+                            throw 'Please select an image for the new service.';
+                          }
+                          await _serviceManagement.addService(
+                            serviceProviderId: user!.uid,
+                            name: nameController.text,
+                            description: descriptionController.text,
+                            price: double.parse(priceController.text),
+                            category: category,
+                            imageFile: _selectedImage,
+                          );
+                        } else {
+                          // Updating an existing service
+                          await _serviceManagement.updateService(
+                            serviceId: service.serviceId,
+                            name: nameController.text,
+                            description: descriptionController.text,
+                            price: double.parse(priceController.text),
+                            category: category,
+                            imageFile: _selectedImage,
+                            currentPictureUrl: service.servicePicture,
+                          );
+                        }
+                      } catch (e) {
+                        // Handle errors (optional)
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('$e'),
+                            backgroundColor:
+                                Colors.red,
+                          ),
                         );
-                      } else {
-                        await _serviceManagement.updateService(
-                          serviceId: service.serviceId,
-                          name: nameController.text,
-                          description: descriptionController.text,
-                          price: double.parse(priceController.text),
-                          category: category,
-                          imageFile: _selectedImage,
-                        );
+                      } finally {
+                        // Reset loading state and selected image
+                        setState(() {
+                          _isLoading = false;
+                          _selectedImage = null;
+                        });
+
+                        // Close the dialog
+                        Navigator.of(context).pop();
                       }
-                      setState(() {
-                        _isLoading = false;
-                        _selectedImage = null;
-                      });
-
-                      Navigator.of(context).pop();
+                    } else {
+                      // Show validation error
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Please fill in all fields'),
+                          backgroundColor: Colors.red,),
+                      );
                     }
                   },
                 ),
