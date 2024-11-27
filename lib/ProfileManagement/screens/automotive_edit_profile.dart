@@ -176,7 +176,7 @@ class _AutomotiveEditProfileScreenState
       logger.e('Error loading marker: $e');
     } finally {
       setState(() {
-        isLoading = false; // Hide loading indicator once done.
+        isLoading = false;
       });
     }
   }
@@ -629,7 +629,7 @@ class _AutomotiveEditProfileScreenState
                           border: Border.all(color: Colors.grey),
                         ),
                         child: TimePickerDisplay(
-                          initialTime: const TimeOfDay(hour: 0, minute: 0),
+                          initialTime: _openingTime ?? const TimeOfDay(hour: 9, minute: 0),
                           onTimeSelected: (selectedTime) {
                             setState(() {
                               _openingTime = selectedTime;
@@ -659,7 +659,7 @@ class _AutomotiveEditProfileScreenState
                           border: Border.all(color: Colors.grey),
                         ),
                         child: TimePickerDisplay(
-                          initialTime: const TimeOfDay(hour: 0, minute: 0),
+                          initialTime: _closingTime ?? const TimeOfDay(hour: 17, minute: 0),
                           onTimeSelected: (selectedTime) {
                             setState(() {
                               _closingTime = selectedTime;
@@ -693,7 +693,7 @@ class _AutomotiveEditProfileScreenState
               options: CategoryList.categories,
               hintText: 'Service Specialization',
               controller: dropdownController,
-              initialSelectedOptions: const [],
+              initialSelectedOptions: _serviceSpecialization ?? [],
               onSelectionChanged: (selectedOptions) {
                 setState(() {
                   _serviceSpecialization = selectedOptions.cast<String>();
@@ -724,7 +724,7 @@ class _AutomotiveEditProfileScreenState
             Text(
               'Choose your preferred days of the week:',
               style: TextStyle(
-                color: Colors.grey[700], // Light gray for description
+                color: Colors.grey[700],
                 fontSize: 12,
               ),
             ),
@@ -744,7 +744,6 @@ class _AutomotiveEditProfileScreenState
               controller: daysOfTheWeekController,
               initialSelectedOptions: const [],
               onSelectionChanged: (selectedOptions) {
-                // Optionally handle the selection change here
               },
             ),
           ],
