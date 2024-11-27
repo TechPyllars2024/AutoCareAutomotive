@@ -53,13 +53,17 @@ class ServiceManagement {
     required double price,
     required String category,
     File? imageFile,
+    required String currentPictureUrl, // Add this parameter
   }) async {
     try {
       String? servicePictureUrl;
 
-      // If a new image is selected, upload it
+      // Upload new image if provided
       if (imageFile != null) {
         servicePictureUrl = await imageService.uploadImage(imageFile, 'service_images/$serviceId');
+      } else {
+        // Use the current picture URL if no new image is provided
+        servicePictureUrl = currentPictureUrl;
       }
 
       // Prepare the updated data
@@ -68,14 +72,10 @@ class ServiceManagement {
         'description': description,
         'price': price,
         'category': [category],
+        'servicePicture': servicePictureUrl, // Use existing or new image URL
       };
 
-      // If an image URL exists, update the service picture
-      if (servicePictureUrl != null) {
-        updatedService['servicePicture'] = servicePictureUrl;
-      }
-
-      // Update the service in Firestore
+      // Update Firestore
       await firestore.collection("services").doc(serviceId).update(updatedService);
 
       return 'Service updated successfully';
@@ -83,6 +83,7 @@ class ServiceManagement {
       return 'Failed to update service: $e';
     }
   }
+
 
   // Fetch all services for a particular service provider
   Stream<List<ServiceModel>> fetchServices(String serviceProviderId) {
