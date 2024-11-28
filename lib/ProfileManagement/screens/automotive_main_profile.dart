@@ -364,7 +364,7 @@ class ProfileDetailsWidget extends StatelessWidget {
                             'Days of the Week',
                             style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 16),
+                                      fontSize: 14),
                           ),
                         ],
                       ),
@@ -383,7 +383,7 @@ class ProfileDetailsWidget extends StatelessWidget {
                             'Specialization',
                             style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 16),
+                                      fontSize: 14),
                           ),
                         ],
                       ),
