@@ -111,28 +111,31 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Center(
-              child: Container(
-                width: 180,
-                height: 180,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.orange.shade900,
-                    width: 1,
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 180,
+                  height: 180,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.orange.shade900,
+                      width: 1,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 90,
+                    backgroundColor: Colors.white,
+                    backgroundImage: profile?.profileImage.isNotEmpty == true
+                        ? NetworkImage(profile!.profileImage)
+                        : null,
+                    child: profile?.profileImage.isEmpty == true
+                        ? const Icon(Icons.person, size: 90, color: Colors.black)
+                        : null,
                   ),
                 ),
-                child: CircleAvatar(
-                  radius: 90,
-                  backgroundColor: Colors.white,
-                  backgroundImage: profile?.profileImage.isNotEmpty == true
-                      ? NetworkImage(profile!.profileImage)
-                      : null,
-                  child: profile?.profileImage.isEmpty == true
-                      ? const Icon(Icons.person, size: 90, color: Colors.black)
-                      : null,
-                ),
-              ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.only(top: 24),
@@ -148,9 +151,9 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                       ),
                     ),
                     if (isVerified)
-                      const Icon(
+                      Icon(
                         Icons.verified,
-                        color: Colors.orange,
+                        color: Colors.orange.shade900,
                         size: 30,
                       ),
                   ],
@@ -232,21 +235,44 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                     },
                   ),
                   Container(
+                    width: 150,
                     margin: const EdgeInsets.only(bottom: 10),
-                    child: ProfileMenuWidget(
-                      title: "Logout",
-                      icon: Icons.logout,
-                      onPressed: () async {
+                    child: GestureDetector(
+                      onTap: () async {
                         try {
                           await AuthenticationMethodSignOut().signOut();
                           Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                                builder: (context) => const LoginScreen()),
+                            MaterialPageRoute(builder: (context) => const LoginScreen()),
                           );
                         } catch (e) {
                           Utils.showSnackBar('Error Signing Out: $e');
                         }
                       },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: Colors.grey.shade300,
+                            width: 2,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.logout, color: Colors.orange.shade900),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Logout',
+                              style: TextStyle(
+                                color: Colors.grey.shade900,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -268,96 +294,128 @@ class ProfileDetailsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                Icon(
-                  Icons.location_on,
-                  color: Colors.orange.shade900,
-                  size: 15,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  profile?.location ?? 'Location',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  softWrap: true,
-                ),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                Icon(
-                  Icons.calendar_month,
-                  color: Colors.orange.shade900,
-                  size: 15,
-                ),
-                const SizedBox(width: 4),
-                Expanded(
-                  // or Flexible
-                  child: Text(
-                    (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    softWrap: true,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                Icon(
-                  Icons.schedule,
-                  color: Colors.orange.shade900,
-                  size: 15,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  profile?.operationTime ?? 'Operation Time',
-                ),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 5),
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.check,
+                      Icons.location_on,
                       color: Colors.orange.shade900,
-                      size: 15,
+                      size: 20,
                     ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    Flexible(
+                      child: Text(
+                        profile?.location ?? 'Location',
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        softWrap: true,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.schedule,
+                      color: Colors.orange.shade900,
+                      size: 20,
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      profile?.operationTime ?? 'Operation Time',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Table(
+              border: TableBorder.all(color: Colors.orange.shade900),
+              children: [
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
                         children: [
-                          Text(
-                            (profile?.serviceSpecialization.join(', ') ??
-                                'Specialization'
-                                    ''),
-                            overflow: TextOverflow.visible,
-                            maxLines: 2,
-                            softWrap: true,
+                          Icon(
+                            Icons.calendar_month,
+                            color: Colors.orange.shade900,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 4),
+                          const Text(
+                            'Days of the Week',
+                            style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.check,
+                            color: Colors.orange.shade900,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 4),
+                          const Text(
+                            'Specialization',
+                            style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
                           ),
                         ],
                       ),
                     ),
                   ],
                 ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
+                        softWrap: true,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        profile?.serviceSpecialization.join(', ') ?? 'Specialization',
+                        overflow: TextOverflow.visible,
+                        maxLines: 10,
+                        softWrap: true,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

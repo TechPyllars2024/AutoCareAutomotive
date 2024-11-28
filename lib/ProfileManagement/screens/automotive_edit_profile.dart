@@ -367,7 +367,14 @@ class _AutomotiveEditProfileScreenState
   Widget build(BuildContext context) {
     final double top = coverHeight - profileHeight / 2;
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Colors.orange.shade900,
+          ),
+        ),
+      );
     }
     return Scaffold(
       backgroundColor: Colors.grey.shade100,

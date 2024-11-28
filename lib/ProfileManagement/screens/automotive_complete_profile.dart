@@ -293,13 +293,6 @@ class _AutomotiveCompleteProfileScreenState
               numberOfBookingsPerHour: _numberOfBookingPerHour,
               remainingSlots: remainingSlots);
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Profile saved successfully'),
-              backgroundColor: Colors.green,
-            ),
-          );
-
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const Onboardingpage3()),

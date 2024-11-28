@@ -4,9 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../ProfileManagement/services/get_verified_services.dart';
 import '../models/services_model.dart';
 import '../services/image_service.dart';
 import '../services/service_management.dart';
+import '../widgets/service_status_alert_box.dart';
 
 class ServiceManagementScreen extends StatefulWidget {
   const ServiceManagementScreen({super.key, this.child});
@@ -26,6 +28,36 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
   String category = CategoryList.categories[0];
   bool _isLoading = false;
   String? servicePictureUrl;
+  bool _isVerified = false;
+  final GetVerifiedServices _getVerifiedServices = GetVerifiedServices();
+  bool _isVerificationStatusLoading = false;
+  String _senderId = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCurrentUser();
+    _checkUserVerificationStatus();
+  }
+
+  Future<void> _checkUserVerificationStatus() async {
+    if (user != null) {
+      String? status = await _getVerifiedServices.fetchStatus(user!.uid);
+      setState(() {
+        _isVerified = status == 'Verified';
+        _isVerificationStatusLoading = true;
+      });
+    }
+  }
+
+  Future<void> _fetchCurrentUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        _senderId = user.uid;
+      });
+    }
+  }
 
   void _addOrUpdateService(BuildContext context, {ServiceModel? service}) {
     final nameController = TextEditingController(text: service?.name);
@@ -390,6 +422,10 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isVerificationStatusLoading) {
+      return const Center(child: CircularProgressIndicator()); // Show loading indicator until verification status is checked
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
@@ -402,101 +438,109 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
         backgroundColor: Colors.grey.shade100,
         elevation: 0,
       ),
-      body: StreamBuilder<List<ServiceModel>>(
-        stream: _serviceManagement.fetchServices(user!.uid),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Column(
+        children: [
+         if (!_isVerified)
+            const ServiceStatusAlertBox(isVerified: false),
+          Expanded(
+            child: StreamBuilder<List<ServiceModel>>(
+              stream: _serviceManagement.fetchServices(user!.uid),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No services available'));
-          }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No services available'));
+                }
 
-          final services = snapshot.data!;
+                final services = snapshot.data!;
 
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 3 / 4,
-              ),
-              itemCount: services.length,
-              itemBuilder: (context, index) {
-                final service = services[index];
-                return GestureDetector(
-                  onTap: () => _showServiceOptions(context, service),
-                  child: Card(
-                    color: Colors.white,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 3 / 4,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(16.0),
-                              topRight: Radius.circular(16.0),
-                            ),
-                            child: Image.network(
-                              service.servicePicture,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.error,
-                                    size: 60, color: Colors.red);
-                              },
-                            ),
+                    itemCount: services.length,
+                    itemBuilder: (context, index) {
+                      final service = services[index];
+                      return GestureDetector(
+                        onTap: () => _showServiceOptions(context, service),
+                        child: Card(
+                          color: Colors.white,
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                service.name,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: Colors.grey[800],
+                              Expanded(
+                                flex: 2,
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(16.0),
+                                    topRight: Radius.circular(16.0),
+                                  ),
+                                  child: Image.network(
+                                    service.servicePicture,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return const Icon(Icons.error,
+                                          size: 60, color: Colors.red);
+                                    },
+                                  ),
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 4.0),
-                              Text(
-                                '${service.price.toStringAsFixed(2)} PHP',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      service.name,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                        color: Colors.grey[800],
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 4.0),
+                                    Text(
+                                      '${service.price.toStringAsFixed(2)} PHP',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                    Text(
+                                      service.description,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey[600],
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                              Text(
-                                service.description,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey[600],
-                                ),
-                              )
                             ],
                           ),
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                 );
               },
             ),
-          );
-        },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.orange.shade900,
