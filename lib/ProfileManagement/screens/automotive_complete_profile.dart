@@ -3,8 +3,10 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage3.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_pin_location.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:logger/logger.dart';
 import '../services/pin_location.dart';
 import '../widgets/button.dart';
@@ -163,7 +165,7 @@ class _AutomotiveCompleteProfileScreenState
       logger.e('Error loading marker: $e');
     } finally {
       setState(() {
-        _isLoading = false; // Hide loading indicator once done.
+        _isLoading = false;
       });
     }
   }
@@ -389,80 +391,102 @@ class _AutomotiveCompleteProfileScreenState
 
   // Inputs
   Widget buildInputs() => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Shop Name TextField with Label
-        const Text('Shop Name', style: TextStyle(fontSize: 16,
-            fontWeight: FontWeight.bold)),
-        TextField(
-          controller: _shopNameController,
-          decoration: InputDecoration(
-            hintText: 'Enter your shop name',
-            border: const OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.orange.shade900),
-            ),
-            contentPadding: const EdgeInsets.all(12),
-          ),
-        ),
-        const SizedBox(height: 10),
-
-        // Location TextField with Label
-        const Text('Location', style: TextStyle(fontSize: 16,
-            fontWeight: FontWeight.bold)),
-        TextField(
-          controller: _locationController,
-          decoration: InputDecoration(
-            hintText: 'Enter location',
-            border: const OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.orange.shade900),
-            ),
-            contentPadding: const EdgeInsets.all(12),
-          ),
-        ),
-        const SizedBox(height: 10),
-
-        // "Pin Your Location Here" label
-        const Padding(
-          padding: EdgeInsets.only(bottom: 8.0),
-          child: Text(
-            'Pin Your Location Here:',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ),
-
-        // Google Map for pinning location
-        _isLoading
-            ? const Center(
-          child: CircularProgressIndicator(), // Show loading until location is set
-        )
-            : (_initialLocation == null
-            ? const Center(child: Text('Location not available'))
-            : SizedBox(
-          height: 200, // Adjust the size for a better visual appearance
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            elevation: 4.0,
-            child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: _initialLocation ?? const LatLng(0.0, 0.0),
-                zoom: 18.0,
+        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Shop Name TextField with Label
+            const Text('Shop Name',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            FocusScope(
+              child: TextField(
+                controller: _shopNameController,
+                decoration: InputDecoration(
+                  hintText: 'Enter your shop name',
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.orange.shade900),
+                  ),
+                  contentPadding: const EdgeInsets.all(12),
+                ),
               ),
-              onMapCreated: _onMapCreated,
-              onTap: _onTap,
-              markers: Set.from(_markers),
             ),
-          ),
-        )),
-      ],
-    ),
-  );
+            const SizedBox(height: 10),
 
+            // Location TextField with Label
+            const Text('Location',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            FocusScope(
+              child: GooglePlaceAutoCompleteTextField(
+                textEditingController: _locationController,
+                googleAPIKey: dotenv.env['GOOGLE_MAPS_API_KEY']!,
+                inputDecoration: InputDecoration(
+                  hintText: 'Enter your location',
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.orange.shade900),
+                  ),
+                  contentPadding: const EdgeInsets.all(12),
+                ),
+                debounceTime: 400,
+                showError: false,
+                containerVerticalPadding: 2,
+                containerHorizontalPadding: 2,
+                boxDecoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                countries: const ['ph'],
+                isLatLngRequired: true,
+                itemClick: (prediction) {
+                  _locationController.text = prediction.description!;
+                },
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            // "Pin Your Location Here" label
+            const Padding(
+              padding: EdgeInsets.only(bottom: 8.0),
+              child: Text(
+                'Pin Your Location Here:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+
+            // Google Map for pinning location
+            _isLoading
+                ? const Center(
+                    child:
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                        ),
+                  )
+                : (_initialLocation == null
+                    ? const Center(child: Text('Location not available'))
+                    : SizedBox(
+                        height:
+                            200, // Adjust the size for a better visual appearance
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 4.0,
+                          child: GoogleMap(
+                            initialCameraPosition: CameraPosition(
+                              target:
+                                  _initialLocation ?? const LatLng(0.0, 0.0),
+                              zoom: 18.0,
+                            ),
+                            onMapCreated: _onMapCreated,
+                            onTap: _onTap,
+                            markers: Set.from(_markers),
+                          ),
+                        ),
+                      )),
+          ],
+        ),
+      );
 
   // Cover image
   Widget buildCoverImage() => Stack(
@@ -574,7 +598,10 @@ class _AutomotiveCompleteProfileScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text('Open', style: TextStyle(fontSize: 14),),
+                      const Text(
+                        'Open',
+                        style: TextStyle(fontSize: 14),
+                      ),
                       const SizedBox(height: 5),
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -601,7 +628,10 @@ class _AutomotiveCompleteProfileScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text('Close', style: TextStyle(fontSize: 14),),
+                      const Text(
+                        'Close',
+                        style: TextStyle(fontSize: 14),
+                      ),
                       const SizedBox(height: 5),
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -659,110 +689,114 @@ class _AutomotiveCompleteProfileScreenState
 
   // Days of the week selection
   Widget dayOfTheWeekSelection() => Padding(
-    padding: const EdgeInsets.all(16.0), // Increased padding for better spacing
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Days of the Week',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.black, // Slightly darker for better contrast
-          ),
-        ),
+        padding:
+            const EdgeInsets.all(16.0), // Increased padding for better spacing
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Days of the Week',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black, // Slightly darker for better contrast
+              ),
+            ),
 
-        // Improved hint text with a more descriptive placeholder
-        Text(
-          'Choose your preferred days of the week:',
-          style: TextStyle(
-            color: Colors.grey[700], // Light gray for description
-            fontSize: 12,
-          ),
-        ),
+            // Improved hint text with a more descriptive placeholder
+            Text(
+              'Choose your preferred days of the week:',
+              style: TextStyle(
+                color: Colors.grey[700], // Light gray for description
+                fontSize: 12,
+              ),
+            ),
 
-        // Day of the Week Selector
-        DayOfTheWeek(
-          options: const [
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-            'Sunday'
+            // Day of the Week Selector
+            DayOfTheWeek(
+              options: const [
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday',
+                'Sunday'
+              ],
+              hintText: 'Select Days',
+              controller: daysOfTheWeekController,
+              initialSelectedOptions: const [],
+              onSelectionChanged: (selectedOptions) {
+                // Optionally handle the selection change here
+              },
+            ),
           ],
-          hintText: 'Select Days',
-          controller: daysOfTheWeekController,
-          initialSelectedOptions: const [],
-          onSelectionChanged: (selectedOptions) {
-            // Optionally handle the selection change here
-          },
         ),
-      ],
-    ),
-  );
-
+      );
 
   // Number of bookings per hour selection
   Widget numberOfBookingsSelection() => Padding(
-    padding: const EdgeInsets.all(16.0), // Increased padding for better spacing
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Number of Bookings per Hour',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Row(
+        padding:
+            const EdgeInsets.all(16.0), // Increased padding for better spacing
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Slider(
-                value: _numberOfBookingPerHour.toDouble(),
-                min: 1,
-                max: 10,
-                divisions: 9, // For 1 to 10
-                label: _numberOfBookingPerHour.toString(),
-                activeColor: Colors.orange.shade900, // Slider color when active
-                inactiveColor: Colors.grey.shade300, // Slider color when inactive
-                onChanged: (double value) {
-                  setState(() {
-                    _numberOfBookingPerHour = value.toInt();
-                  });
-                },
-              ),
-            ),
-            const SizedBox(width: 8), // Space between slider and number text
-            Text(
-              '$_numberOfBookingPerHour',
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 5),
-        Row(
-          children: [
-            const Icon(Icons.info_outline, size: 14, color: Colors.grey), // Info icon
-            const SizedBox(width: 5),
-            Text(
-              'Adjust the number of bookings allowed per hour.',
+            const Text(
+              'Number of Bookings per Hour',
               style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
+            ),
+            const SizedBox(height: 5),
+            Row(
+              children: [
+                Expanded(
+                  child: Slider(
+                    value: _numberOfBookingPerHour.toDouble(),
+                    min: 1,
+                    max: 10,
+                    divisions: 9, // For 1 to 10
+                    label: _numberOfBookingPerHour.toString(),
+                    activeColor:
+                        Colors.orange.shade900, // Slider color when active
+                    inactiveColor:
+                        Colors.grey.shade300, // Slider color when inactive
+                    onChanged: (double value) {
+                      setState(() {
+                        _numberOfBookingPerHour = value.toInt();
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(
+                    width: 8), // Space between slider and number text
+                Text(
+                  '$_numberOfBookingPerHour',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              children: [
+                const Icon(Icons.info_outline,
+                    size: 14, color: Colors.grey), // Info icon
+                const SizedBox(width: 5),
+                Text(
+                  'Adjust the number of bookings allowed per hour.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-      ],
-    ),
-  );
-
+      );
 }
