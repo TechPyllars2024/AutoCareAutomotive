@@ -43,11 +43,9 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
 
     for (var booking in bookings) {
       try {
-
         DateTime bookingDate =
             DateFormat('dd/MM/yyyy').parse(booking.bookingDate);
-        DateTime normalizedDate =
-            _normalizeDate(bookingDate);
+        DateTime normalizedDate = _normalizeDate(bookingDate);
 
         if (groupedBookings[normalizedDate] == null) {
           groupedBookings[normalizedDate] = [booking];
@@ -70,7 +68,6 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
 
   Future<void> markBookingAsDone(BookingModel booking) async {
     try {
-
       await _bookingService.updateBookingStatus(booking.bookingId!, 'done');
 
       logger.i('Booking marked as done: ${booking.bookingId}');
@@ -78,7 +75,6 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
       setState(() {
         booking.status = 'done';
       });
-
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -89,11 +85,9 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
     } catch (error) {
       logger.e('Failed to mark booking as done: ${booking.bookingId}, $error');
 
-
       Utils.showSnackBar('Failed to update booking status. Try again.');
     }
   }
-
 
   Future<void> _handleDecline(BookingModel booking) async {
     setState(() {
@@ -104,7 +98,6 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
     try {
       await _bookingService.updateBookingStatus(booking.bookingId!, 'declined');
       logger.i('Booking declined: ${booking.bookingId}');
-
 
       setState(() {
         booking.status = 'declined';
@@ -127,7 +120,6 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
     }
   }
 
-
   Future<void> _handleAccept(BookingModel booking) async {
     setState(() {
       isLoading = true;
@@ -139,14 +131,11 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
           booking.bookingId!, 'confirmed');
       logger.i('Booking accepted: ${booking.bookingId}');
 
-
       setState(() {
         booking.status = 'confirmed';
       });
 
-
       Navigator.pop(context);
-
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -208,38 +197,29 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                           ),
                           const SizedBox(height: 8),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               const Icon(
-                                Icons
-                                    .php,
+                                Icons.php,
                                 color: Colors.blue,
                                 size: 20,
                               ),
-                              const SizedBox(
-                                  width:
-                                      5),
+                              const SizedBox(width: 5),
                               Text(
-                                booking.totalPrice
-                                    .toString(),
+                                booking.totalPrice.toString(),
                                 style: const TextStyle(fontSize: 14),
                               ),
                             ],
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               const Icon(
-                                Icons
-                                    .person,
+                                Icons.person,
                                 color: Colors.blue,
                                 size: 20,
                               ),
-                              const SizedBox(
-                                  width:
-                                      5),
+                              const SizedBox(width: 5),
                               Text(
                                 booking.fullName,
                                 style: const TextStyle(fontSize: 14),
@@ -247,21 +227,16 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                             ],
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               const Icon(
-                                Icons
-                                    .phone,
+                                Icons.phone,
                                 color: Colors.blue,
                                 size: 20,
                               ),
-                              const SizedBox(
-                                  width:
-                                      5),
+                              const SizedBox(width: 5),
                               Text(
-                                booking
-                                    .phoneNumber!,
+                                booking.phoneNumber!,
                                 style: const TextStyle(fontSize: 14),
                               ),
                             ],
@@ -282,73 +257,60 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                             ],
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               const Icon(
-                                Icons
-                                    .local_gas_station,
+                                Icons.local_gas_station,
                                 color: Colors.blue,
                                 size: 20,
                               ),
-                              const SizedBox(
-                                  width:
-                                      5),
+                              const SizedBox(width: 5),
                               Text(
                                 booking.fuelType,
-                                style: const TextStyle(
-                                    fontSize: 14),
+                                style: const TextStyle(fontSize: 14),
                               ),
                             ],
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               const Icon(
-                                Icons
-                                    .settings,
+                                Icons.settings,
                                 color: Colors.blue,
                                 size: 20,
                               ),
-                              const SizedBox(
-                                  width:
-                                      5),
+                              const SizedBox(width: 5),
                               Text(
-                                booking
-                                    .transmission,
-                                style: const TextStyle(
-                                    fontSize: 14),
+                                booking.transmission,
+                                style: const TextStyle(fontSize: 14),
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
-
                           if (isLoading == true &&
                               currentBookingId == booking.bookingId)
-                            const Center(child: CircularProgressIndicator())
+                            const Center(
+                                child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.orange)))
                           else if (booking.status != 'pending')
                             RichText(
                               text: TextSpan(
                                 children: [
                                   const TextSpan(
-                                    text:
-                                        'Status: ',
+                                    text: 'Status: ',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors
-                                          .black,
+                                      color: Colors.black,
                                     ),
                                   ),
                                   TextSpan(
-                                    text:
-                                        '${booking.status?.toUpperCase()}',
+                                    text: '${booking.status?.toUpperCase()}',
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
-                                      color:
-                                          Colors.orange,
+                                      color: Colors.orange,
                                     ),
                                   ),
                                 ],
@@ -387,15 +349,13 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
         });
   }
 
-
   Widget _buildEventMarker(List<BookingModel> bookings) {
     return Container(
       width: 10,
       height: 10,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.orange
-            .shade900,
+        color: Colors.orange.shade900,
       ),
     );
   }
@@ -412,7 +372,6 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Container(
             width: double.infinity,
             color: color,
@@ -425,8 +384,6 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
               ),
             ),
           ),
-
-
           bookings.isEmpty
               ? Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -440,14 +397,14 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                 )
               : ListView.builder(
                   shrinkWrap: true,
-                  physics:
-                      const NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: bookings.length,
                   itemBuilder: (context, index) {
                     BookingModel booking = bookings[index];
 
                     return Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 12.0),
                       elevation: 2,
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
@@ -456,25 +413,27 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                           children: [
                             Text(
                               booking.selectedService.join(', ').toUpperCase(),
-                              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 16),
                             ),
                             const SizedBox(height: 10),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-
                                       Row(
                                         children: [
-                                          const Icon(Icons.calendar_today, color: Colors.blue, size: 20),
+                                          const Icon(Icons.calendar_today,
+                                              color: Colors.blue, size: 20),
                                           const SizedBox(width: 5),
                                           Text(
                                             '${booking.bookingDate}, ${booking.bookingTime}',
-                                            style: const TextStyle(fontSize: 14),
+                                            style:
+                                                const TextStyle(fontSize: 14),
                                           ),
                                         ],
                                       ),
@@ -482,11 +441,13 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                                       // Total Price
                                       Row(
                                         children: [
-                                          const Icon(Icons.attach_money, color: Colors.blue, size: 20),
+                                          const Icon(Icons.attach_money,
+                                              color: Colors.blue, size: 20),
                                           const SizedBox(width: 5),
                                           Text(
                                             booking.totalPrice.toString(),
-                                            style: const TextStyle(fontSize: 14),
+                                            style:
+                                                const TextStyle(fontSize: 14),
                                           ),
                                         ],
                                       ),
@@ -494,11 +455,13 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                                       // Full Name
                                       Row(
                                         children: [
-                                          const Icon(Icons.person, color: Colors.blue, size: 20),
+                                          const Icon(Icons.person,
+                                              color: Colors.blue, size: 20),
                                           const SizedBox(width: 5),
                                           Text(
                                             booking.fullName,
-                                            style: const TextStyle(fontSize: 14),
+                                            style:
+                                                const TextStyle(fontSize: 14),
                                           ),
                                         ],
                                       ),
@@ -516,7 +479,8 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                                               ),
                                             ),
                                             TextSpan(
-                                              text: '${booking.status?.toUpperCase()}',
+                                              text:
+                                                  '${booking.status?.toUpperCase()}',
                                               style: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
@@ -529,7 +493,6 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                                     ],
                                   ),
                                 ),
-
                                 if (isMarkAsDoneEnabled)
                                   SizedBox(
                                     width: 100,
@@ -540,7 +503,8 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                                       style: ElevatedButton.styleFrom(
                                         foregroundColor: Colors.white,
                                         backgroundColor: Colors.green,
-                                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12.0),
                                       ),
                                       child: const Text(
                                         'Done?',
@@ -601,10 +565,8 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
         ),
         body: TabBarView(
           children: [
-
             Column(
               children: [
-
                 const SizedBox(height: 45),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -617,20 +579,16 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         isSameDay(_selectedDate, day),
                     onDaySelected: (selectedDay, focusedDay) {
                       setState(() {
-                        _selectedDate = _normalizeDate(
-                            selectedDay);
+                        _selectedDate = _normalizeDate(selectedDay);
                         _selectedBookings =
-                            _events[_normalizeDate(selectedDay)] ??
-                                [];
+                            _events[_normalizeDate(selectedDay)] ?? [];
                         if (_selectedBookings.isNotEmpty) {
-                          _showBookingDetailsModal(
-                              _selectedBookings);
+                          _showBookingDetailsModal(_selectedBookings);
                         }
                       });
                     },
                     eventLoader: (day) {
-                      return _events[_normalizeDate(day)] ??
-                          [];
+                      return _events[_normalizeDate(day)] ?? [];
                     },
                     calendarBuilders: CalendarBuilders(
                       markerBuilder: (context, date, events) {
@@ -644,17 +602,14 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         return null;
                       },
                     ),
-                    headerStyle:  HeaderStyle(
-                      titleCentered:
-                          true,
+                    headerStyle: HeaderStyle(
+                      titleCentered: true,
                       titleTextStyle: const TextStyle(
-                        fontSize:
-                            25,
+                        fontSize: 25,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
-                      formatButtonVisible:
-                          false,
+                      formatButtonVisible: false,
                       leftChevronIcon: const Icon(
                         Icons.chevron_left,
                         color: Colors.white,
@@ -666,10 +621,9 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         size: 35,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors
-                            .orange.shade900,
-                        borderRadius:
-                            const BorderRadius.vertical(top: Radius.circular(16)),
+                        color: Colors.orange.shade900,
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(16)),
                       ),
                     ),
                     calendarStyle: CalendarStyle(
@@ -697,13 +651,11 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                       ),
                       defaultDecoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(
-                            color: Colors.grey.shade300,
-                            width: 1),
+                        border:
+                            Border.all(color: Colors.grey.shade300, width: 1),
                       ),
                       weekendDecoration: BoxDecoration(
-                        color:
-                            Colors.grey.shade200,
+                        color: Colors.grey.shade200,
                         shape: BoxShape.circle,
                       ),
                       markerDecoration: BoxDecoration(
@@ -718,11 +670,9 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         ],
                       ),
                       outsideDecoration: const BoxDecoration(
-                        color:
-                            Colors.transparent,
+                        color: Colors.transparent,
                       ),
-                      cellMargin: const EdgeInsets.all(
-                          6),
+                      cellMargin: const EdgeInsets.all(6),
                       todayTextStyle: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -734,8 +684,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         color: Colors.white,
                       ),
                       weekendTextStyle: TextStyle(
-                        color: Colors
-                            .red.shade300,
+                        color: Colors.red.shade300,
                         fontSize: 16,
                       ),
                       defaultTextStyle: const TextStyle(
@@ -747,13 +696,11 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                 ),
               ],
             ),
-
             SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   _buildBookingSection(
                     status: 'Pending',
                     bookings: _selectedBookings
@@ -763,8 +710,6 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     color: Colors.orange.shade100,
                   ),
                   const SizedBox(height: 16),
-
-
                   _buildBookingSection(
                     status: 'Accepted',
                     bookings: _selectedBookings
@@ -775,8 +720,6 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     isMarkAsDoneEnabled: true,
                   ),
                   const SizedBox(height: 16),
-
-
                   _buildBookingSection(
                     status: 'Done',
                     bookings: _selectedBookings
@@ -786,8 +729,6 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     color: Colors.green.shade100,
                   ),
                   const SizedBox(height: 16),
-
-
                   _buildBookingSection(
                     status: 'Declined',
                     bookings: _selectedBookings
