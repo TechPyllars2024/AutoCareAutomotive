@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'Authentication/screens/login.dart';
 import 'Authentication/screens/verifyEmail.dart';
 
@@ -10,7 +11,7 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  await dotenv.load();
   FirebaseFirestore.instance.settings = const Settings(
       persistenceEnabled: true
   );
