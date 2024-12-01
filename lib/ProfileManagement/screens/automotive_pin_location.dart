@@ -126,7 +126,6 @@ class _MapPageState extends State<MapPage> {
           title: const Text("Confirm Marker Placement", style: TextStyle(fontSize: 18),),
           content: Text(
             "Do you want to add a marker at this location?\n\n"
-            "Name of the place: $nameOfThePlace\n\n"
             "Latitude: ${position!.latitude}\n"
             "Longitude: ${position.longitude}",
           ),
