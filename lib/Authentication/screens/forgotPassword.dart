@@ -116,7 +116,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
               ),
               const SizedBox(height: 20),
               isLoading
-                  ? const CircularProgressIndicator()
+                  ? const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange))
                   : MyButtons(
                       onTap: resetPassword,
                       text: "Reset Password",
