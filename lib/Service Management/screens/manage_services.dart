@@ -281,12 +281,12 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                 ),
                 TextButton(
                   child: _isLoading
-                      ? SizedBox(
+                      ? const SizedBox(
                           height: 18,
                           width: 18,
                           child: CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.orange.shade900),
+                                Colors.orange),
                             strokeWidth: 3,
                           ),
                         ) // Show loading indicator
@@ -423,7 +423,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
   @override
   Widget build(BuildContext context) {
     if (!_isVerificationStatusLoading) {
-      return const Center(child: CircularProgressIndicator()); // Show loading indicator until verification status is checked
+      return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)));
     }
 
     return Scaffold(
@@ -447,7 +447,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
               stream: _serviceManagement.fetchServices(user!.uid),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)));
                 }
 
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
