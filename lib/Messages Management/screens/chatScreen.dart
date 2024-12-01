@@ -168,7 +168,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 stream: _chatService.getMessages(widget.conversationId),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                    ));
                   }
 
                   if (snapshot.hasError) {
@@ -234,7 +236,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: Container(
                           color: Colors.black.withOpacity(0.5),
                           child: const Center(
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                            ),
                           ),
                         ),
                       ),
