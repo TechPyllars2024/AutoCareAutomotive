@@ -67,7 +67,7 @@ class _VerificationStatusScreenState extends State<VerificationStatusScreen> {
       case 'Rejected':
         return _buildRejectedScreen();
       default:
-        return const Center(child: CircularProgressIndicator());
+        return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)));
     }
   }
 

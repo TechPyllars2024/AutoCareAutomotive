@@ -51,12 +51,12 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
         ),
       ),
       body: _currentUserId.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)))
           : StreamBuilder<List<StartConversationModel>>(
         stream: _chatService.getUserConversations(_currentUserId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)));
           }
           if (snapshot.hasError) {
             return const Center(child: Text('Error loading messages.'));
@@ -78,7 +78,7 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
                 future: _fetchCarOwnerDetails(conversation.senderId),
                 builder: (context, carOwnerSnapshot) {
                   if (carOwnerSnapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)));
                   }
                   if (carOwnerSnapshot.hasError) {
                     return const Center(child: Text('Error loading car owner details.'));

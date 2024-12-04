@@ -341,7 +341,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                             width: 24,
                             height: 24,
                             child: CircularProgressIndicator(
-                              color: Colors.white,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
                             ),
                           )
                               : const Text(

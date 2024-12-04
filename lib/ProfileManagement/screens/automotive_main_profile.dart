@@ -2,7 +2,6 @@ import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_ed
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../../Authentication/Widgets/snackBar.dart';
 import '../../Authentication/screens/login.dart';
 import '../../Authentication/services/authentication_signout.dart';
@@ -27,7 +26,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
   final user = FirebaseAuth.instance.currentUser;
   bool isExpanded = false;
   bool isVerified = false;
-
+  bool isLoading = true;
   final double profileHeight = 100;
 
   @override
@@ -41,6 +40,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
     final fetchedProfile = await _profileService.fetchProfileData();
     setState(() {
       profile = fetchedProfile;
+      isLoading = false;
     });
   }
 
@@ -108,7 +108,13 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: isLoading
+          ? const Center(
+        child: CircularProgressIndicator(
+          color: Colors.orange,
+        ),
+      )
+          :SingleChildScrollView(
         child: Column(
           children: [
             Stack(
@@ -303,17 +309,21 @@ class ProfileDetailsWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.location_on,
-                      color: Colors.orange.shade900,
-                      size: 20,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Icon(
+                        Icons.location_on,
+                        color: Colors.orange.shade900,
+                        size: 20,
+                      ),
                     ),
+                    const SizedBox(width: 8),
                     Flexible(
                       child: Text(
                         profile?.location ?? 'Location',
-                        textAlign: TextAlign.center,
+                        textAlign: TextAlign.left,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                         softWrap: true,
@@ -324,19 +334,26 @@ class ProfileDetailsWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.schedule,
-                      color: Colors.orange.shade900,
-                      size: 20,
+                    Padding(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: Icon(
+                          Icons.schedule,
+                          color: Colors.orange.shade900,
+                          size: 20,
+                        ),
                     ),
                     const SizedBox(height: 5),
-                    Text(
-                      profile?.operationTime ?? 'Operation Time',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                        child: Text(
+                          profile?.operationTime ?? 'Operation Time',
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(fontSize: 16),
+                          softWrap: true,
+                        ),
+                    )
                   ],
                 ),
               ],

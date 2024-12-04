@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:autocare_automotiveshops/ProfileManagement/services/profile_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:logger/logger.dart';
 import '../services/pin_location.dart';
 import '../widgets/button.dart';
@@ -367,11 +369,11 @@ class _AutomotiveEditProfileScreenState
   Widget build(BuildContext context) {
     final double top = coverHeight - profileHeight / 2;
     if (isLoading) {
-      return Scaffold(
+      return const Scaffold(
         backgroundColor: Colors.white,
         body: Center(
           child: CircularProgressIndicator(
-            color: Colors.orange.shade900,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
           ),
         ),
       );
@@ -433,7 +435,6 @@ class _AutomotiveEditProfileScreenState
   }
 
   // Input fields for the profile
-  // Inputs
   Widget buildInputs() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: Column(
@@ -442,15 +443,17 @@ class _AutomotiveEditProfileScreenState
             // Shop Name TextField with Label
             const Text('Shop Name',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            TextField(
-              controller: _shopNameController,
-              decoration: InputDecoration(
-                hintText: 'Enter your shop name',
-                border: const OutlineInputBorder(),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.orange.shade900),
+            FocusScope(
+              child: TextField(
+                controller: _shopNameController,
+                decoration: InputDecoration(
+                  hintText: 'Enter your shop name',
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.orange.shade900),
+                  ),
+                  contentPadding: const EdgeInsets.all(12),
                 ),
-                contentPadding: const EdgeInsets.all(12),
               ),
             ),
             const SizedBox(height: 10),
@@ -458,16 +461,30 @@ class _AutomotiveEditProfileScreenState
             // Location TextField with Label
             const Text('Location',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            TextField(
-              controller: _locationController,
-              decoration: InputDecoration(
-                hintText: 'Enter location',
+            GooglePlaceAutoCompleteTextField(
+              textEditingController: _locationController,
+              googleAPIKey: dotenv.env['GOOGLE_MAPS_API_KEY']!,
+              inputDecoration: InputDecoration(
+                hintText: 'Enter your location',
                 border: const OutlineInputBorder(),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.orange.shade900),
                 ),
                 contentPadding: const EdgeInsets.all(12),
               ),
+              debounceTime: 400,
+              showError: false,
+              containerVerticalPadding: 2,
+              containerHorizontalPadding: 2,
+              boxDecoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              countries: const ['ph'],
+              isLatLngRequired: true,
+              itemClick: (prediction) {
+                _locationController.text = prediction.description!;
+              },
             ),
             const SizedBox(height: 10),
 
@@ -484,7 +501,9 @@ class _AutomotiveEditProfileScreenState
             isLoading
                 ? const Center(
                     child:
-                        CircularProgressIndicator(), // Show loading until location is set
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                        ), // Show loading until location is set
                   )
                 : (_initialLocation == null
                     ? const Center(child: Text('Location not available'))
@@ -636,7 +655,8 @@ class _AutomotiveEditProfileScreenState
                           border: Border.all(color: Colors.grey),
                         ),
                         child: TimePickerDisplay(
-                          initialTime: _openingTime ?? const TimeOfDay(hour: 9, minute: 0),
+                          initialTime: _openingTime ??
+                              const TimeOfDay(hour: 9, minute: 0),
                           onTimeSelected: (selectedTime) {
                             setState(() {
                               _openingTime = selectedTime;
@@ -666,7 +686,8 @@ class _AutomotiveEditProfileScreenState
                           border: Border.all(color: Colors.grey),
                         ),
                         child: TimePickerDisplay(
-                          initialTime: _closingTime ?? const TimeOfDay(hour: 17, minute: 0),
+                          initialTime: _closingTime ??
+                              const TimeOfDay(hour: 17, minute: 0),
                           onTimeSelected: (selectedTime) {
                             setState(() {
                               _closingTime = selectedTime;
@@ -750,8 +771,7 @@ class _AutomotiveEditProfileScreenState
               hintText: 'Select Days',
               controller: daysOfTheWeekController,
               initialSelectedOptions: const [],
-              onSelectionChanged: (selectedOptions) {
-              },
+              onSelectionChanged: (selectedOptions) {},
             ),
           ],
         ),

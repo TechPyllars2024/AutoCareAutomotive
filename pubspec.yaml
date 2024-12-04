@@ -61,6 +61,8 @@ dependencies:
   geolocator: ^13.0.1
   flutter_native_splash: ^2.4.1
   firebase_messaging: ^15.1.4
+  google_places_flutter: ^2.0.9
+  flutter_dotenv: ^5.2.1
 
 
 
@@ -97,6 +99,7 @@ flutter:
     - lib/Authentication/assets/images/
     - lib/Authentication/assets/images/icons/
     - lib/ProfileManagement/assets/
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
