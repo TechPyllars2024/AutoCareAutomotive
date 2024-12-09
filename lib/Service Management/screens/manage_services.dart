@@ -449,13 +449,10 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)));
                 }
-
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(child: Text('No services available'));
                 }
-
                 final services = snapshot.data!;
-
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GridView.builder(
@@ -486,14 +483,27 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                                     topLeft: Radius.circular(16.0),
                                     topRight: Radius.circular(16.0),
                                   ),
-                                  child: Image.network(
-                                    service.servicePicture,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return const Icon(Icons.error,
-                                          size: 60, color: Colors.red);
-                                    },
+                                  child: Stack(
+                                    children: [
+                                      Image.network(
+                                        service.servicePicture,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return const Icon(Icons.error, size: 60, color: Colors.red);
+                                        },
+                                        loadingBuilder: (context, child, loadingProgress) {
+                                          if (loadingProgress == null) {
+                                            return child;
+                                          }
+                                          return const Center(
+                                            child: CircularProgressIndicator(
+                                              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),

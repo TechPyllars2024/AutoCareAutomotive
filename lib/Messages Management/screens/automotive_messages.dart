@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-
 import '../services/chat_service.dart';
 import '../models/startConversation_model.dart';
 import 'chatScreen.dart';
@@ -51,21 +50,36 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
         ),
       ),
       body: _currentUserId.isEmpty
-          ? const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)))
+          ? const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+        ),
+      )
           : StreamBuilder<List<StartConversationModel>>(
         stream: _chatService.getUserConversations(_currentUserId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)));
+            return const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+              ),
+            );
           }
           if (snapshot.hasError) {
-            return const Center(child: Text('Error loading messages.'));
+            return const Center(
+              child: Text(
+                'Error loading messages.',
+                style: TextStyle(color: Colors.red),
+              ),
+            );
           }
           final conversations = snapshot.data!
               .where((conversation) => conversation.lastMessage.isNotEmpty)
               .toList();
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No conversations yet.'));
+          if (conversations.isEmpty) {
+            return const Center(
+              child: Text('No conversations yet.'),
+            );
           }
           conversations.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
           return ListView.builder(
@@ -78,10 +92,19 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
                 future: _fetchCarOwnerDetails(conversation.senderId),
                 builder: (context, carOwnerSnapshot) {
                   if (carOwnerSnapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)));
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                      ),
+                    );
                   }
                   if (carOwnerSnapshot.hasError) {
-                    return const Center(child: Text('Error loading car owner details.'));
+                    return Center(
+                      child: Text(
+                        'Error loading car owner details.',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    );
                   }
                   final carOwnerDetails = carOwnerSnapshot.data!;
                   final carOwnerFirstName = carOwnerDetails['firstName'] ?? '';

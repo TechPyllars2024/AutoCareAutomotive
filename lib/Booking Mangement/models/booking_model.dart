@@ -12,7 +12,7 @@ class BookingModel {
   String fuelType;
   String color;
   String transmission;
-  DateTime createdAt; // Change to DateTime for easier handling
+  DateTime createdAt;
   String bookingDate;
   String? status;
   String? phoneNumber;
@@ -20,6 +20,8 @@ class BookingModel {
   double totalPrice;
   String? shopName;
   String? shopAddress;
+  double? latitude;
+  double? longitude;
 
   BookingModel({
     required this.carOwnerUid,
@@ -39,7 +41,9 @@ class BookingModel {
     required this.fullName,
     required this.totalPrice,
     required this.shopAddress,
-    required this.shopName
+    required this.shopName,
+    required this.latitude,
+    required this.longitude
   });
 
   // Create a BookingModel from a map
@@ -70,7 +74,10 @@ class BookingModel {
       totalPrice: (data['totalPrice'] ?? 0).toDouble(),
       fullName: data['fullName'] ?? '',
       shopName: data['shopName'] ?? '',
-      shopAddress: data['shopAddress']
+      shopAddress: data['shopAddress'],
+      latitude: data['latitude'],
+      longitude: data['longitude']
+
     );
   }
 
@@ -94,7 +101,9 @@ class BookingModel {
       'totalPrice': totalPrice,
       'fullName': fullName,
       'shopName': shopName,
-      'shopAddress': shopAddress
+      'shopAddress': shopAddress,
+      'latitude': latitude,
+      'longitude': longitude
     };
   }
   @override
