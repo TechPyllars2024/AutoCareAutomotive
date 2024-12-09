@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
-
 import '../models/booking_model.dart';
 import '../services/booking_services.dart';
 import '../widgets/bookingButton.dart';
+import 'mapView.dart';
 
 class AutomotiveBookingScreen extends StatefulWidget {
   const AutomotiveBookingScreen({super.key, this.child});
@@ -102,6 +102,8 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
       setState(() {
         booking.status = 'declined';
       });
+
+      Navigator.pop(context);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -286,7 +288,77 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const SizedBox(width: 5),
+                              ElevatedButton.icon(
+                                onPressed: booking.latitude != null &&
+                                        booking.longitude != null
+                                    ? () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => const Center(
+                                            child: CircularProgressIndicator(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      Colors.orange),
+                                            ),
+                                          ),
+                                        );
+
+                                        Future.delayed(
+                                            const Duration(milliseconds: 500),
+                                            () {
+                                          Navigator.pop(context);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MapViewScreen(
+                                                latitude: booking.latitude!,
+                                                longitude: booking.longitude!,
+                                              ),
+                                            ),
+                                          );
+                                        });
+                                      }
+                                    : null,
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 6, horizontal: 10),
+                                  backgroundColor: Colors.blue,
+                                  foregroundColor: Colors.white,
+                                  minimumSize: const Size(40, 30),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  elevation: 2,
+                                ),
+                                icon: const Icon(Icons.location_pin,
+                                    size: 16), // Smaller icon size
+                                label: const Text(
+                                  'View Location',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight:
+                                          FontWeight.w500), // Smaller font size
+                                ),
+                              ),
+                              // Add a fallback SnackBar outside of the button logic
+                              if (booking.latitude == null ||
+                                  booking.longitude == null)
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8),
+                                  child: Text(
+                                    'Location data is not available for this booking.',
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 8),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
                           if (isLoading == true &&
                               currentBookingId == booking.bookingId)
                             const Center(
@@ -322,7 +394,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                               children: [
                                 BookingButton(
                                   text: 'Decline',
-                                  color: Colors.grey,
+                                  color: Colors.red,
                                   padding: 5.0,
                                   onTap: () async {
                                     await _handleDecline(booking);
@@ -372,26 +444,37 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Status Header
           Container(
             width: double.infinity,
-            color: color,
-            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            padding: const EdgeInsets.all(12.0),
             child: Text(
               status,
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
           ),
+          const SizedBox(height: 10),
+          // Booking List or Empty Message
           bookings.isEmpty
-              ? Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    emptyMessage,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey.shade600,
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      emptyMessage,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey.shade600,
+                        fontStyle: FontStyle.italic,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 )
@@ -401,22 +484,29 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                   itemCount: bookings.length,
                   itemBuilder: (context, index) {
                     BookingModel booking = bookings[index];
-
                     return Card(
                       margin: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 12.0),
-                      elevation: 2,
+                          vertical: 8.0, horizontal: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      elevation: 3,
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Booking Title
                             Text(
                               booking.selectedService.join(', ').toUpperCase(),
                               style: const TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 16),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.black87,
+                              ),
                             ),
-                            const SizedBox(height: 10),
+                            const Divider(),
+                            // Booking Details
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -425,91 +515,60 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.calendar_today,
-                                              color: Colors.blue, size: 20),
-                                          const SizedBox(width: 5),
-                                          Text(
+                                      _buildDetailRow(
+                                        icon: Icons.calendar_today,
+                                        text:
                                             '${booking.bookingDate}, ${booking.bookingTime}',
-                                            style:
-                                                const TextStyle(fontSize: 14),
-                                          ),
-                                        ],
                                       ),
-                                      const SizedBox(height: 5),
-                                      // Total Price
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.attach_money,
-                                              color: Colors.blue, size: 20),
-                                          const SizedBox(width: 5),
-                                          Text(
-                                            booking.totalPrice.toString(),
-                                            style:
-                                                const TextStyle(fontSize: 14),
-                                          ),
-                                        ],
+                                      const SizedBox(height: 8),
+                                      _buildDetailRow(
+                                        icon: Icons.attach_money,
+                                        text: booking.totalPrice.toString(),
                                       ),
-                                      const SizedBox(height: 5),
-                                      // Full Name
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.person,
-                                              color: Colors.blue, size: 20),
-                                          const SizedBox(width: 5),
-                                          Text(
-                                            booking.fullName,
-                                            style:
-                                                const TextStyle(fontSize: 14),
-                                          ),
-                                        ],
+                                      const SizedBox(height: 8),
+                                      _buildDetailRow(
+                                        icon: Icons.person,
+                                        text: booking.fullName,
                                       ),
-                                      const SizedBox(height: 5),
+                                      const SizedBox(height: 8),
                                       // Status
-                                      RichText(
-                                        text: TextSpan(
-                                          children: [
-                                            const TextSpan(
-                                              text: 'Status: ',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                              ),
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.info,
+                                              color: Colors.orange, size: 20),
+                                          const SizedBox(width: 5),
+                                          Text(
+                                            booking.status?.toUpperCase() ?? '',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.orange,
                                             ),
-                                            TextSpan(
-                                              text:
-                                                  '${booking.status?.toUpperCase()}',
-                                              style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.orange,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
+                                // Action Button
                                 if (isMarkAsDoneEnabled)
-                                  SizedBox(
-                                    width: 100,
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        await markBookingAsDone(booking);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        foregroundColor: Colors.white,
-                                        backgroundColor: Colors.green,
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 12.0),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      await markBookingAsDone(booking);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0, horizontal: 12.0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
                                       ),
-                                      child: const Text(
-                                        'Done?',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
+                                    ),
+                                    child: const Text(
+                                      'Mark Done',
+                                      style: TextStyle(fontSize: 14),
                                     ),
                                   ),
                               ],
@@ -522,6 +581,23 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                 ),
         ],
       ),
+    );
+  }
+
+// Helper Widget for Detail Rows
+  Widget _buildDetailRow({required IconData icon, required String text}) {
+    return Row(
+      children: [
+        Icon(icon, color: Colors.blue, size: 20),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(fontSize: 14, color: Colors.black87),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 
@@ -567,9 +643,20 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
           children: [
             Column(
               children: [
-                const SizedBox(height: 45),
-                Padding(
+                const SizedBox(height: 60),
+                Container(
                   padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        blurRadius: 6,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
                   child: TableCalendar(
                     firstDay: DateTime.utc(2020, 1, 1),
                     lastDay: DateTime.utc(2030, 12, 31),
@@ -613,12 +700,12 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                       leftChevronIcon: const Icon(
                         Icons.chevron_left,
                         color: Colors.white,
-                        size: 35,
+                        size: 30,
                       ),
                       rightChevronIcon: const Icon(
                         Icons.chevron_right,
                         color: Colors.white,
-                        size: 35,
+                        size: 30,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.orange.shade900,
@@ -672,28 +759,28 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                       outsideDecoration: const BoxDecoration(
                         color: Colors.transparent,
                       ),
-                      cellMargin: const EdgeInsets.all(6),
+                      cellMargin: const EdgeInsets.all(4),
                       todayTextStyle: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                       selectedTextStyle: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                       weekendTextStyle: TextStyle(
                         color: Colors.red.shade300,
-                        fontSize: 16,
+                        fontSize: 14,
                       ),
                       defaultTextStyle: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         color: Colors.black,
                       ),
                     ),
                   ),
-                ),
+                )
               ],
             ),
             SingleChildScrollView(
