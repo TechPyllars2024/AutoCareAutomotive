@@ -124,7 +124,7 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontWeight: isRead ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: isRead ? FontWeight.normal : FontWeight.normal,
                       ),
                     ),
                     trailing: Text(
