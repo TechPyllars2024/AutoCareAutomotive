@@ -104,13 +104,13 @@ class ServicesCarousel extends StatelessWidget {
                                       service.name,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 16,
+                                        fontSize: 14,
                                       ),
                                     ),
                                     Text(
                                       'Starts at Php ${service.price}',
                                       style: const TextStyle(
-                                        fontSize: 13,
+                                        fontSize: 12,
                                       ),
                                     ),
                                   ],
