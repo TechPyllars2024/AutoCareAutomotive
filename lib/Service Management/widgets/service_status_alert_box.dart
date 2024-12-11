@@ -12,17 +12,19 @@ class ServiceStatusAlertBox extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      child: Material(
+        elevation: 15.0,
+        borderRadius: BorderRadius.circular(10.0),
         child: Container(
-          padding: const EdgeInsets.all(16.0),
+
+          padding: const EdgeInsets.all(14.0),
           decoration: BoxDecoration(
-            color: Colors.orange.shade100,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(10.0),
             border: Border.all(
               color: Colors.orange.shade900,
-              width: 2.0,
+              width: 1.0,
             ),
           ),
           child: Row(
@@ -33,8 +35,8 @@ class ServiceStatusAlertBox extends StatelessWidget {
                 child: Text(
                   'Your services will be displayed if you are verified.',
                   style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+
                   ),
                 ),
               ),
