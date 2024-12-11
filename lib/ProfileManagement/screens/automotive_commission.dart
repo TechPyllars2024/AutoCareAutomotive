@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../models/commission_model.dart';
+import '../services/commission_services.dart';
+
 class AutomotiveCommission extends StatefulWidget {
   const AutomotiveCommission({super.key});
 
@@ -9,6 +12,32 @@ class AutomotiveCommission extends StatefulWidget {
 }
 
 class _AutomotiveCommissionState extends State<AutomotiveCommission> {
+  double totalCommission = 0.0;
+  List<Commission> commissionDetails = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _calculateTotalCommission();
+    _loadCommissionData();
+  }
+
+  Future<void> _calculateTotalCommission() async {
+    final total = await CommissionService.calculateTotalCommission();
+    setState(() {
+      totalCommission = total;
+    });
+  }
+
+  Future<void> _loadCommissionData() async {
+    final commissions = await CommissionService.fetchCommissionDetails();
+    final total = await CommissionService.calculateTotalCommission();
+    setState(() {
+      commissionDetails = commissions;
+      totalCommission = total;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,9 +50,9 @@ class _AutomotiveCommissionState extends State<AutomotiveCommission> {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          color: Colors.white, // Change the back arrow color here
+          color: Colors.white,
           onPressed: () {
-            Navigator.pop(context); // Go back on press
+            Navigator.pop(context);
           },
         ),
       ),
@@ -51,13 +80,13 @@ class _AutomotiveCommissionState extends State<AutomotiveCommission> {
               padding: const EdgeInsets.all(10),
               width: double.infinity,
               alignment: Alignment.centerLeft,
-              child: const Padding(
-                padding: EdgeInsets.all(4.0),
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
                 child: Row(
                   children: [
                     Column(
                       children: [
-                        Text(
+                        const Text(
                           'Total',
                           style: TextStyle(
                             color: Colors.white,
@@ -66,10 +95,10 @@ class _AutomotiveCommissionState extends State<AutomotiveCommission> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(left: 20.0),
+                          padding: const EdgeInsets.only(left: 20.0),
                           child: Text(
-                            '90.0',
-                            style: TextStyle(
+                            '₱ ${totalCommission.toStringAsFixed(2)}',
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 40,
                               fontWeight: FontWeight.bold,
@@ -78,8 +107,8 @@ class _AutomotiveCommissionState extends State<AutomotiveCommission> {
                         ),
                       ],
                     ),
-                    Spacer(),
-                    Text(
+                    const Spacer(),
+                    const Text(
                       '2% of every booking',
                       style: TextStyle(
                         color: Colors.white,
@@ -92,40 +121,78 @@ class _AutomotiveCommissionState extends State<AutomotiveCommission> {
               ),
             ),
             const SizedBox(height: 30),
-            Padding(
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
               child: Align(
                   alignment: Alignment.centerLeft,
-                  child: const Text(
+                  child: Text(
                 "Commission Details",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               )),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
-                children: [
-                  Card(
+                children: List.generate(commissionDetails.length, (index) {
+                  final commission = commissionDetails[index];
+                  return Card(
                     color: Colors.white,
                     elevation: 10,
-                    child: ListTile(
-                      title: Text(
-                        'Booking 1',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      subtitle: Text(
-                        'Total commission',
-                        style: TextStyle(fontSize: 13),
-                      ),
-                      trailing: Text(
-                        'P 0.00',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12), // Rounded corners for the card
+                    ),
+                    margin: const EdgeInsets.only(bottom: 16), // Margin between cards
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column( // Use Column for better layout management
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Car Owner and Service Name (First Column)
+                          Text(
+                            commission.carOwnerName,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8), // Space between owner name and service name
+
+                          // Service Name (Second Column)
+                          Text(
+                            commission.serviceName,
+                            style: const TextStyle(fontSize: 13),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                          const SizedBox(height: 8),
+
+                          // Pricing (Third Column)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '₱ ${commission.totalPrice.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                '+ ₱ ${commission.commissionAmount.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ],
+                  );
+                }),
               ),
-            ),
+            )
           ],
         ),
       ),

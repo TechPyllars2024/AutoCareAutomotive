@@ -5,6 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import '../../Messages Management/services/chat_service.dart';
+import '../../ProfileManagement/services/commission_services.dart';
 import '../models/booking_model.dart';
 import '../services/booking_services.dart';
 import '../widgets/bookingButton.dart';
@@ -85,6 +86,8 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
 
       await _chatService.sendBookingDoneMessage(conversationId, booking);
       logger.i(conversationId);
+
+      await CommissionService.saveCommissionDetails(booking);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
