@@ -20,36 +20,53 @@ class ProfileDetails extends StatelessWidget {
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 5),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.location_on,
-                  color: Colors.orange.shade900,
-                  size: 15,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  profile?.location ?? 'Location',
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.location_on,
+                      color: Colors.orange.shade900,
+                      size: 15,
+                    ),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        (profile?.location ?? 'Location'),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        softWrap: true,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
             const SizedBox(height: 5),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.calendar_month,
-                  color: Colors.orange.shade900,
-                  size: 15,
-                ),
-                const SizedBox(width: 4),
-                Expanded(
-                  // or Flexible
-                  child: Text(
-                    (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    softWrap: true,
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.calendar_month,
+                      color: Colors.orange.shade900,
+                      size: 15,
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      // or Flexible
+                      child: Text(
+                        (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        softWrap: true,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -89,7 +106,7 @@ class ProfileDetails extends StatelessWidget {
                                 'Specialization'
                                     ''),
                             overflow: TextOverflow.visible,
-                            maxLines: 2,
+                            maxLines: 3,
                             softWrap: true,
                           ),
                         ],
