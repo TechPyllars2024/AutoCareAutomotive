@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import '../../Messages Management/services/chat_service.dart';
 import '../models/booking_model.dart';
 import '../services/booking_services.dart';
 import '../widgets/bookingButton.dart';
@@ -22,6 +23,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
   final User? user = FirebaseAuth.instance.currentUser;
   final Logger logger = Logger();
   final BookingService _bookingService = BookingService();
+  final ChatService _chatService = ChatService();
   Map<DateTime, List<BookingModel>> _events = {};
   DateTime _selectedDate = DateTime.now();
   List<BookingModel> _selectedBookings = [];
@@ -76,6 +78,14 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
         booking.status = 'done';
       });
 
+      final conversationId = await ChatService().initializeConversation(
+        booking.serviceProviderUid,
+        booking.carOwnerUid,
+      );
+
+      await _chatService.sendBookingDoneMessage(conversationId, booking);
+      logger.i(conversationId);
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Booking marked as done'),
@@ -103,6 +113,14 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
         booking.status = 'declined';
       });
 
+      final conversationId = await ChatService().initializeConversation(
+        booking.serviceProviderUid,
+        booking.carOwnerUid,
+      );
+
+      await _chatService.sendBookingDeclineMessage(conversationId, booking);
+      logger.i(conversationId);
+
       Navigator.pop(context);
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -129,16 +147,27 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
     });
 
     try {
-      await _bookingService.updateBookingStatus(
-          booking.bookingId!, 'confirmed');
+      // Update booking status
+      await _bookingService.updateBookingStatus(booking.bookingId!, 'confirmed');
       logger.i('Booking accepted: ${booking.bookingId}');
 
       setState(() {
         booking.status = 'confirmed';
       });
 
+      // Check or initialize conversation
+      final conversationId = await ChatService().initializeConversation(
+        booking.serviceProviderUid,
+        booking.carOwnerUid,
+      );
+
+      // Send the confirmation message
+      await _chatService.sendBookingConfirmationMessage(conversationId, booking);
+      logger.i(conversationId);
+
       Navigator.pop(context);
 
+      // Show confirmation message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Booking accepted'),
@@ -208,7 +237,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                booking.totalPrice.toString(),
+                                booking.totalPrice.toStringAsFixed(2),
                                 style: const TextStyle(fontSize: 14),
                               ),
                             ],
@@ -522,8 +551,8 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                                       ),
                                       const SizedBox(height: 8),
                                       _buildDetailRow(
-                                        icon: Icons.attach_money,
-                                        text: booking.totalPrice.toString(),
+                                        icon: Icons.php,
+                                        text: booking.totalPrice.toStringAsFixed(2),
                                       ),
                                       const SizedBox(height: 8),
                                       _buildDetailRow(

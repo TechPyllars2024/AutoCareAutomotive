@@ -64,7 +64,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
     final descriptionController =
         TextEditingController(text: service?.description);
     final priceController =
-        TextEditingController(text: service?.price.toString());
+        TextEditingController(text: service?.price.toStringAsFixed(2));
 
     String category = service?.category.isNotEmpty == true
         ? service!.category[0]

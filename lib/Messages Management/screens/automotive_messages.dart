@@ -51,8 +51,9 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
       ),
       body: _currentUserId.isEmpty
           ? const Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+        child: Text(
+          'Loading user information...',
+          style: TextStyle(color: Colors.orange),
         ),
       )
           : StreamBuilder<List<StartConversationModel>>(
@@ -60,9 +61,7 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
-              ),
+              child: Text('Loading conversations...'),
             );
           }
           if (snapshot.hasError) {
@@ -92,15 +91,11 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
                 future: _fetchCarOwnerDetails(conversation.senderId),
                 builder: (context, carOwnerSnapshot) {
                   if (carOwnerSnapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
-                      ),
-                    );
+                    return const SizedBox();
                   }
                   if (carOwnerSnapshot.hasError) {
-                    return Center(
-                      child: Text(
+                    return const ListTile(
+                      title: Text(
                         'Error loading car owner details.',
                         style: TextStyle(color: Colors.red),
                       ),
@@ -129,7 +124,7 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontWeight: isRead ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: isRead ? FontWeight.normal : FontWeight.normal,
                       ),
                     ),
                     trailing: Text(
