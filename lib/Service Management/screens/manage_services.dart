@@ -516,7 +516,7 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                                       service.name,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 15,
+                                        fontSize: 13,
                                         color: Colors.grey[800],
                                       ),
                                       maxLines: 1,
@@ -526,14 +526,14 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                                     Text(
                                       '${service.price.toStringAsFixed(2)} PHP',
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 12,
                                         color: Colors.grey[600],
                                       ),
                                     ),
                                     Text(
                                       service.description,
                                       style: TextStyle(
-                                        fontSize: 13,
+                                        fontSize: 11,
                                         color: Colors.grey[600],
                                       ),
                                     )
