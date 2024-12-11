@@ -1,3 +1,4 @@
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_commission.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -109,9 +110,9 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
         ],
       ),
       body: isLoading
-          ? const Center(
-        child: CircularProgressIndicator(
-          color: Colors.orange,
+          ?  Center(
+        child:  CircularProgressIndicator(
+          color: Colors.orange.shade900,
         ),
       )
           :SingleChildScrollView(
@@ -167,12 +168,12 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
               ),
             ),
             ProfileDetailsWidget(profile: profile),
-            const Divider(
-              color: Colors.grey,
-              thickness: 1,
-              indent: 20,
-              endIndent: 20,
-            ),
+            // const Divider(
+            //   color: Colors.grey,
+            //   thickness: 1,
+            //   indent: 20,
+            //   endIndent: 20,
+            // ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -240,43 +241,64 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                       }
                     },
                   ),
+
                   Container(
-                    width: 150,
                     margin: const EdgeInsets.only(bottom: 10),
-                    child: GestureDetector(
-                      onTap: () async {
-                        try {
-                          await AuthenticationMethodSignOut().signOut();
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) => const LoginScreen()),
-                          );
-                        } catch (e) {
-                          Utils.showSnackBar('Error Signing Out: $e');
-                        }
+                    child: ProfileMenuWidget(
+                      title: "Commission",
+                      icon: Icons.handshake_outlined,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                              const AutomotiveCommission()),
+                        );
                       },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Colors.grey.shade300,
-                            width: 2,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.logout, color: Colors.orange.shade900),
-                            const SizedBox(width: 10),
-                            Text(
-                              'Logout',
-                              style: TextStyle(
-                                color: Colors.grey.shade900,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: GestureDetector(
+                        onTap: () async {
+                          try {
+                            await AuthenticationMethodSignOut().signOut();
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                            );
+                          } catch (e) {
+                            Utils.showSnackBar('Error Signing Out: $e');
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 1.5,
                             ),
-                          ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.logout, color: Colors.orange.shade900),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Logout',
+                                style: TextStyle(
+                                  color: Colors.grey.shade900,
+                                  fontSize: 15,
+
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -309,7 +331,7 @@ class ProfileDetailsWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 16),
@@ -327,7 +349,7 @@ class ProfileDetailsWidget extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                         softWrap: true,
-                        style: const TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ),
                   ],
@@ -350,7 +372,7 @@ class ProfileDetailsWidget extends StatelessWidget {
                         child: Text(
                           profile?.operationTime ?? 'Operation Time',
                           textAlign: TextAlign.left,
-                          style: const TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 14),
                           softWrap: true,
                         ),
                     )
@@ -359,7 +381,7 @@ class ProfileDetailsWidget extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 30),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Table(
@@ -414,7 +436,7 @@ class ProfileDetailsWidget extends StatelessWidget {
                       child: Text(
                         profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week',
                         overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
+                        maxLines: 5,
                         softWrap: true,
                       ),
                     ),

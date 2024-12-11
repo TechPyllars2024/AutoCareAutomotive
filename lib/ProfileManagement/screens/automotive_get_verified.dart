@@ -106,6 +106,8 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
+        backgroundColor: Colors.grey.shade100,
+
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -221,27 +223,30 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                   ],
                 ),
 
-                const SizedBox(height: 30),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.9,),
 
-                ElevatedButton(
-                  onPressed: () {
-                    if (!_isLoadingPickFile) {
-                      _pickFile();
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                    backgroundColor: Colors.orange,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (!_isLoadingPickFile) {
+                        _pickFile();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                      backgroundColor: Colors.orange.shade900,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    _isLoadingPickFile ? 'Picking...' : 'Pick File',
-                    style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                    child: Text(
+                      _isLoadingPickFile ? 'Picking...' : 'Pick File',
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -337,11 +342,11 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
                             ),
                           ),
                           child: _isLoadingSubmit
-                              ? const SizedBox(
+                              ?  SizedBox(
                             width: 24,
                             height: 24,
                             child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange.shade900),
                             ),
                           )
                               : const Text(
