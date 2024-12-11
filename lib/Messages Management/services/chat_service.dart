@@ -24,7 +24,6 @@ class ChatService {
   }
 
   Future<String?> getExistingConversationId(String senderId, String receiverId) async {
-    // Query for conversations where senderId matches and receiverId matches
     final querySnapshot = await _firestore
         .collection('conversations')
         .where('senderId', isEqualTo: senderId)
@@ -32,11 +31,9 @@ class ChatService {
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      // If a matching conversation is found, return the conversationId
-      return querySnapshot.docs.first.id;  // This will return the conversationId
+      return querySnapshot.docs.first.id;
     }
 
-    // Check for conversation where the roles are reversed (sender and receiver switched)
     final reverseQuerySnapshot = await _firestore
         .collection('conversations')
         .where('senderId', isEqualTo: receiverId)
@@ -44,11 +41,9 @@ class ChatService {
         .get();
 
     if (reverseQuerySnapshot.docs.isNotEmpty) {
-      // If a matching conversation is found, return the conversationId
-      return reverseQuerySnapshot.docs.first.id;  // This will return the conversationId
+      return reverseQuerySnapshot.docs.first.id;
     }
 
-    // Return null if no existing conversation is found
     return null;
   }
 
@@ -63,14 +58,12 @@ class ChatService {
   }
 
   Future<StartConversationModel?> getExistingConversation(String senderId, String receiverId) async {
-    // Check if the conversation exists where senderId is the shop and receiverId is the car owner
     final querySnapshot = await _firestore
         .collection('conversations')
         .where('senderId', isEqualTo: senderId)
         .where('receiverId', isEqualTo: receiverId)
         .get();
 
-    // If no conversation found, check the reverse case where senderId is the car owner and receiverId is the shop
     if (querySnapshot.docs.isEmpty) {
       final reverseQuerySnapshot = await _firestore
           .collection('conversations')
@@ -78,25 +71,21 @@ class ChatService {
           .where('receiverId', isEqualTo: senderId)
           .get();
 
-      // If found, return the reverse conversation
       if (reverseQuerySnapshot.docs.isNotEmpty) {
         return StartConversationModel.fromMap(reverseQuerySnapshot.docs.first.data());
       }
     }
 
-    // If a conversation is found in the first query or reverse query
     if (querySnapshot.docs.isNotEmpty) {
       return StartConversationModel.fromMap(querySnapshot.docs.first.data());
     }
 
-    // Return null if no conversation found in either case
     return null;
   }
 
 
   Future<String> initializeConversation(String serviceProviderUid, String carOwnerUid) async {
     try {
-      // Check if the conversation exists
       StartConversationModel? existingConversation =
       await getExistingConversation(serviceProviderUid, carOwnerUid);
 
@@ -104,14 +93,11 @@ class ChatService {
         return existingConversation.conversationId;
       }
 
-      // Generate new conversation
       String conversationId = await generateConversationId();
 
-      // Fetch user details
       final carOwnerData = await fetchCarOwnerDetails(carOwnerUid);
       final shopData = await fetchProviderByUid(serviceProviderUid);
 
-      // Create the new conversation
       StartConversationModel conversation = StartConversationModel(
         conversationId: conversationId,
         senderId: serviceProviderUid,
@@ -264,15 +250,13 @@ class ChatService {
   // Accept
   Future<void> sendBookingConfirmationMessage(String conversationId, BookingModel booking) async {
     try {
-      // Format the message text
       String messageText =
-          "Hi ${booking.fullName}, your booking on ${booking.bookingDate} at ${booking.bookingTime} has been accepted!\n\n"
+          "Hi ${booking.fullName}, your booking on ${booking.bookingDate} at ${booking.bookingTime} has been ACCEPTED!\n\n"
           "Service/s: ${booking.selectedService.join(', ')}\n"
           "Price: ${booking.totalPrice.toStringAsFixed(2)}\n"
           "Car: ${booking.carBrand} ${booking.carModel}, ${booking.carYear} (${booking.color})\n\n"
           "We’re ready to help you with your vehicle. See you soon!\n";
 
-      // Create the message model
       final message = MessageModel(
         messageId: '',
         conversationId: conversationId,
@@ -281,56 +265,75 @@ class ChatService {
         senderId: booking.serviceProviderUid,
       );
 
-      // Add the message to the database
       final messageRef = FirebaseFirestore.instance
           .collection('conversations')
           .doc(conversationId)
           .collection('messages')
-          .doc(); // Generate a unique message ID
+          .doc();
 
-      message.messageId = messageRef.id; // Set the generated ID
+      message.messageId = messageRef.id;
       await messageRef.set(message.toMap());
 
-      // Update the conversation details
       await FirebaseFirestore.instance
           .collection('conversations')
           .doc(conversationId)
           .update({
-        'lastMessage': message.messageText, // Update with message text
-        'lastMessageTime': FieldValue.serverTimestamp(), // Use server timestamp for consistency
-        'numberOfMessages': FieldValue.increment(1), // Increment message count
+        'lastMessage': message.messageText,
+        'lastMessageTime': FieldValue.serverTimestamp(),
+        'numberOfMessages': FieldValue.increment(1),
       });
 
       logger.i('Booking confirmation message sent successfully');
     } catch (e) {
       logger.e('Error sending booking confirmation message: $e');
-      rethrow; // Propagate the error
+      rethrow;
     }
   }
-
-
 
   // Decline
   Future<void> sendBookingDeclineMessage(
       String conversationId,
       BookingModel booking,
       ) async {
-    final messageText =
-        "Hi ${booking.fullName}, we’re sorry, but your booking on ${booking.bookingDate} at ${booking.bookingTime} has been declined.\n\n"
+    try {
+      String messageText =
+        "Hi ${booking.fullName}, we’re sorry, but your booking on ${booking.bookingDate} at ${booking.bookingTime} has been DECLINED.\n\n"
         "Service/s: ${booking.selectedService.join(', ')}\n"
         "Price: ${booking.totalPrice.toStringAsFixed(2)}\n"
         "Car: ${booking.carBrand} ${booking.carModel}, ${booking.carYear} (${booking.color})\n\n"
         "Feel free to rebook or contact us if you need assistance!\n";
 
-    final message = MessageModel(
-      messageId: '',
-      conversationId: conversationId,
-      messageText: messageText,
-      timestamp: DateTime.now(),
-      senderId: booking.serviceProviderUid,
-    );
+      final message = MessageModel(
+        messageId: '',
+        conversationId: conversationId,
+        messageText: messageText,
+        timestamp: DateTime.now(),
+        senderId: booking.serviceProviderUid,
+      );
 
-    await ChatService().sendMessage(message);
+      final messageRef = FirebaseFirestore.instance
+          .collection('conversations')
+          .doc(conversationId)
+          .collection('messages')
+          .doc();
+
+      message.messageId = messageRef.id;
+      await messageRef.set(message.toMap());
+
+      await FirebaseFirestore.instance
+          .collection('conversations')
+          .doc(conversationId)
+          .update({
+        'lastMessage': message.messageText,
+        'lastMessageTime': FieldValue.serverTimestamp(),
+        'numberOfMessages': FieldValue.increment(1),
+      });
+
+      logger.i('Booking decline message sent successfully');
+    } catch (e) {
+      logger.e('Error sending booking decline message: $e');
+      rethrow;
+    }
   }
 
   // Done
@@ -338,21 +341,45 @@ class ChatService {
       String conversationId,
       BookingModel booking,
       ) async {
-    final messageText =
-        "Hi ${booking.fullName}, your service on ${booking.bookingDate} at ${booking.bookingTime} was completed.\n\n"
-        "Service/s: ${booking.selectedService.join(', ')}\n"
-        "Price: ${booking.totalPrice.toStringAsFixed(2)}\n"
-        "Car: ${booking.carBrand} ${booking.carModel}, ${booking.carYear} (${booking.color})\n\n"
-        "Thank you for choosing us! Let us know if you need anything else.\n";
+    try {
+      String messageText =
+          "Hi ${booking.fullName}, your service on ${booking.bookingDate} at ${booking.bookingTime} has been COMPLETED.\n\n"
+          "Service/s: ${booking.selectedService.join(', ')}\n"
+          "Price: ${booking.totalPrice.toStringAsFixed(2)}\n"
+          "Car: ${booking.carBrand} ${booking.carModel}, ${booking
+          .carYear} (${booking.color})\n\n"
+          "Thank you for choosing us! Let us know if you need anything else.\n";
 
-    final message = MessageModel(
-      messageId: '',
-      conversationId: conversationId,
-      messageText: messageText,
-      timestamp: DateTime.now(),
-      senderId: booking.serviceProviderUid,
-    );
+      final message = MessageModel(
+        messageId: '',
+        conversationId: conversationId,
+        messageText: messageText,
+        timestamp: DateTime.now(),
+        senderId: booking.serviceProviderUid,
+      );
 
-    await ChatService().sendMessage(message);
+      final messageRef = FirebaseFirestore.instance
+          .collection('conversations')
+          .doc(conversationId)
+          .collection('messages')
+          .doc();
+
+      message.messageId = messageRef.id;
+      await messageRef.set(message.toMap());
+
+      await FirebaseFirestore.instance
+          .collection('conversations')
+          .doc(conversationId)
+          .update({
+        'lastMessage': message.messageText,
+        'lastMessageTime': FieldValue.serverTimestamp(),
+        'numberOfMessages': FieldValue.increment(1),
+      });
+
+      logger.i('Booking confirmation message sent successfully');
+    } catch (e) {
+      logger.e('Error sending booking confirmation message: $e');
+      rethrow;
+    }
   }
 }
