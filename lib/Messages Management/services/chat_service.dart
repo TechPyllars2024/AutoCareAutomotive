@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:logger/logger.dart';
 import '../../Booking Mangement/models/booking_model.dart';
 import '../models/message_model.dart';
 import '../models/startConversation_model.dart';
@@ -9,6 +10,7 @@ import '../models/startConversation_model.dart';
 class ChatService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  final Logger logger = Logger();
 
   Future<void> createConversation(StartConversationModel conversation) async {
     await _firestore
@@ -60,34 +62,77 @@ class ChatService {
         .toList());
   }
 
-  Future<String> initializeConversation(String currentUserId, String serviceProviderUid) async {
-    // Fetch the existing conversation ID if it exists
-    final existingConversationId = await getExistingConversationId(currentUserId, serviceProviderUid);
+  Future<StartConversationModel?> getExistingConversation(String senderId, String receiverId) async {
+    // Check if the conversation exists where senderId is the shop and receiverId is the car owner
+    final querySnapshot = await _firestore
+        .collection('conversations')
+        .where('senderId', isEqualTo: senderId)
+        .where('receiverId', isEqualTo: receiverId)
+        .get();
 
-    if (existingConversationId != null) {
-      return existingConversationId;  // Return the existing conversation ID
-    } else {
-      // If no conversation exists, create a new one
-      final newConversationId = await generateConversationId();
+    // If no conversation found, check the reverse case where senderId is the car owner and receiverId is the shop
+    if (querySnapshot.docs.isEmpty) {
+      final reverseQuerySnapshot = await _firestore
+          .collection('conversations')
+          .where('senderId', isEqualTo: receiverId)
+          .where('receiverId', isEqualTo: senderId)
+          .get();
+
+      // If found, return the reverse conversation
+      if (reverseQuerySnapshot.docs.isNotEmpty) {
+        return StartConversationModel.fromMap(reverseQuerySnapshot.docs.first.data());
+      }
+    }
+
+    // If a conversation is found in the first query or reverse query
+    if (querySnapshot.docs.isNotEmpty) {
+      return StartConversationModel.fromMap(querySnapshot.docs.first.data());
+    }
+
+    // Return null if no conversation found in either case
+    return null;
+  }
+
+
+  Future<String> initializeConversation(String serviceProviderUid, String carOwnerUid) async {
+    try {
+      // Check if the conversation exists
+      StartConversationModel? existingConversation =
+      await getExistingConversation(serviceProviderUid, carOwnerUid);
+
+      if (existingConversation != null) {
+        return existingConversation.conversationId;
+      }
+
+      // Generate new conversation
+      String conversationId = await generateConversationId();
+
+      // Fetch user details
+      final carOwnerData = await fetchCarOwnerDetails(carOwnerUid);
+      final shopData = await fetchProviderByUid(serviceProviderUid);
 
       // Create the new conversation
-      final newConversation = StartConversationModel(
-        conversationId: newConversationId,
-        senderId: currentUserId,
-        receiverId: serviceProviderUid,
+      StartConversationModel conversation = StartConversationModel(
+        conversationId: conversationId,
+        senderId: serviceProviderUid,
+        receiverId: carOwnerUid,
         timestamp: DateTime.now(),
-        shopName: 'Shop Name',
-        shopProfilePhoto: 'Shop Profile Photo URL',
-        carOwnerFirstName: 'Car Owner First Name',
-        carOwnerLastName: 'Car Owner Last Name',
-        carOwnerProfilePhoto: 'Car Owner Profile Photo URL',
+        shopName: shopData['shopName'] ?? 'Unknown Shop',
+        shopProfilePhoto: shopData['profileImage'] ?? '',
+        carOwnerFirstName: carOwnerData['firstName'] ?? '',
+        carOwnerLastName: carOwnerData['lastName'] ?? '',
+        carOwnerProfilePhoto: carOwnerData['profileImage'] ?? '',
         lastMessage: '',
         lastMessageTime: DateTime.now(),
         numberOfMessages: 0,
       );
 
-      await createConversation(newConversation);
-      return newConversationId;  // Return the newly generated conversation ID
+      await createConversation(conversation);
+
+      return conversationId;
+    } catch (e) {
+      logger.e('Error initializing conversation: $e');
+      rethrow;
     }
   }
 
@@ -186,6 +231,18 @@ class ChatService {
     }
   }
 
+  Future<Map<String, dynamic>> fetchProviderByUid(String userId) async {
+    DocumentSnapshot userSnapshot = await _firestore
+        .collection('automotiveShops_profile')
+        .doc(userId)
+        .get();
+    if (userSnapshot.exists) {
+      return userSnapshot.data() as Map<String, dynamic>;
+    } else {
+      throw Exception('Service Provider not found');
+    }
+  }
+
   Future<Map<String, dynamic>> fetchCarOwnerByUid(String uid) async {
     try {
       DocumentSnapshot carOwnerSnapshot = await _firestore
@@ -205,27 +262,53 @@ class ChatService {
 
   // Booking Messages
   // Accept
-  Future<void> sendBookingConfirmationMessage(
-      String conversationId,
-      BookingModel booking,
-      ) async {
-    final messageText =
-    "Hi ${booking.fullName}, your booking on ${booking.bookingDate} at ${booking.bookingTime} has been accepted!\n\n"
-    "Service/s: ${booking.selectedService.join(', ')}\n"
-    "Price: ${booking.totalPrice.toStringAsFixed(2)}\n"
-    "Car: ${booking.carBrand} ${booking.carModel}, ${booking.carYear} (${booking.color})\n\n"
-    "We’re ready to help you with your vehicle. See you soon!\n";
+  Future<void> sendBookingConfirmationMessage(String conversationId, BookingModel booking) async {
+    try {
+      // Format the message text
+      String messageText =
+          "Hi ${booking.fullName}, your booking on ${booking.bookingDate} at ${booking.bookingTime} has been accepted!\n\n"
+          "Service/s: ${booking.selectedService.join(', ')}\n"
+          "Price: ${booking.totalPrice.toStringAsFixed(2)}\n"
+          "Car: ${booking.carBrand} ${booking.carModel}, ${booking.carYear} (${booking.color})\n\n"
+          "We’re ready to help you with your vehicle. See you soon!\n";
 
-    final message = MessageModel(
-      messageId: '',
-      conversationId: conversationId,
-      messageText: messageText,
-      timestamp: DateTime.now(),
-      senderId: booking.serviceProviderUid,
-    );
+      // Create the message model
+      final message = MessageModel(
+        messageId: '',
+        conversationId: conversationId,
+        messageText: messageText,
+        timestamp: DateTime.now(),
+        senderId: booking.serviceProviderUid,
+      );
 
-    await ChatService().sendMessage(message);
+      // Add the message to the database
+      final messageRef = FirebaseFirestore.instance
+          .collection('conversations')
+          .doc(conversationId)
+          .collection('messages')
+          .doc(); // Generate a unique message ID
+
+      message.messageId = messageRef.id; // Set the generated ID
+      await messageRef.set(message.toMap());
+
+      // Update the conversation details
+      await FirebaseFirestore.instance
+          .collection('conversations')
+          .doc(conversationId)
+          .update({
+        'lastMessage': message.messageText, // Update with message text
+        'lastMessageTime': FieldValue.serverTimestamp(), // Use server timestamp for consistency
+        'numberOfMessages': FieldValue.increment(1), // Increment message count
+      });
+
+      logger.i('Booking confirmation message sent successfully');
+    } catch (e) {
+      logger.e('Error sending booking confirmation message: $e');
+      rethrow; // Propagate the error
+    }
   }
+
+
 
   // Decline
   Future<void> sendBookingDeclineMessage(
