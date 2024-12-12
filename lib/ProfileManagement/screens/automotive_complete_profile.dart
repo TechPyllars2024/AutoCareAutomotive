@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage3.dart';
-import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_pin_location.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/pinLocation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
