@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1000331742478-5u2tcq3c70ddhubo099ivhffuk6hpl7d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autocare.automotive.shops.autocare_automotiveshops",
+            "certificate_hash": "542ecec5db734d28a0059df10fd89878ce65c792"
+          }
+        },
+        {
           "client_id": "1000331742478-bhv513l1964vckgq738j1necb333hp51.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -95,6 +103,14 @@
           "android_info": {
             "package_name": "com.autocarecarowners.autocare_carowners",
             "certificate_hash": "729d12e6bcf988d29c2fdee0f92472f7ad80f711"
+          }
+        },
+        {
+          "client_id": "1000331742478-t8k6ekurbae8so6chd4m5ff0fq31tlko.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autocarecarowners.autocare_carowners",
+            "certificate_hash": "542ecec5db734d28a0059df10fd89878ce65c792"
           }
         },
         {

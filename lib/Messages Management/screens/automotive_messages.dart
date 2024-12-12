@@ -1,7 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-
 import '../services/chat_service.dart';
 import '../models/startConversation_model.dart';
 import 'chatScreen.dart';
@@ -34,8 +34,15 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
     }
   }
 
-  Future<Map<String, dynamic>> _fetchCarOwnerDetails(String senderId) async {
-    return await _chatService.fetchCarOwnerByUid(senderId);
+  Stream<DocumentSnapshot> _listenToShopDetails(String senderId, String receiverId, String currentUserId) {
+    // Determine which ID represents the shop
+    String shopId = senderId == currentUserId ? receiverId : senderId;
+
+    // Listen to shop details based on the identified shopId
+    return FirebaseFirestore.instance
+        .collection('car_owner_profile')
+        .doc(shopId)
+        .snapshots();
   }
 
   @override
@@ -51,21 +58,35 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
         ),
       ),
       body: _currentUserId.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+        child: Text(
+          'Loading user information...',
+          style: TextStyle(color: Colors.orange),
+        ),
+      )
           : StreamBuilder<List<StartConversationModel>>(
         stream: _chatService.getUserConversations(_currentUserId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: Text('Loading conversations...'),
+            );
           }
           if (snapshot.hasError) {
-            return const Center(child: Text('Error loading messages.'));
+            return const Center(
+              child: Text(
+                'Error loading messages.',
+                style: TextStyle(color: Colors.red),
+              ),
+            );
           }
           final conversations = snapshot.data!
               .where((conversation) => conversation.lastMessage.isNotEmpty)
               .toList();
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No conversations yet.'));
+          if (conversations.isEmpty) {
+            return const Center(
+              child: Text('No conversations yet.'),
+            );
           }
           conversations.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
           return ListView.builder(
@@ -74,16 +95,28 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
               final conversation = conversations[index];
               final isRead = conversation.isRead;
 
-              return FutureBuilder<Map<String, dynamic>>(
-                future: _fetchCarOwnerDetails(conversation.senderId),
-                builder: (context, carOwnerSnapshot) {
-                  if (carOwnerSnapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+              return StreamBuilder<DocumentSnapshot>(
+                stream: _listenToShopDetails(conversation.receiverId, conversation.senderId, _currentUserId!),
+                builder: (context, shopSnapshot) {
+                  if (shopSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return ListTile(
+                      leading: const CircleAvatar(
+                        child: Icon(Icons.person, color: Colors.white),
+                      ),
+                      title: Text(conversation.shopName),
+                      subtitle: Text(conversation.lastMessage),
+                    );
                   }
-                  if (carOwnerSnapshot.hasError) {
-                    return const Center(child: Text('Error loading car owner details.'));
+                  if (shopSnapshot.hasError) {
+                    return const ListTile(
+                      title: Text(
+                        'Error loading car owner details.',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    );
                   }
-                  final carOwnerDetails = carOwnerSnapshot.data!;
+                  final carOwnerDetails = shopSnapshot.data!;
                   final carOwnerFirstName = carOwnerDetails['firstName'] ?? '';
                   final carOwnerLastName = carOwnerDetails['lastName'] ?? '';
                   final carOwnerProfilePhoto = carOwnerDetails['profileImage'] ?? '';
@@ -98,7 +131,7 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
                           : null,
                     ),
                     title: Text(
-                      '$carOwnerFirstName$carOwnerLastName',
+                      '$carOwnerFirstName $carOwnerLastName',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
@@ -106,7 +139,7 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontWeight: isRead ? FontWeight.normal : FontWeight.bold,
+                        fontWeight: isRead ? FontWeight.normal : FontWeight.normal,
                       ),
                     ),
                     trailing: Text(
@@ -118,7 +151,9 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ChatScreen(
-                            carOwnerUid: conversation.receiverId,
+                            carOwnerUid: conversation.senderId == _currentUserId
+                                ? conversation.receiverId
+                                : conversation.senderId,
                             conversationId: conversation.conversationId,
                           ),
                         ),

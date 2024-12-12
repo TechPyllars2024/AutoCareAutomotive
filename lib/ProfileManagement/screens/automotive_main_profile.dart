@@ -1,8 +1,8 @@
+import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_commission.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
 import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../../Authentication/Widgets/snackBar.dart';
 import '../../Authentication/screens/login.dart';
 import '../../Authentication/services/authentication_signout.dart';
@@ -27,7 +27,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
   final user = FirebaseAuth.instance.currentUser;
   bool isExpanded = false;
   bool isVerified = false;
-
+  bool isLoading = true;
   final double profileHeight = 100;
 
   @override
@@ -41,6 +41,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
     final fetchedProfile = await _profileService.fetchProfileData();
     setState(() {
       profile = fetchedProfile;
+      isLoading = false;
     });
   }
 
@@ -82,24 +83,25 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
+
         automaticallyImplyLeading: false,
         title: const Text(
           'Profile',
-          style: TextStyle(fontWeight: FontWeight.w900),
+          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
         ),
-        backgroundColor: Colors.grey.shade100,
+        backgroundColor: Colors.orange.shade900,
         actions: [
           IconButton(
             icon: Container(
               decoration: BoxDecoration(
-                color: Colors.orange.shade900,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(12.0),
               ),
               padding: const EdgeInsets.all(6.0),
-              child: const Center(
+              child:  Center(
                 child: Icon(
                   Icons.edit,
-                  color: Colors.white,
+                  color: Colors.orange.shade900,
                   size: 25,
                 ),
               ),
@@ -108,34 +110,58 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: isLoading
+          ?  Center(
+        child:  CircularProgressIndicator(
+          color: Colors.orange.shade900,
+        ),
+      )
+          :SingleChildScrollView(
         child: Column(
           children: [
-            Center(
-              child: Container(
-                width: 180,
-                height: 180,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 50,
+                  color: Colors.orange.shade900,
+                ),
+                Positioned(
+                  top: 0, // Adjust this value to position the orange container at the top
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    width: double.infinity,
+                    height: 100,
                     color: Colors.orange.shade900,
-                    width: 1,
                   ),
                 ),
-                child: CircleAvatar(
-                  radius: 90,
-                  backgroundColor: Colors.white,
-                  backgroundImage: profile?.profileImage.isNotEmpty == true
-                      ? NetworkImage(profile!.profileImage)
-                      : null,
-                  child: profile?.profileImage.isEmpty == true
-                      ? const Icon(Icons.person, size: 90, color: Colors.black)
-                      : null,
+                Container(
+                  width: 180,
+                  height: 180,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.grey.shade100,
+                      width: 6,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 90,
+                    backgroundColor: Colors.grey.shade400,
+                    backgroundImage: profile?.profileImage.isNotEmpty == true
+                        ? NetworkImage(profile!.profileImage)
+                        : null,
+                    child: profile?.profileImage.isEmpty == true
+                        ? const Icon(Icons.person, size: 90, color: Colors.white)
+                        : null,
+                  ),
                 ),
-              ),
+              ],
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 24),
+              padding: const EdgeInsets.only(top: 2),
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -148,22 +174,29 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                       ),
                     ),
                     if (isVerified)
-                      const Icon(
+                      Icon(
                         Icons.verified,
-                        color: Colors.orange,
+                        color: Colors.orange.shade900,
                         size: 30,
                       ),
                   ],
                 ),
               ),
             ),
-            ProfileDetailsWidget(profile: profile),
+
             const Divider(
               color: Colors.grey,
               thickness: 1,
               indent: 20,
               endIndent: 20,
             ),
+
+
+            //Shop Profile Details Section
+            ProfileDetailsWidget(profile: profile),
+
+
+
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -231,22 +264,66 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                       }
                     },
                   ),
+
                   Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     child: ProfileMenuWidget(
-                      title: "Logout",
-                      icon: Icons.logout,
-                      onPressed: () async {
-                        try {
-                          await AuthenticationMethodSignOut().signOut();
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                                builder: (context) => const LoginScreen()),
-                          );
-                        } catch (e) {
-                          Utils.showSnackBar('Error Signing Out: $e');
-                        }
+                      title: "Commission",
+                      icon: Icons.handshake_outlined,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                              AutomotiveCommission(serviceProviderUid: user!.uid,)),
+                        );
                       },
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: GestureDetector(
+                        onTap: () async {
+                          try {
+                            await AuthenticationMethodSignOut().signOut();
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                            );
+                          } catch (e) {
+                            Utils.showSnackBar('Error Signing Out: $e');
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.logout, color: Colors.orange.shade900),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Logout',
+                                style: TextStyle(
+                                  color: Colors.grey.shade900,
+                                  fontSize: 15,
+
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -267,97 +344,140 @@ class ProfileDetailsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                Icon(
-                  Icons.location_on,
-                  color: Colors.orange.shade900,
-                  size: 15,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  profile?.location ?? 'Location',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  softWrap: true,
-                ),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                Icon(
-                  Icons.calendar_month,
-                  color: Colors.orange.shade900,
-                  size: 15,
-                ),
-                const SizedBox(width: 4),
-                Expanded(
-                  // or Flexible
-                  child: Text(
-                    (profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week'),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    softWrap: true,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                Icon(
-                  Icons.schedule,
-                  color: Colors.orange.shade900,
-                  size: 15,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  profile?.operationTime ?? 'Operation Time',
-                ),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 5),
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.check,
-                      color: Colors.orange.shade900,
-                      size: 15,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Icon(
+                        Icons.location_on,
+                        color: Colors.orange.shade900,
+                        size: 20,
+                      ),
                     ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        profile?.location ?? 'Location',
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
+                        softWrap: true,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: Icon(
+                          Icons.schedule,
+                          color: Colors.orange.shade900,
+                          size: 20,
+                        ),
+                    ),
+                    const SizedBox(height: 5),
+                    const SizedBox(width: 8),
+                    Flexible(
+                        child: Text(
+                          profile?.operationTime ?? 'Operation Time',
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(fontSize: 14),
+                          softWrap: true,
+                        ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 30),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Table(
+              border: TableBorder.all(color: Colors.orange.shade900),
+              children: [
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
                         children: [
-                          Text(
-                            (profile?.serviceSpecialization.join(', ') ??
-                                'Specialization'
-                                    ''),
-                            overflow: TextOverflow.visible,
-                            maxLines: 2,
-                            softWrap: true,
+                          Icon(
+                            Icons.calendar_month,
+                            color: Colors.orange.shade900,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 4),
+                          const Text(
+                            'Days of the Week',
+                            style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.check,
+                            color: Colors.orange.shade900,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 4),
+                          const Text(
+                            'Specialization',
+                            style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14),
                           ),
                         ],
                       ),
                     ),
                   ],
                 ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        profile?.daysOfTheWeek.join(', ') ?? 'Days of the Week',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 5,
+                        softWrap: true,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        profile?.serviceSpecialization.join(', ') ?? 'Specialization',
+                        overflow: TextOverflow.visible,
+                        maxLines: 10,
+                        softWrap: true,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -384,25 +504,25 @@ class ProfileMenuWidget extends StatelessWidget {
     return ListTile(
       onTap: onPressed,
       leading: Container(
-        width: 40,
-        height: 40,
+        width: 35,
+        height: 35,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100),
-          color: Colors.orange.shade900.withOpacity(0.1),
+          color: Colors.orange.shade900.withOpacity(1),
         ),
-        child: Icon(icon, color: Colors.orange.shade900),
+        child: Icon(icon, color: Colors.white),
       ),
-      title: Text(title, style: TextStyle(color: color ?? Colors.black)),
+      title: Text(title, style: TextStyle(color: color ?? Colors.black, fontSize: 14)),
       trailing: endIcon
           ? Container(
-              width: 30,
-              height: 30,
+              width: 25,
+              height: 25,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
                 color: Colors.grey.withOpacity(0.1),
               ),
               child: const Icon(Icons.arrow_forward_ios,
-                  size: 18.0, color: Colors.grey),
+                  size: 15.0, color: Colors.grey),
             )
           : null,
     );

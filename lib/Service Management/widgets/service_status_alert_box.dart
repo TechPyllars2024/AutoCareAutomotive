@@ -11,17 +11,36 @@ class ServiceStatusAlertBox extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8.0),
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.orange.shade200,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: const Text(
-          'Your services will be displayed if you are verified.',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Material(
+        elevation: 15,
+        borderRadius: BorderRadius.circular(10.0),
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.0),
+            border: Border.all(
+              color: Colors.orange.shade900,
+              width: 1.0,
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.info, color: Colors.orange.shade900),
+              const SizedBox(width: 8.0),
+              const Expanded(
+                child: Text(
+                  'Your services will be displayed if you are verified.',
+                  style: TextStyle(
+                            fontSize: 13,
+
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

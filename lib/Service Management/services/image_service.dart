@@ -10,9 +10,9 @@ class ImageService {
     final pickedFile = await ImagePicker().pickImage(source: source);
     if (pickedFile != null) {
       _image = File(pickedFile.path);
-      return _image; // Return the selected image file
+      return _image;
     }
-    return null; // Return null if no image was picked
+    return null;
   }
 
   // Function to upload image to Firebase Storage and return the download URL
@@ -20,9 +20,9 @@ class ImageService {
     try {
       final storageRef = FirebaseStorage.instance.ref().child(path);
       await storageRef.putFile(image);
-      return await storageRef.getDownloadURL(); // Return download URL
+      return await storageRef.getDownloadURL();
     } catch (e) {
-      return null; // Return null if upload fails
+      return null;
     }
   }
 }

@@ -28,9 +28,9 @@ class _ChatScreenState extends State<ChatScreen> {
   late Future<Map<String, dynamic>> _carOwnerData;
   late Future<StartConversationModel> _conversationData;
   String _senderId = '';
-  final String _carOwnerFirstName = '';
-  final String _carOwnerLastName = '';
-  final String _carOwnerProfilePhoto = '';
+  late String _carOwnerFirstName = '';
+  late String _carOwnerLastName = '';
+  late String _carOwnerProfilePhoto = '';
   File? _pickedImage;
   String? _conversationId;
   String _currentUserId = '';
@@ -40,12 +40,8 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _fetchCurrentUser();
-    _conversationData = _chatService.fetchStartConversationById(widget.conversationId);
-    _conversationData.then((conversation) {
-      setState(() {
-        _carOwnerData = _chatService.fetchCarOwnerByUid(conversation.senderId);
-      });
-    });
+    _carOwnerData = ChatService().fetchCarOwnerByUid(widget.carOwnerUid);
+    _conversationData = ChatService().fetchStartConversationById(widget.conversationId);
     _initializeConversation();
   }
 
@@ -64,7 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _currentUserId = currentUser.uid;
     }
 
-    if (widget.conversationId != null) {
+    if (widget.conversationId.isNotEmpty) {
       setState(() {
         _conversationId = widget.conversationId;
       });
@@ -115,77 +111,59 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pop(context, {
-          'firstName': _carOwnerFirstName,
-          'lastName': _carOwnerLastName,
-          'profileImage': _carOwnerProfilePhoto,
-        });
-        return true;
-      },
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
           backgroundColor: Colors.orange[900],
           iconTheme: const IconThemeData(color: Colors.white),
-          title: FutureBuilder<StartConversationModel>(
-            future: _chatService.fetchStartConversationById(widget.conversationId),
-            builder: (context, conversationSnapshot) {
-              if (conversationSnapshot.connectionState == ConnectionState.waiting) {
-                return const Text('Loading...', style: TextStyle(color: Colors.white));
-              } else if (conversationSnapshot.hasError) {
-                return const Text('Error loading conversation');
-              } else if (conversationSnapshot.hasData) {
-                final conversation = conversationSnapshot.data!;
-                return FutureBuilder<Map<String, dynamic>>(
-                  future: _chatService.fetchCarOwnerByUid(conversation.senderId),
-                  builder: (context, carOwnerSnapshot) {
-                    if (carOwnerSnapshot.connectionState == ConnectionState.waiting) {
-                      return const Text('Loading...', style: TextStyle(color: Colors.white));
-                    } else if (carOwnerSnapshot.hasError) {
-                      return const Text('Error loading provider');
-                    } else if (carOwnerSnapshot.hasData) {
-                      final data = carOwnerSnapshot.data!;
-                      final carOwnerFirstName = data['firstName'] ?? '';
-                      final carOwnerLastName = data['lastName'] ?? '';
-                      final carOwnerProfilePhoto = data['profileImage'] ?? '';
+            title: FutureBuilder<Map<String, dynamic>>(
+              future: _carOwnerData,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text('Loading...',
+                      style: TextStyle(color: Colors.white));
+                } else if (snapshot.hasError) {
+                  return const Text('Error loading provider');
+                } else if (snapshot.hasData) {
+                  final data = snapshot.data!;
+                  _carOwnerFirstName = data['firstName'] ?? 'Unknown Shop';
+                  _carOwnerLastName = data['lastName'] ?? 'Unknown Shop';
+                  _carOwnerProfilePhoto = data['profileImage'] ?? '';
 
-                      return Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: carOwnerProfilePhoto.isNotEmpty
-                                ? NetworkImage(carOwnerProfilePhoto)
-                                : null,
-                            child: carOwnerProfilePhoto.isEmpty
-                                ? const Icon(Icons.person)
-                                : null,
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            '$carOwnerFirstName$carOwnerLastName',
-                            style: const TextStyle(fontSize: 18, color: Colors.white),
-                          ),
-                        ],
-                      );
-                    } else {
-                      return const Text('No provider data found');
-                    }
-                  },
-                );
-              } else {
-                return const Text('No conversation data found');
-              }
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.call, color: Colors.white),
-              onPressed: () {
-                // Handle call action
+                  return Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: _carOwnerProfilePhoto.isNotEmpty
+                            ? NetworkImage(_carOwnerProfilePhoto)
+                            : null,
+                        child: _carOwnerProfilePhoto.isEmpty
+                            ? const Icon(Icons.person)
+                            : null,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        _carOwnerFirstName,
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                      Text(
+                        _carOwnerLastName,
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const Text('No provider data found');
+                }
               },
-            ),
-          ],
+            )
+          // actions: [
+          //   IconButton(
+          //     icon: const Icon(Icons.call, color: Colors.white),
+          //     onPressed: () {
+          //       // Handle call action
+          //     },
+          //   ),
+          // ],
         ),
         body: Column(
           children: [
@@ -194,7 +172,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 stream: _chatService.getMessages(widget.conversationId),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                    ));
                   }
 
                   if (snapshot.hasError) {
@@ -260,7 +240,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: Container(
                           color: Colors.black.withOpacity(0.5),
                           child: const Center(
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                            ),
                           ),
                         ),
                       ),
@@ -293,7 +275,18 @@ class _ChatScreenState extends State<ChatScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 1),
                   child: Container(
-                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          blurRadius: 5,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
                     child: Row(
                       children: [
                         IconButton(
@@ -315,10 +308,10 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.send, color: Colors.orange.shade900),
-                          onPressed: () {
+                          icon: Icon(Icons.send, color: _isLoading ? Colors.orange.shade900 : Colors.orange.shade900),
+                          onPressed: _isLoading ? null : () {
                             if (_pickedImage != null || _messageController.text.trim().isNotEmpty) {
-                              _sendMessage(imageFile: _pickedImage); // Send message or image
+                              _sendMessage(imageFile: _pickedImage);
                             }
                           },
                         ),
@@ -330,7 +323,6 @@ class _ChatScreenState extends State<ChatScreen> {
             )
           ],
         ),
-      ),
-    );
+      );
   }
 }

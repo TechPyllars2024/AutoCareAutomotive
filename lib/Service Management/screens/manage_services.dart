@@ -4,9 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../ProfileManagement/services/get_verified_services.dart';
 import '../models/services_model.dart';
 import '../services/image_service.dart';
 import '../services/service_management.dart';
+import '../widgets/service_status_alert_box.dart';
 
 class ServiceManagementScreen extends StatefulWidget {
   const ServiceManagementScreen({super.key, this.child});
@@ -25,13 +27,44 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
   File? _selectedImage;
   String category = CategoryList.categories[0];
   bool _isLoading = false;
+  String? servicePictureUrl;
+  bool _isVerified = false;
+  final GetVerifiedServices _getVerifiedServices = GetVerifiedServices();
+  bool _isVerificationStatusLoading = false;
+  String _senderId = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCurrentUser();
+    _checkUserVerificationStatus();
+  }
+
+  Future<void> _checkUserVerificationStatus() async {
+    if (user != null) {
+      String? status = await _getVerifiedServices.fetchStatus(user!.uid);
+      setState(() {
+        _isVerified = status == 'Verified';
+        _isVerificationStatusLoading = true;
+      });
+    }
+  }
+
+  Future<void> _fetchCurrentUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        _senderId = user.uid;
+      });
+    }
+  }
 
   void _addOrUpdateService(BuildContext context, {ServiceModel? service}) {
     final nameController = TextEditingController(text: service?.name);
     final descriptionController =
         TextEditingController(text: service?.description);
     final priceController =
-        TextEditingController(text: service?.price.toString());
+        TextEditingController(text: service?.price.toStringAsFixed(2));
 
     String category = service?.category.isNotEmpty == true
         ? service!.category[0]
@@ -132,6 +165,9 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                               BorderSide(color: Colors.grey.shade600, width: 1),
                         ),
                       ),
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(30),
+                      ],
                       style: const TextStyle(color: Colors.black),
                     ),
                     TextField(
@@ -139,6 +175,8 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                       onChanged: (text) {
                         setState(() {});
                       },
+                      maxLines: null,
+                      keyboardType: TextInputType.multiline,
                       decoration: InputDecoration(
                         labelText: 'Description',
                         labelStyle: TextStyle(
@@ -156,6 +194,9 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                               BorderSide(color: Colors.grey.shade600, width: 1),
                         ),
                       ),
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(120),
+                      ],
                     ),
                     TextField(
                       controller: priceController,
@@ -240,12 +281,12 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                 ),
                 TextButton(
                   child: _isLoading
-                      ? SizedBox(
+                      ? const SizedBox(
                           height: 18,
                           width: 18,
                           child: CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.orange.shade900),
+                                Colors.orange),
                             strokeWidth: 3,
                           ),
                         ) // Show loading indicator
@@ -257,37 +298,63 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
                     if (nameController.text.isNotEmpty &&
                         descriptionController.text.isNotEmpty &&
                         priceController.text.isNotEmpty &&
-                        priceController.text != '0.00' &&
-                        _selectedImage != null) {
+                        priceController.text != '0.00') {
                       setState(() {
-                        _isLoading = true; // Set loading state to true
+                        _isLoading = true; // Show loading indicator
                       });
 
-                      if (service == null) {
-                        await _serviceManagement.addService(
-                          serviceProviderId: user!.uid,
-                          name: nameController.text,
-                          description: descriptionController.text,
-                          price: double.parse(priceController.text),
-                          category: category,
-                          imageFile: _selectedImage,
+                      try {
+                        if (service == null) {
+                          // Adding a new service
+                          if (_selectedImage == null) {
+                            throw 'Please select an image for the new service.';
+                          }
+                          await _serviceManagement.addService(
+                            serviceProviderId: user!.uid,
+                            name: nameController.text,
+                            description: descriptionController.text,
+                            price: double.parse(priceController.text),
+                            category: category,
+                            imageFile: _selectedImage,
+                          );
+                        } else {
+                          // Updating an existing service
+                          await _serviceManagement.updateService(
+                            serviceId: service.serviceId,
+                            name: nameController.text,
+                            description: descriptionController.text,
+                            price: double.parse(priceController.text),
+                            category: category,
+                            imageFile: _selectedImage,
+                            currentPictureUrl: service.servicePicture,
+                          );
+                        }
+                      } catch (e) {
+                        // Handle errors (optional)
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('$e'),
+                            backgroundColor:
+                                Colors.red,
+                          ),
                         );
-                      } else {
-                        await _serviceManagement.updateService(
-                          serviceId: service.serviceId,
-                          name: nameController.text,
-                          description: descriptionController.text,
-                          price: double.parse(priceController.text),
-                          category: category,
-                          imageFile: _selectedImage,
-                        );
+                      } finally {
+                        // Reset loading state and selected image
+                        setState(() {
+                          _isLoading = false;
+                          _selectedImage = null;
+                        });
+
+                        // Close the dialog
+                        Navigator.of(context).pop();
                       }
-                      setState(() {
-                        _isLoading = false;
-                        _selectedImage = null;
-                      });
-
-                      Navigator.of(context).pop();
+                    } else {
+                      // Show validation error
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Please fill in all fields'),
+                          backgroundColor: Colors.red,),
+                      );
                     }
                   },
                 ),
@@ -355,6 +422,10 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isVerificationStatusLoading) {
+      return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)));
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
@@ -367,101 +438,119 @@ class _ServiceManagementScreenState extends State<ServiceManagementScreen> {
         backgroundColor: Colors.grey.shade100,
         elevation: 0,
       ),
-      body: StreamBuilder<List<ServiceModel>>(
-        stream: _serviceManagement.fetchServices(user!.uid),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No services available'));
-          }
-
-          final services = snapshot.data!;
-
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 3 / 4,
-              ),
-              itemCount: services.length,
-              itemBuilder: (context, index) {
-                final service = services[index];
-                return GestureDetector(
-                  onTap: () => _showServiceOptions(context, service),
-                  child: Card(
-                    color: Colors.white,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
+      body: Column(
+        children: [
+         if (!_isVerified)
+            const ServiceStatusAlertBox(isVerified: false),
+          Expanded(
+            child: StreamBuilder<List<ServiceModel>>(
+              stream: _serviceManagement.fetchServices(user!.uid),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)));
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No services available'));
+                }
+                final services = snapshot.data!;
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 3 / 4,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(16.0),
-                              topRight: Radius.circular(16.0),
-                            ),
-                            child: Image.network(
-                              service.servicePicture,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.error,
-                                    size: 60, color: Colors.red);
-                              },
-                            ),
+                    itemCount: services.length,
+                    itemBuilder: (context, index) {
+                      final service = services[index];
+                      return GestureDetector(
+                        onTap: () => _showServiceOptions(context, service),
+                        child: Card(
+                          color: Colors.white,
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                service.name,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: Colors.grey[800],
+                              Expanded(
+                                flex: 2,
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(16.0),
+                                    topRight: Radius.circular(16.0),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Image.network(
+                                        service.servicePicture,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return const Icon(Icons.error, size: 60, color: Colors.red);
+                                        },
+                                        loadingBuilder: (context, child, loadingProgress) {
+                                          if (loadingProgress == null) {
+                                            return child;
+                                          }
+                                          return const Center(
+                                            child: CircularProgressIndicator(
+                                              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 4.0),
-                              Text(
-                                '${service.price.toStringAsFixed(2)} PHP',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      service.name,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13,
+                                        color: Colors.grey[800],
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 4.0),
+                                    Text(
+                                      '${service.price.toStringAsFixed(2)} PHP',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                    Text(
+                                      service.description,
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.grey[600],
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                              Text(
-                                service.description,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey[600],
-                                ),
-                              )
                             ],
                           ),
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                 );
               },
             ),
-          );
-        },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.orange.shade900,
