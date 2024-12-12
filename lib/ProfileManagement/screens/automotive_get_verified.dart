@@ -77,7 +77,7 @@ class _AutomotiveGetVerifiedScreenState extends State<AutomotiveGetVerifiedScree
           _isUploaded = true;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Successfully uploaded the file!')),
+          const SnackBar(content: Text('Successfully uploaded the file!'), backgroundColor: Colors.green),
         );
         Navigator.push(
           context,
