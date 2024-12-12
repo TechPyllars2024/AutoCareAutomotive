@@ -40,8 +40,8 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _fetchCurrentUser();
-    _initializeConversation();
-    _fetchCarOwnerDetails();
+    _carOwnerData = ChatService().fetchCarOwnerByUid(widget.carOwnerUid);
+    _conversationData = ChatService().fetchStartConversationById(widget.conversationId);
     _initializeConversation();
   }
 
@@ -60,7 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _currentUserId = currentUser.uid;
     }
 
-    if (widget.conversationId != null) {
+    if (widget.conversationId.isNotEmpty) {
       setState(() {
         _conversationId = widget.conversationId;
       });
@@ -70,16 +70,6 @@ class _ChatScreenState extends State<ChatScreen> {
         _conversationId = conversationId;
       });
     }
-  }
-
-  Future<void> _fetchCarOwnerDetails() async {
-    final conversation = await _chatService.fetchStartConversationById(widget.conversationId);
-    final carOwnerDetails = await _chatService.fetchCarOwnerByUid(conversation.senderId);
-    setState(() {
-      _carOwnerFirstName = carOwnerDetails['firstName'] ?? '';
-      _carOwnerLastName = carOwnerDetails['lastName'] ?? '';
-      _carOwnerProfilePhoto = carOwnerDetails['profileImage'] ?? '';
-    });
   }
 
   Future<void> _sendMessage({File? imageFile}) async {
@@ -121,37 +111,51 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pop(context, {
-          'firstName': _carOwnerFirstName,
-          'lastName': _carOwnerLastName,
-          'profileImage': _carOwnerProfilePhoto,
-        });
-        return true;
-      },
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
           backgroundColor: Colors.orange[900],
           iconTheme: const IconThemeData(color: Colors.white),
-          title: Row(
-            children: [
-              CircleAvatar(
-                backgroundImage: _carOwnerProfilePhoto.isNotEmpty
-                    ? NetworkImage(_carOwnerProfilePhoto)
-                    : null,
-                child: _carOwnerProfilePhoto.isEmpty
-                    ? const Icon(Icons.person)
-                    : null,
-              ),
-              const SizedBox(width: 10),
-              Text(
-                '$_carOwnerFirstName $_carOwnerLastName',
-                style: const TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ],
-          ),
+            title: FutureBuilder<Map<String, dynamic>>(
+              future: _carOwnerData,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text('Loading...',
+                      style: TextStyle(color: Colors.white));
+                } else if (snapshot.hasError) {
+                  return const Text('Error loading provider');
+                } else if (snapshot.hasData) {
+                  final data = snapshot.data!;
+                  _carOwnerFirstName = data['firstName'] ?? 'Unknown Shop';
+                  _carOwnerLastName = data['lastName'] ?? 'Unknown Shop';
+                  _carOwnerProfilePhoto = data['profileImage'] ?? '';
+
+                  return Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: _carOwnerProfilePhoto.isNotEmpty
+                            ? NetworkImage(_carOwnerProfilePhoto)
+                            : null,
+                        child: _carOwnerProfilePhoto.isEmpty
+                            ? const Icon(Icons.person)
+                            : null,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        _carOwnerFirstName,
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                      Text(
+                        _carOwnerLastName,
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const Text('No provider data found');
+                }
+              },
+            )
           // actions: [
           //   IconButton(
           //     icon: const Icon(Icons.call, color: Colors.white),
@@ -319,7 +323,6 @@ class _ChatScreenState extends State<ChatScreen> {
             )
           ],
         ),
-      ),
-    );
+      );
   }
 }

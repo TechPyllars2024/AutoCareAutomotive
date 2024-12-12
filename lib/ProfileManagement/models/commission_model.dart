@@ -5,6 +5,8 @@ class Commission {
   final String serviceName;
   final double totalPrice;
   final double commissionAmount;
+  final String serviceProviderUid;
+
 
   Commission({
     required this.commissionId,
@@ -13,6 +15,7 @@ class Commission {
     required this.serviceName,
     required this.totalPrice,
     required this.commissionAmount,
+    required this.serviceProviderUid,
   });
 
   // Method to calculate commission
@@ -29,6 +32,7 @@ class Commission {
       'serviceName': serviceName,
       'totalPrice': totalPrice,
       'commissionAmount': commissionAmount,
+      'serviceProviderUid': serviceProviderUid
     };
   }
 
@@ -41,6 +45,7 @@ class Commission {
       serviceName: map['serviceName'],
       totalPrice: map['totalPrice'],
       commissionAmount: map['commissionAmount'],
+      serviceProviderUid: map['serviceProviderUid']
     );
   }
 }
