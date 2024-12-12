@@ -801,7 +801,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                 ),
                 Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.32,
+                  height: MediaQuery.of(context).size.height * 0.30,
 
                   child: ClipRRect(
 
