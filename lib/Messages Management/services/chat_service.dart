@@ -48,13 +48,27 @@ class ChatService {
   }
 
   Stream<List<StartConversationModel>> getUserConversations(String shopId) {
-    return _firestore
+    final receiverStream = _firestore
         .collection('conversations')
         .where('receiverId', isEqualTo: shopId)
         .snapshots()
         .map((snapshot) => snapshot.docs
         .map((doc) => StartConversationModel.fromMap(doc.data()))
         .toList());
+
+    final senderStream = _firestore
+        .collection('conversations')
+        .where('senderId', isEqualTo: shopId)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => StartConversationModel.fromMap(doc.data()))
+        .toList());
+
+    // Combine the two streams manually
+    return receiverStream.asyncMap((receiverList) async {
+      final senderList = await senderStream.first; // Fetch sender data
+      return [...receiverList, ...senderList]; // Combine both lists
+    });
   }
 
   Future<StartConversationModel?> getExistingConversation(String senderId, String receiverId) async {
@@ -116,6 +130,7 @@ class ChatService {
       await createConversation(conversation);
 
       return conversationId;
+
     } catch (e) {
       logger.e('Error initializing conversation: $e');
       rethrow;
@@ -285,7 +300,6 @@ class ChatService {
 
       logger.i('Booking confirmation message sent successfully');
     } catch (e) {
-      logger.e('Error sending booking confirmation message: $e');
       rethrow;
     }
   }

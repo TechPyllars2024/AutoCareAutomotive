@@ -5,7 +5,8 @@ import '../models/commission_model.dart';
 import '../services/commission_services.dart';
 
 class AutomotiveCommission extends StatefulWidget {
-  const AutomotiveCommission({super.key});
+  final serviceProviderUid;
+  const AutomotiveCommission({super.key, required this.serviceProviderUid});
 
   @override
   State<AutomotiveCommission> createState() => _AutomotiveCommissionState();
@@ -30,7 +31,7 @@ class _AutomotiveCommissionState extends State<AutomotiveCommission> {
   }
 
   Future<void> _loadCommissionData() async {
-    final commissions = await CommissionService.fetchCommissionDetails();
+    final commissions = await CommissionService.fetchCommissionDetails(widget.serviceProviderUid);
     final total = await CommissionService.calculateTotalCommission();
     setState(() {
       commissionDetails = commissions;
