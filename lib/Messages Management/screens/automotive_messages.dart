@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
@@ -33,8 +34,15 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
     }
   }
 
-  Future<Map<String, dynamic>> _fetchCarOwnerDetails(String senderId) async {
-    return await _chatService.fetchCarOwnerByUid(senderId);
+  Stream<DocumentSnapshot> _listenToShopDetails(String senderId, String receiverId, String currentUserId) {
+    // Determine which ID represents the shop
+    String shopId = senderId == currentUserId ? receiverId : senderId;
+
+    // Listen to shop details based on the identified shopId
+    return FirebaseFirestore.instance
+        .collection('car_owner_profile')
+        .doc(shopId)
+        .snapshots();
   }
 
   @override
@@ -87,13 +95,20 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
               final conversation = conversations[index];
               final isRead = conversation.isRead;
 
-              return FutureBuilder<Map<String, dynamic>>(
-                future: _fetchCarOwnerDetails(conversation.senderId),
-                builder: (context, carOwnerSnapshot) {
-                  if (carOwnerSnapshot.connectionState == ConnectionState.waiting) {
-                    return const SizedBox();
+              return StreamBuilder<DocumentSnapshot>(
+                stream: _listenToShopDetails(conversation.receiverId, conversation.senderId, _currentUserId!),
+                builder: (context, shopSnapshot) {
+                  if (shopSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return ListTile(
+                      leading: const CircleAvatar(
+                        child: Icon(Icons.person, color: Colors.white),
+                      ),
+                      title: Text(conversation.shopName),
+                      subtitle: Text(conversation.lastMessage),
+                    );
                   }
-                  if (carOwnerSnapshot.hasError) {
+                  if (shopSnapshot.hasError) {
                     return const ListTile(
                       title: Text(
                         'Error loading car owner details.',
@@ -101,7 +116,7 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
                       ),
                     );
                   }
-                  final carOwnerDetails = carOwnerSnapshot.data!;
+                  final carOwnerDetails = shopSnapshot.data!;
                   final carOwnerFirstName = carOwnerDetails['firstName'] ?? '';
                   final carOwnerLastName = carOwnerDetails['lastName'] ?? '';
                   final carOwnerProfilePhoto = carOwnerDetails['profileImage'] ?? '';
@@ -136,7 +151,9 @@ class _AutomotiveMessagesScreenState extends State<AutomotiveMessagesScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ChatScreen(
-                            carOwnerUid: conversation.receiverId,
+                            carOwnerUid: conversation.senderId == _currentUserId
+                                ? conversation.receiverId
+                                : conversation.senderId,
                             conversationId: conversation.conversationId,
                           ),
                         ),
