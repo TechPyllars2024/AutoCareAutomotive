@@ -675,148 +675,147 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
           children: [
             Column(
               children: [
-                const SizedBox(height: 60),
+                const SizedBox(height: 10),
+                TableCalendar(
+                  firstDay: DateTime.utc(2020, 1, 1),
+                  lastDay: DateTime.utc(2030, 12, 31),
+                  focusedDay: _selectedDate,
+                  calendarFormat: CalendarFormat.month,
+                  selectedDayPredicate: (day) =>
+                      isSameDay(_selectedDate, day),
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      _selectedDate = _normalizeDate(selectedDay);
+                      _selectedBookings =
+                          _events[_normalizeDate(selectedDay)] ?? [];
+                      if (_selectedBookings.isNotEmpty) {
+                        _showBookingDetailsModal(_selectedBookings);
+                      }
+                    });
+                  },
+                  eventLoader: (day) {
+                    return _events[_normalizeDate(day)] ?? [];
+                  },
+                  calendarBuilders: CalendarBuilders(
+                    markerBuilder: (context, date, events) {
+                      if (events.isNotEmpty) {
+                        return Positioned(
+                          bottom: 1,
+                          child:
+                              _buildEventMarker(events as List<BookingModel>),
+                        );
+                      }
+                      return null;
+                    },
+                  ),
+                  headerStyle: HeaderStyle(
+                    titleCentered: true,
+                    titleTextStyle: const TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    formatButtonVisible: false,
+                    leftChevronIcon: const Icon(
+                      Icons.chevron_left,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                    rightChevronIcon: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade900,
+                      borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(16)),
+                    ),
+                  ),
+                  calendarStyle: CalendarStyle(
+                    selectedDecoration: BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.blue.withOpacity(0.5),
+                          blurRadius: 3,
+                          spreadRadius: 3,
+                        ),
+                      ],
+                    ),
+                    todayDecoration: BoxDecoration(
+                      color: Colors.orange.shade900,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.orange.withOpacity(0.5),
+                          blurRadius: 3,
+                          spreadRadius: 3,
+                        ),
+                      ],
+                    ),
+                    defaultDecoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border:
+                          Border.all(color: Colors.grey.shade300, width: 1),
+                    ),
+                    weekendDecoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      shape: BoxShape.circle,
+                    ),
+                    markerDecoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.red.withOpacity(0.6),
+                          blurRadius: 6,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    outsideDecoration: const BoxDecoration(
+                      color: Colors.transparent,
+                    ),
+                    cellMargin: const EdgeInsets.all(4),
+                    todayTextStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    selectedTextStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    weekendTextStyle: TextStyle(
+                      color: Colors.red.shade300,
+                      fontSize: 14,
+                    ),
+                    defaultTextStyle: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
                 Container(
-                  padding: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        blurRadius: 6,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: TableCalendar(
-                    firstDay: DateTime.utc(2020, 1, 1),
-                    lastDay: DateTime.utc(2030, 12, 31),
-                    focusedDay: _selectedDate,
-                    calendarFormat: CalendarFormat.month,
-                    selectedDayPredicate: (day) =>
-                        isSameDay(_selectedDate, day),
-                    onDaySelected: (selectedDay, focusedDay) {
-                      setState(() {
-                        _selectedDate = _normalizeDate(selectedDay);
-                        _selectedBookings =
-                            _events[_normalizeDate(selectedDay)] ?? [];
-                        if (_selectedBookings.isNotEmpty) {
-                          _showBookingDetailsModal(_selectedBookings);
-                        }
-                      });
-                    },
-                    eventLoader: (day) {
-                      return _events[_normalizeDate(day)] ?? [];
-                    },
-                    calendarBuilders: CalendarBuilders(
-                      markerBuilder: (context, date, events) {
-                        if (events.isNotEmpty) {
-                          return Positioned(
-                            bottom: 1,
-                            child:
-                                _buildEventMarker(events as List<BookingModel>),
-                          );
-                        }
-                        return null;
-                      },
-                    ),
-                    headerStyle: HeaderStyle(
-                      titleCentered: true,
-                      titleTextStyle: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      formatButtonVisible: false,
-                      leftChevronIcon: const Icon(
-                        Icons.chevron_left,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                      rightChevronIcon: const Icon(
-                        Icons.chevron_right,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.orange.shade900,
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(16)),
-                      ),
-                    ),
-                    calendarStyle: CalendarStyle(
-                      selectedDecoration: BoxDecoration(
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.blue.withOpacity(0.5),
-                            blurRadius: 3,
-                            spreadRadius: 3,
-                          ),
-                        ],
-                      ),
-                      todayDecoration: BoxDecoration(
-                        color: Colors.orange.shade900,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.orange.withOpacity(0.5),
-                            blurRadius: 3,
-                            spreadRadius: 3,
-                          ),
-                        ],
-                      ),
-                      defaultDecoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border:
-                            Border.all(color: Colors.grey.shade300, width: 1),
-                      ),
-                      weekendDecoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        shape: BoxShape.circle,
-                      ),
-                      markerDecoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.red.withOpacity(0.6),
-                            blurRadius: 6,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      outsideDecoration: const BoxDecoration(
-                        color: Colors.transparent,
-                      ),
-                      cellMargin: const EdgeInsets.all(4),
-                      todayTextStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      selectedTextStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      weekendTextStyle: TextStyle(
-                        color: Colors.red.shade300,
-                        fontSize: 14,
-                      ),
-                      defaultTextStyle: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                      ),
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 0.32,
+
+                  child: ClipRRect(
+
+                    child: Image.asset(
+                      'assets/images/bookingBackground.png',
+                      fit: BoxFit.cover, // Scales the image to cover the container proportionally
                     ),
                   ),
-                )
+                ),
+
               ],
             ),
             SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(2.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -826,7 +825,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         .where((booking) => booking.status == 'pending')
                         .toList(),
                     emptyMessage: 'No pending bookings',
-                    color: Colors.orange.shade100,
+                    color: Colors.yellow.shade900,
                   ),
                   const SizedBox(height: 16),
                   _buildBookingSection(
@@ -835,7 +834,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         .where((booking) => booking.status == 'confirmed')
                         .toList(),
                     emptyMessage: 'No accepted bookings',
-                    color: Colors.blue.shade100,
+                    color: Colors.blue.shade900,
                     isMarkAsDoneEnabled: true,
                   ),
                   const SizedBox(height: 16),
@@ -845,7 +844,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         .where((booking) => booking.status == 'done')
                         .toList(),
                     emptyMessage: 'No completed bookings',
-                    color: Colors.green.shade100,
+                    color: Colors.green.shade900,
                   ),
                   const SizedBox(height: 16),
                   _buildBookingSection(
@@ -854,7 +853,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         .where((booking) => booking.status == 'declined')
                         .toList(),
                     emptyMessage: 'No declined bookings',
-                    color: Colors.red.shade100,
+                    color: Colors.red.shade900,
                   ),
                 ],
               ),

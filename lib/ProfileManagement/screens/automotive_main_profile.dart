@@ -83,24 +83,25 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
+
         automaticallyImplyLeading: false,
         title: const Text(
           'Profile',
-          style: TextStyle(fontWeight: FontWeight.w900),
+          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
         ),
-        backgroundColor: Colors.grey.shade100,
+        backgroundColor: Colors.orange.shade900,
         actions: [
           IconButton(
             icon: Container(
               decoration: BoxDecoration(
-                color: Colors.orange.shade900,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(12.0),
               ),
               padding: const EdgeInsets.all(6.0),
-              child: const Center(
+              child:  Center(
                 child: Icon(
                   Icons.edit,
-                  color: Colors.white,
+                  color: Colors.orange.shade900,
                   size: 25,
                 ),
               ),
@@ -122,30 +123,45 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
               alignment: Alignment.center,
               children: [
                 Container(
+                  width: double.infinity,
+                  height: 50,
+                  color: Colors.orange.shade900,
+                ),
+                Positioned(
+                  top: 0, // Adjust this value to position the orange container at the top
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    width: double.infinity,
+                    height: 100,
+                    color: Colors.orange.shade900,
+                  ),
+                ),
+                Container(
                   width: 180,
                   height: 180,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.orange.shade900,
-                      width: 1,
+                      color: Colors.grey.shade100,
+                      width: 6,
                     ),
                   ),
                   child: CircleAvatar(
                     radius: 90,
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colors.grey.shade400,
                     backgroundImage: profile?.profileImage.isNotEmpty == true
                         ? NetworkImage(profile!.profileImage)
                         : null,
                     child: profile?.profileImage.isEmpty == true
-                        ? const Icon(Icons.person, size: 90, color: Colors.black)
+                        ? const Icon(Icons.person, size: 90, color: Colors.white)
                         : null,
                   ),
                 ),
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 24),
+              padding: const EdgeInsets.only(top: 2),
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -167,13 +183,20 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                 ),
               ),
             ),
+
+            const Divider(
+              color: Colors.grey,
+              thickness: 1,
+              indent: 20,
+              endIndent: 20,
+            ),
+
+
+            //Shop Profile Details Section
             ProfileDetailsWidget(profile: profile),
-            // const Divider(
-            //   color: Colors.grey,
-            //   thickness: 1,
-            //   indent: 20,
-            //   endIndent: 20,
-            // ),
+
+
+
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -281,7 +304,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
                               color: Colors.grey.shade300,
-                              width: 1.5,
+                              width: 1,
                             ),
                           ),
                           child: Row(
@@ -321,7 +344,7 @@ class ProfileDetailsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -347,7 +370,7 @@ class ProfileDetailsWidget extends StatelessWidget {
                         profile?.location ?? 'Location',
                         textAlign: TextAlign.left,
                         overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
+                        maxLines: 3,
                         softWrap: true,
                         style: const TextStyle(fontSize: 14),
                       ),
@@ -481,25 +504,25 @@ class ProfileMenuWidget extends StatelessWidget {
     return ListTile(
       onTap: onPressed,
       leading: Container(
-        width: 40,
-        height: 40,
+        width: 35,
+        height: 35,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100),
-          color: Colors.orange.shade900.withOpacity(0.1),
+          color: Colors.orange.shade900.withOpacity(1),
         ),
-        child: Icon(icon, color: Colors.orange.shade900),
+        child: Icon(icon, color: Colors.white),
       ),
-      title: Text(title, style: TextStyle(color: color ?? Colors.black)),
+      title: Text(title, style: TextStyle(color: color ?? Colors.black, fontSize: 14)),
       trailing: endIcon
           ? Container(
-              width: 30,
-              height: 30,
+              width: 25,
+              height: 25,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
                 color: Colors.grey.withOpacity(0.1),
               ),
               child: const Icon(Icons.arrow_forward_ios,
-                  size: 18.0, color: Colors.grey),
+                  size: 15.0, color: Colors.grey),
             )
           : null,
     );
