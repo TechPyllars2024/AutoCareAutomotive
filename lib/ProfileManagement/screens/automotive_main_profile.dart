@@ -275,7 +275,7 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                              const AutomotiveCommission()),
+                              AutomotiveCommission(serviceProviderUid: user!.uid,)),
                         );
                       },
                     ),
