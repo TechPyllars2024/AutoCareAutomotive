@@ -72,15 +72,26 @@ class ChatService {
   }
 
   Future<StartConversationModel?> getExistingConversation(String senderId, String receiverId) async {
-    // Generate a consistent conversation ID
-    List<String> conversationId = [senderId, receiverId]..sort();
     final querySnapshot = await _firestore
         .collection('conversations')
-        .doc(conversationId.join('_'))
+        .where('senderId', isEqualTo: senderId)
+        .where('receiverId', isEqualTo: receiverId)
         .get();
 
-    if (querySnapshot.exists) {
-      return StartConversationModel.fromMap(querySnapshot.data()!);
+    if (querySnapshot.docs.isEmpty) {
+      final reverseQuerySnapshot = await _firestore
+          .collection('conversations')
+          .where('senderId', isEqualTo: receiverId)
+          .where('receiverId', isEqualTo: senderId)
+          .get();
+
+      if (reverseQuerySnapshot.docs.isNotEmpty) {
+        return StartConversationModel.fromMap(reverseQuerySnapshot.docs.first.data());
+      }
+    }
+
+    if (querySnapshot.docs.isNotEmpty) {
+      return StartConversationModel.fromMap(querySnapshot.docs.first.data());
     }
 
     return null;
