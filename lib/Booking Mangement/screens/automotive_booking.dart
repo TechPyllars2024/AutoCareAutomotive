@@ -801,13 +801,13 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                 ),
                 Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.30,
+                  height: double.infinity,
 
                   child: ClipRRect(
 
                     child: Image.asset(
                       'assets/images/bookingBackground.png',
-                      fit: BoxFit.cover, // Scales the image to cover the container proportionally
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
