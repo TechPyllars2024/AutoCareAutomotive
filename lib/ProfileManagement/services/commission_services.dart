@@ -25,6 +25,7 @@ class CommissionService {
         serviceName: booking.selectedService.join(', '),
         totalPrice: booking.totalPrice,
         commissionAmount: commissionAmount,
+        serviceProviderUid: booking.serviceProviderUid
       );
 
       await FirebaseFirestore.instance
@@ -36,10 +37,11 @@ class CommissionService {
     }
   }
 
-  static Future<List<Commission>> fetchCommissionDetails() async {
+  static Future<List<Commission>> fetchCommissionDetails(String serviceProviderUid) async {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('commissions')
+          .where('serviceProviderUid', isEqualTo: serviceProviderUid)
           .get();
 
       List<Commission> commissionDetails = [];
