@@ -187,7 +187,8 @@ class _AutomotiveEditProfileScreenState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MapPage(), // Replace with actual screen
+        builder: (context) => MapPage(
+            location: _locationController.text), // Replace with actual screen
       ),
     );
   }
@@ -373,7 +374,7 @@ class _AutomotiveEditProfileScreenState
         backgroundColor: Colors.white,
         body: Center(
           child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
           ),
         ),
       );
@@ -500,10 +501,9 @@ class _AutomotiveEditProfileScreenState
             // Google Map for pinning location
             isLoading
                 ? const Center(
-                    child:
-                        CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
-                        ), // Show loading until location is set
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                    ), // Show loading until location is set
                   )
                 : (_initialLocation == null
                     ? const Center(child: Text('Location not available'))

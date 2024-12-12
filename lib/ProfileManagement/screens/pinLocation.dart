@@ -1,23 +1,23 @@
-import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_edit_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:logger/logger.dart';
+import '../models/automotive_marker_model.dart';
 import '../services/pin_location.dart';
 
-class MapPage extends StatefulWidget {
+class InitialMapPage extends StatefulWidget {
   final String location;
-  const MapPage({super.key, this.child, required this.location});
+  const InitialMapPage({super.key, this.child, required this.location});
 
   final Widget? child;
 
   @override
-  State<MapPage> createState() => _MapPageState();
+  State<InitialMapPage> createState() => _InitialMapPageState();
 }
 
-class _MapPageState extends State<MapPage> {
+class _InitialMapPageState extends State<InitialMapPage> {
   late GoogleMapController mapController;
   final Set<Marker> _markers = {};
   final MapService mapService = MapService();
@@ -42,15 +42,12 @@ class _MapPageState extends State<MapPage> {
     if (initialPosition != null) {
       setState(() {
         // Convert the Position to a LatLng for map usage
-        _centerPosition =
-            LatLng(initialPosition.latitude, initialPosition.longitude);
+        _centerPosition = LatLng(initialPosition.latitude, initialPosition.longitude);
       });
     } else {
-      logger.i(
-          "Failed to determine initial position for location: ${widget.location}");
+      logger.i("Failed to determine initial position for location: ${widget.location}");
       setState(() {
-        _centerPosition =
-            LatLng(currentPosition!.latitude, currentPosition.longitude);
+        _centerPosition = LatLng(currentPosition!.latitude, currentPosition.longitude);
       });
     }
   }
@@ -127,6 +124,34 @@ class _MapPageState extends State<MapPage> {
     });
   }
 
+  Future<void> _getPlaceName(LatLng position) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        final Placemark place = placemarks.first;
+
+        final placeName =
+            "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+
+        setState(() {
+          nameOfThePlace = placeName;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Place: $placeName")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
+  }
+
   void _confirmMarkerPlacement(BuildContext context) async {
     if (isLoading) return;
 
@@ -137,8 +162,10 @@ class _MapPageState extends State<MapPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Confirm Marker Placement",
-              style: TextStyle(fontSize: 18)),
+          title: const Text(
+            "Confirm Marker Placement",
+            style: TextStyle(fontSize: 18),
+          ),
           content: Text(
             "Do you want to add a marker at this location?\n\n"
             "Latitude: ${position!.latitude}\n"
@@ -153,53 +180,90 @@ class _MapPageState extends State<MapPage> {
             ),
             TextButton(
               onPressed: () async {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const AutomotiveEditProfileScreen()));
+                Navigator.of(context).pop();
 
                 // Proceed with marker placement
+                Navigator.of(context).pop();
+
                 final existingMarker =
                     await mapService.fetchMarkerByUserId(user!.uid);
 
-                if (existingMarker != null &&
-                    existingMarker.latitude != position.latitude &&
-                    existingMarker.longitude != position.longitude) {
-                  // Update existing marker's location
+                if (existingMarker != null) {
+                  // Update existing marker
                   await mapService.updateMarker(
                       existingMarker, position, nameOfThePlace);
 
                   setState(() {
-                    // Update the marker in the set
-                    final updatedMarker = Marker(
-                      markerId: MarkerId(position.toString()),
-                      position: position,
-                      infoWindow: InfoWindow(
-                        title: nameOfThePlace,
-                        snippet:
-                            "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
-                      ),
-                    );
+                    // Remove the old marker
                     _markers.removeWhere((marker) =>
                         marker.markerId.value ==
                         existingMarker.latitude.toString() +
                             existingMarker.longitude.toString());
-                    _markers.add(updatedMarker);
+
+                    nameOfThePlace = _getPlaceName(position) as String;
+                    // Add the updated marker
+                    _markers.add(
+                      Marker(
+                        markerId: MarkerId(position.toString()),
+                        position: position,
+                        infoWindow: InfoWindow(
+                          title: nameOfThePlace,
+                          snippet:
+                              "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
+                        ),
+                      ),
+                    );
                   });
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text("Marker location updated!"),
-                        backgroundColor: Colors.green),
+                    const SnackBar(content: Text("Marker updated!")),
+                  );
+
+                  // Pop the dialog or screen
+                  Navigator.of(context).pop();
+
+                  // Ensure loading state is reset
+                  setState(() {
+                    isLoading = false;
+                  });
+                } else {
+                  // Add a new marker
+                  final marker = MarkerModel(
+                    serviceProviderUid: user!.uid,
+                    nameOfThePlace: nameOfThePlace,
+                    latitude: position.latitude,
+                    longitude: position.longitude,
+                    title: "Custom Marker",
+                    snippet:
+                        "Latitude: ${position.latitude}, Longitude: ${position.longitude}",
+                  );
+
+                  await mapService.addMarker(marker);
+
+                  setState(() {
+                    nameOfThePlace = _getPlaceName(position) as String;
+                    _markers.add(
+                      Marker(
+                        markerId: MarkerId(position.toString()),
+                        position: position,
+                      ),
+                    );
+                    isLoading = false;
+                  });
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Marker added!")),
                   );
                 }
+
                 setState(() {
-                  isLoading = false;
+                  isLoading = false; // Reset loading state
                 });
               },
-              child: Text("Confirm",
-                  style: TextStyle(color: Colors.orange.shade900)),
+              child: Text(
+                "Confirm",
+                style: TextStyle(color: Colors.orange.shade900),
+              ),
             ),
           ],
         );

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 import 'package:autocare_automotiveshops/Authentication/screens/onboardingPage3.dart';
-import 'package:autocare_automotiveshops/ProfileManagement/screens/automotive_pin_location.dart';
+import 'package:autocare_automotiveshops/ProfileManagement/screens/pinLocation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -174,8 +174,8 @@ class _AutomotiveCompleteProfileScreenState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MapPage(), // Replace with actual screen
-      ),
+          builder: (context) =>
+              InitialMapPage(location: _locationController.text)),
     );
   }
 
@@ -457,10 +457,9 @@ class _AutomotiveCompleteProfileScreenState
             // Google Map for pinning location
             _isLoading
                 ? const Center(
-                    child:
-                        CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
-                        ),
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                    ),
                   )
                 : (_initialLocation == null
                     ? const Center(child: Text('Location not available'))
