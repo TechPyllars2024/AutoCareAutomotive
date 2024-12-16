@@ -311,7 +311,7 @@ class _AutomotiveEditProfileScreenState
         emptyFields.add('Operating hours');
       }
 
-      if (_serviceSpecialization == null || _serviceSpecialization!.isEmpty) {
+      if(dropdownController.selectedOptionList.isEmpty || _serviceSpecialization!.isEmpty){
         emptyFields.add('Service Specialization');
       }
 
