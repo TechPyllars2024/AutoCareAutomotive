@@ -259,6 +259,14 @@ class _AutomotiveCompleteProfileScreenState
         emptyFields.add('Markers');
       }
 
+      if (_coverImage == null) {
+        emptyFields.add('Cover Image');
+      }
+
+      if (_profileImage == null) {
+        emptyFields.add('Profile Image');
+      }
+
       if (emptyFields.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
