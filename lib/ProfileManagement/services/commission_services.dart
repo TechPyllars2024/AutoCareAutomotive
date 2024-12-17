@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logger/logger.dart';
 import '../../Authentication/Widgets/snackBar.dart';
 import '../../Booking Mangement/models/booking_model.dart';
-import '../models/automotive_shop_profile_model.dart';
 import '../models/commission_model.dart';
 
 class CommissionService {
