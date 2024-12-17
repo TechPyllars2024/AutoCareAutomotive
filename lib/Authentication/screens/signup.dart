@@ -8,8 +8,6 @@ import '../Widgets/button.dart';
 import '../Widgets/snackBar.dart';
 import '../Widgets/text_field.dart';
 import '../widgets/carImage.dart';
-import '../widgets/googleButton.dart';
-import '../widgets/or.dart';
 import '../widgets/texfieldPassword.dart';
 import '../widgets/validator.dart';
 import 'login.dart';
@@ -225,6 +223,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         },
                         isPass: true,
                       ),
+                      SizedBox(height: size.height * 0.01),
                       Padding(
                         padding: const EdgeInsets.only(top: 5.0),
                         child: MyButtons(
@@ -234,13 +233,13 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                       SizedBox(height: size.height * 0.03),
-                      const Or(),
-                      SizedBox(height: size.height * 0.03),
-                      GoogleButton(
-                        onTap: signInWithGoogle,
-                        hintText: 'Sign Up with Google',
-                      ),
-                      SizedBox(height: size.height * 0.06),
+                      // const Or(),
+                      // SizedBox(height: size.height * 0.03),
+                      // GoogleButton(
+                      //   onTap: signInWithGoogle,
+                      //   hintText: 'Sign Up with Google',
+                      // ),
+                      SizedBox(height: size.height * 0.1),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
