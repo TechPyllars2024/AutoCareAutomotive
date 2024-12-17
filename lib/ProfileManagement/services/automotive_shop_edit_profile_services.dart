@@ -57,7 +57,9 @@ class AutomotiveShopEditProfileServices {
       required double totalRatings,
       required int numberOfRatings,
       required int numberOfBookingsPerHour,
-      required Map<String, Map<String, int>> remainingSlots}) async {
+      required Map<String, Map<String, int>> remainingSlots,
+      required double commissionLimit
+      }) async {
     final Map<String, dynamic> updatedData = {};
 
     if (coverImage != null) {
@@ -80,6 +82,7 @@ class AutomotiveShopEditProfileServices {
     updatedData['totalRatings'] = totalRatings;
     updatedData['numberOfRatings'] = numberOfRatings;
     updatedData['numberOfBookingsPerHour'] = numberOfBookingsPerHour;
+    updatedData['commissionLimit'] = commissionLimit;
     updatedData['remainingSlots'] = remainingSlots.map((date, slots) {
       // Find the highest remaining slot value for the day
       int highestRemaining = slots.values.reduce((a, b) => a > b ? a : b);

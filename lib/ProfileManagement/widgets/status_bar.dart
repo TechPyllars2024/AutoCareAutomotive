@@ -10,6 +10,7 @@ class ServiceStatusAlertBox extends StatelessWidget {
     if (isVerified) {
       return const SizedBox.shrink();
     }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Material(
@@ -31,9 +32,9 @@ class ServiceStatusAlertBox extends StatelessWidget {
               const SizedBox(width: 8.0),
               const Expanded(
                 child: Text(
-                  'Your services will be displayed if you are verified. Get Verified now!',
+                  'Your services are currently not visible on your customers. It will be displayed again if you will pay the autocare fee.',
                   style: TextStyle(
-                            fontSize: 13,
+                    fontSize: 13,
                   ),
                 ),
               ),
