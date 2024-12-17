@@ -64,6 +64,7 @@ class _AutomotiveEditProfileScreenState
   final Set<Marker> _markers = {};
   Timer? _locationUpdateTimer;
   bool isLoading = true;
+  final double commissionLimit = 100.0;
 
   @override
   void dispose() {
@@ -311,7 +312,8 @@ class _AutomotiveEditProfileScreenState
         emptyFields.add('Operating hours');
       }
 
-      if(dropdownController.selectedOptionList.isEmpty || _serviceSpecialization!.isEmpty){
+      if (dropdownController.selectedOptionList.isEmpty ||
+          _serviceSpecialization!.isEmpty) {
         emptyFields.add('Service Specialization');
       }
 
@@ -359,7 +361,8 @@ class _AutomotiveEditProfileScreenState
             totalRatings: _totalRatings,
             numberOfRatings: _numberOfRatings,
             numberOfBookingsPerHour: _numberOfBookingPerHour!,
-            remainingSlots: remainingSlots);
+            remainingSlots: remainingSlots,
+            commissionLimit: commissionLimit);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -468,8 +471,10 @@ class _AutomotiveEditProfileScreenState
                     borderSide: BorderSide(color: Colors.orange.shade900),
                   ),
                   contentPadding: const EdgeInsets.all(12),
+                  counterText: '',
                 ),
-              ),
+                maxLength: 22,
+              )
             ),
             const SizedBox(height: 10),
 
