@@ -265,10 +265,10 @@ class _MapPageState extends State<MapPage> {
             ? const CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               )
-            : const Icon(Icons.check),
+            : const Icon(Icons.check, color: Colors.white),
       ),
       floatingActionButtonLocation:
-          FloatingActionButtonLocation.centerFloat, // Center the FAB
+          FloatingActionButtonLocation.centerFloat,
     );
   }
 }

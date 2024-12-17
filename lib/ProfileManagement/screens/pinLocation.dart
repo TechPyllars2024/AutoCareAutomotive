@@ -174,7 +174,7 @@ class _InitialMapPageState extends State<InitialMapPage> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: const Text("Cancel"),
             ),
@@ -329,10 +329,10 @@ class _InitialMapPageState extends State<InitialMapPage> {
             ? const CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               )
-            : const Icon(Icons.check),
+            : const Icon(Icons.check, color: Colors.white),
       ),
       floatingActionButtonLocation:
-          FloatingActionButtonLocation.centerFloat, // Center the FAB
+          FloatingActionButtonLocation.centerFloat,
     );
   }
 }
