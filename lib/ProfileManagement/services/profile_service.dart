@@ -52,6 +52,7 @@ class ProfileService {
           numberOfRatings: data['numberOfRatings'] ?? 0,
           numberOfBookingsPerHour: data['numberOfBookingsPerHour'] ?? 0,
           remainingSlots: remainingSlots,
+          commissionLimit: data['commissionLimit'] ?? 0.0,
         );
       } else {
         // Return a default profile model if no data is found
@@ -70,6 +71,7 @@ class ProfileService {
           numberOfRatings: 0,
           numberOfBookingsPerHour: 0,
           remainingSlots: <String, Map<String, int>>{},
+          commissionLimit: 0.0,
         );
       }
     } catch (e) {

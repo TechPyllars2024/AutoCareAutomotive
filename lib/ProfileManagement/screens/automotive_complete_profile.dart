@@ -60,6 +60,7 @@ class _AutomotiveCompleteProfileScreenState
   final MapService mapService = MapService();
   final Set<Marker> _markers = {};
   Timer? _locationUpdateTimer;
+  final double commissionLimit = 100.0;
 
   @override
   void dispose() {
@@ -243,7 +244,7 @@ class _AutomotiveCompleteProfileScreenState
         emptyFields.add('Operating hours');
       }
 
-      if (dropdownController.selectedOptionList.isEmpty) {
+      if(dropdownController.selectedOptionList.isEmpty || _serviceSpecialization!.isEmpty){
         emptyFields.add('Service Specialization');
       }
 
@@ -257,6 +258,14 @@ class _AutomotiveCompleteProfileScreenState
 
       if (_markers.isEmpty) {
         emptyFields.add('Markers');
+      }
+
+      if (_coverImage == null) {
+        emptyFields.add('Cover Image');
+      }
+
+      if (_profileImage == null) {
+        emptyFields.add('Profile Image');
       }
 
       if (emptyFields.isNotEmpty) {
@@ -293,7 +302,9 @@ class _AutomotiveCompleteProfileScreenState
               totalRatings: 0.0,
               numberOfRatings: 0,
               numberOfBookingsPerHour: _numberOfBookingPerHour,
-              remainingSlots: remainingSlots);
+              remainingSlots: remainingSlots,
+              commissionLimit: commissionLimit,
+          );
 
           Navigator.push(
             context,
@@ -408,8 +419,10 @@ class _AutomotiveCompleteProfileScreenState
                     borderSide: BorderSide(color: Colors.orange.shade900),
                   ),
                   contentPadding: const EdgeInsets.all(12),
+                  counterText: '',
                 ),
-              ),
+                maxLength: 22,
+              )
             ),
             const SizedBox(height: 10),
 

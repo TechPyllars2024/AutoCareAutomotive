@@ -268,14 +268,14 @@ class _AutomotiveMainProfileState extends State<AutomotiveMainProfile> {
                   Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     child: ProfileMenuWidget(
-                      title: "Commission",
+                      title: "My Earnings",
                       icon: Icons.handshake_outlined,
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                              AutomotiveCommission(serviceProviderUid: user!.uid,)),
+                              AutomotiveCommission(serviceProviderUid: user!.uid)),
                         );
                       },
                     ),

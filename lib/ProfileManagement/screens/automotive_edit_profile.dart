@@ -64,6 +64,7 @@ class _AutomotiveEditProfileScreenState
   final Set<Marker> _markers = {};
   Timer? _locationUpdateTimer;
   bool isLoading = true;
+  final double commissionLimit = 100.0;
 
   @override
   void dispose() {
@@ -187,8 +188,7 @@ class _AutomotiveEditProfileScreenState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MapPage(
-            location: _locationController.text), // Replace with actual screen
+        builder: (context) => MapPage(location: _locationController.text),
       ),
     );
   }
@@ -222,18 +222,14 @@ class _AutomotiveEditProfileScreenState
         // Parse the operation time from the profile
         final times = editProfile!.operationTime.split(' - ');
         if (times.length == 2) {
-          _openingTime = _parseTimeOfDay(times[0]) ??
-              const TimeOfDay(
-                  hour: 12, minute: 0); // Fallback to 12:00 AM if null
-          _closingTime = _parseTimeOfDay(times[1]) ??
-              const TimeOfDay(
-                  hour: 17, minute: 0); // Fallback to 5:00 PM if null
+          _openingTime =
+              _parseTimeOfDay(times[0]) ?? const TimeOfDay(hour: 12, minute: 0);
+          _closingTime =
+              _parseTimeOfDay(times[1]) ?? const TimeOfDay(hour: 12, minute: 0);
         } else {
           // If the format is incorrect, fallback to defaults
-          _openingTime =
-              const TimeOfDay(hour: 12, minute: 0); // Default to 12:00 AM
-          _closingTime =
-              const TimeOfDay(hour: 17, minute: 0); // Default to 5:00 PM
+          _openingTime = const TimeOfDay(hour: 12, minute: 0);
+          _closingTime = const TimeOfDay(hour: 12, minute: 0);
         }
       }
     });
@@ -268,8 +264,8 @@ class _AutomotiveEditProfileScreenState
       int hour = int.parse(timeComponents[0]);
       int minute = int.parse(timeComponents[1]);
 
-      if (period == 'PM' && hour != 12) hour += 12; // Convert to 24-hour format
-      if (period == 'AM' && hour == 12) hour = 0; // Handle midnight case
+      if (period == 'PM' && hour != 12) hour += 12;
+      if (period == 'AM' && hour == 12) hour = 0;
 
       return TimeOfDay(hour: hour, minute: minute);
     } catch (e) {
@@ -304,7 +300,6 @@ class _AutomotiveEditProfileScreenState
     if (user != null) {
       List<String> emptyFields = [];
 
-      // Check for empty fields
       if (_shopNameController.text.isEmpty) {
         emptyFields.add('Shop Name');
       }
@@ -315,6 +310,27 @@ class _AutomotiveEditProfileScreenState
 
       if (_openingTime == null || _closingTime == null) {
         emptyFields.add('Operating hours');
+      }
+
+      if (dropdownController.selectedOptionList.isEmpty ||
+          _serviceSpecialization!.isEmpty) {
+        emptyFields.add('Service Specialization');
+      }
+
+      if (_daysOfTheWeek == null || _daysOfTheWeek!.isEmpty) {
+        emptyFields.add('Days of the Week');
+      }
+
+      if (_numberOfBookingPerHour == null) {
+        emptyFields.add('Number of Bookings per Hour');
+      }
+
+      if (_coverImage == null && _coverImageUrl == null) {
+        emptyFields.add('Cover Image');
+      }
+
+      if (_profileImage == null && _profileImageUrl == null) {
+        emptyFields.add('Profile Image');
       }
 
       if (emptyFields.isNotEmpty) {
@@ -345,7 +361,8 @@ class _AutomotiveEditProfileScreenState
             totalRatings: _totalRatings,
             numberOfRatings: _numberOfRatings,
             numberOfBookingsPerHour: _numberOfBookingPerHour!,
-            remainingSlots: remainingSlots);
+            remainingSlots: remainingSlots,
+            commissionLimit: commissionLimit);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -454,8 +471,10 @@ class _AutomotiveEditProfileScreenState
                     borderSide: BorderSide(color: Colors.orange.shade900),
                   ),
                   contentPadding: const EdgeInsets.all(12),
+                  counterText: '',
                 ),
-              ),
+                maxLength: 22,
+              )
             ),
             const SizedBox(height: 10),
 
@@ -508,8 +527,7 @@ class _AutomotiveEditProfileScreenState
                 : (_initialLocation == null
                     ? const Center(child: Text('Location not available'))
                     : SizedBox(
-                        height:
-                            200, // Adjust the size for a better visual appearance
+                        height: 200,
                         child: Card(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -744,11 +762,10 @@ class _AutomotiveEditProfileScreenState
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.black, // Slightly darker for better contrast
+                color: Colors.black,
               ),
             ),
 
-            // Improved hint text with a more descriptive placeholder
             Text(
               'Choose your preferred days of the week:',
               style: TextStyle(
@@ -779,8 +796,7 @@ class _AutomotiveEditProfileScreenState
 
   // Number of bookings per hour selection for the profile
   Widget numberOfBookingsSelection() => Padding(
-        padding:
-            const EdgeInsets.all(16.0), // Increased padding for better spacing
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -801,10 +817,8 @@ class _AutomotiveEditProfileScreenState
                     max: 10,
                     divisions: 9, // For 1 to 10
                     label: _numberOfBookingPerHour.toString(),
-                    activeColor:
-                        Colors.orange.shade900, // Slider color when active
-                    inactiveColor:
-                        Colors.grey.shade300, // Slider color when inactive
+                    activeColor: Colors.orange.shade900,
+                    inactiveColor: Colors.grey.shade300,
                     onChanged: (double value) {
                       setState(() {
                         _numberOfBookingPerHour = value.toInt();
@@ -812,8 +826,7 @@ class _AutomotiveEditProfileScreenState
                     },
                   ),
                 ),
-                const SizedBox(
-                    width: 8), // Space between slider and number text
+                const SizedBox(width: 8),
                 Text(
                   '$_numberOfBookingPerHour',
                   style: const TextStyle(
@@ -827,8 +840,7 @@ class _AutomotiveEditProfileScreenState
             const SizedBox(height: 5),
             Row(
               children: [
-                const Icon(Icons.info_outline,
-                    size: 14, color: Colors.grey), // Info icon
+                const Icon(Icons.info_outline, size: 14, color: Colors.grey),
                 const SizedBox(width: 5),
                 Text(
                   'Adjust the number of bookings allowed per hour.',

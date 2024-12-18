@@ -10,8 +10,6 @@ import '../Widgets/button.dart';
 import '../Widgets/snackBar.dart';
 import '../Widgets/text_field.dart';
 import '../widgets/carImage.dart';
-import '../widgets/googleButton.dart';
-import '../widgets/or.dart';
 import '../widgets/texfieldPassword.dart';
 
 import 'forgotPassword.dart';
@@ -216,18 +214,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
 
-                      // Sign Up OR
-                      SizedBox(height: size.height * 0.03),
-                      const Or(),
-
-                      // Sign Up with Google
-                      SizedBox(height: size.height * 0.04),
-                      GoogleButton(
-                        onTap: logInWithGoogle,
-                        hintText: 'Log In with Google',
-                      ),
-
-                      SizedBox(height: size.height * 0.06),
+                      // // Sign Up OR
+                      // SizedBox(height: size.height * 0.03),
+                      // const Or(),
+                      //
+                      // // Sign Up with Google
+                      // SizedBox(height: size.height * 0.04),
+                      // GoogleButton(
+                      //   onTap: logInWithGoogle,
+                      //   hintText: 'Log In with Google',
+                      // ),
+                      //
+                      SizedBox(height: size.height * 0.15),
 
                       Padding(
                         padding: const EdgeInsets.only(top: 8),

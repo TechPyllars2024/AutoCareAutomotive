@@ -2,12 +2,14 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import '../models/automotive_shop_profile_model.dart';
 
 class AutomotiveShopEditProfileServices {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final ImagePicker _picker = ImagePicker();
+  final Logger logger = Logger();
 
   Future<File?> pickCoverImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -55,7 +57,9 @@ class AutomotiveShopEditProfileServices {
       required double totalRatings,
       required int numberOfRatings,
       required int numberOfBookingsPerHour,
-      required Map<String, Map<String, int>> remainingSlots}) async {
+      required Map<String, Map<String, int>> remainingSlots,
+      required double commissionLimit
+      }) async {
     final Map<String, dynamic> updatedData = {};
 
     if (coverImage != null) {
@@ -78,16 +82,34 @@ class AutomotiveShopEditProfileServices {
     updatedData['totalRatings'] = totalRatings;
     updatedData['numberOfRatings'] = numberOfRatings;
     updatedData['numberOfBookingsPerHour'] = numberOfBookingsPerHour;
-    updatedData['remainingSlots'] = remainingSlots;
+    updatedData['commissionLimit'] = commissionLimit;
+    updatedData['remainingSlots'] = remainingSlots.map((date, slots) {
+      // Find the highest remaining slot value for the day
+      int highestRemaining = slots.values.reduce((a, b) => a > b ? a : b);
+      return MapEntry(
+        date,
+        slots.map((time, remaining) {
+          // Calculate the adjustment based on the highest remaining value
+          int difference = highestRemaining - remaining;
+          // Subtract the adjustment from the new number of bookings per hour
+          int adjustedRemaining = numberOfBookingsPerHour - difference;
+          // Ensure adjusted remaining slots are non-negative
+          adjustedRemaining = adjustedRemaining >= 0 ? adjustedRemaining : 0;
+          logger.i(
+            "Date: $date, Time: $time, Difference: $difference, Adjusted remaining slots: $adjustedRemaining",
+          );
+          return MapEntry(time, adjustedRemaining);
+        }),
+      );
+    });
 
+    // Save the adjusted data
     final docRef = _firestore.collection('automotiveShops_profile').doc(uid);
     final doc = await docRef.get();
 
     if (doc.exists) {
-      // Update the existing document
       await docRef.update(updatedData);
     } else {
-      // Create a new document
       await docRef.set(updatedData);
     }
   }
