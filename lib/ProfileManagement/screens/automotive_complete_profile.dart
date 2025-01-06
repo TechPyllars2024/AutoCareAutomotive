@@ -244,7 +244,8 @@ class _AutomotiveCompleteProfileScreenState
         emptyFields.add('Operating hours');
       }
 
-      if(dropdownController.selectedOptionList.isEmpty || _serviceSpecialization!.isEmpty){
+      if (dropdownController.selectedOptionList.isEmpty ||
+          _serviceSpecialization!.isEmpty) {
         emptyFields.add('Service Specialization');
       }
 
@@ -286,24 +287,24 @@ class _AutomotiveCompleteProfileScreenState
       try {
         if (editProfile == null) {
           await _automotiveShopEditProfileServices.saveProfile(
-              uid: user.uid,
-              serviceProviderUid: user.uid,
-              shopName: _shopNameController.text,
-              location: _locationController.text,
-              coverImage: _coverImage,
-              profileImage: _profileImage,
-              daysOfTheWeek:
-                  List<String>.from(daysOfTheWeekController.selectedOptionList),
-              operationTime:
-                  '${_openingTime?.format(context)} - ${_closingTime?.format(context)}',
-              serviceSpecialization:
-                  List<String>.from(dropdownController.selectedOptionList),
-              verificationStatus: 'Not Submitted',
-              totalRatings: 0.0,
-              numberOfRatings: 0,
-              numberOfBookingsPerHour: _numberOfBookingPerHour,
-              remainingSlots: remainingSlots,
-              commissionLimit: commissionLimit,
+            uid: user.uid,
+            serviceProviderUid: user.uid,
+            shopName: _shopNameController.text,
+            location: _locationController.text,
+            coverImage: _coverImage,
+            profileImage: _profileImage,
+            daysOfTheWeek:
+                List<String>.from(daysOfTheWeekController.selectedOptionList),
+            operationTime:
+                '${_openingTime?.format(context)} - ${_closingTime?.format(context)}',
+            serviceSpecialization:
+                List<String>.from(dropdownController.selectedOptionList),
+            verificationStatus: 'Not Submitted',
+            totalRatings: 0.0,
+            numberOfRatings: 0,
+            numberOfBookingsPerHour: _numberOfBookingPerHour,
+            remainingSlots: remainingSlots,
+            commissionLimit: commissionLimit,
           );
 
           Navigator.push(
@@ -331,46 +332,51 @@ class _AutomotiveCompleteProfileScreenState
     final double top = coverHeight - profileHeight / 2;
     double bottomPadding =
         MediaQuery.of(context).viewInsets.bottom > 0 ? 0 : 80.0;
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Complete Your Shop Profile',
-            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white)),
-        backgroundColor: Colors.orange.shade900,
-      ),
-      backgroundColor: Colors.grey.shade100,
-      body: Stack(
-        children: [
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: bottomPadding),
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  buildTopSection(top),
-                  const SizedBox(height: 10),
-                  buildInputs(),
-                  dayOfTheWeekSelection(),
-                  timeSelection(),
-                  numberOfBookingsSelection(),
-                  serviceSpecialization(),
-                  buildSaveButton(),
-                  const SizedBox(height: 10),
-                ],
-              ),
-            ),
-          ),
-          if (_isLoading)
-            BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: Container(
-                color: Colors.black.withOpacity(0.5),
-                child: const Center(
-                  child: CircularProgressIndicator(),
+
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text('Complete Your Shop Profile',
+              style:
+                  TextStyle(fontWeight: FontWeight.w900, color: Colors.white)),
+          backgroundColor: Colors.orange.shade900,
+        ),
+        backgroundColor: Colors.grey.shade100,
+        body: Stack(
+          children: [
+            SafeArea(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: bottomPadding),
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    buildTopSection(top),
+                    const SizedBox(height: 10),
+                    buildInputs(),
+                    dayOfTheWeekSelection(),
+                    timeSelection(),
+                    numberOfBookingsSelection(),
+                    serviceSpecialization(),
+                    buildSaveButton(),
+                    const SizedBox(height: 10),
+                  ],
                 ),
               ),
             ),
-        ],
+            if (_isLoading)
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -410,20 +416,19 @@ class _AutomotiveCompleteProfileScreenState
             const Text('Shop Name',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             FocusScope(
-              child: TextField(
-                controller: _shopNameController,
-                decoration: InputDecoration(
-                  hintText: 'Enter your shop name',
-                  border: const OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.orange.shade900),
-                  ),
-                  contentPadding: const EdgeInsets.all(12),
-                  counterText: '',
+                child: TextField(
+              controller: _shopNameController,
+              decoration: InputDecoration(
+                hintText: 'Enter your shop name',
+                border: const OutlineInputBorder(),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.orange.shade900),
                 ),
-                maxLength: 22,
-              )
-            ),
+                contentPadding: const EdgeInsets.all(12),
+                counterText: '',
+              ),
+              maxLength: 22,
+            )),
             const SizedBox(height: 10),
 
             // Location TextField with Label
@@ -432,7 +437,7 @@ class _AutomotiveCompleteProfileScreenState
             FocusScope(
               child: GooglePlaceAutoCompleteTextField(
                 textEditingController: _locationController,
-                googleAPIKey: dotenv.env['GOOGLE_MAPS_API_KEY']!,
+                googleAPIKey: 'AIzaSyCrbgW2yWOxrm932ZOoVV1_vw1ImfRLMDM',
                 inputDecoration: InputDecoration(
                   hintText: 'Enter your location',
                   border: const OutlineInputBorder(),
