@@ -1,4 +1,5 @@
 import 'package:autocare_automotiveshops/Authentication/Widgets/snackBar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -9,7 +10,6 @@ import '../../ProfileManagement/services/commission_services.dart';
 import '../models/booking_model.dart';
 import '../services/booking_services.dart';
 import '../widgets/bookingButton.dart';
-import 'mapView.dart';
 
 class AutomotiveBookingScreen extends StatefulWidget {
   const AutomotiveBookingScreen({super.key, this.child});
@@ -30,11 +30,13 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
   List<BookingModel> _selectedBookings = [];
   bool isLoading = false;
   String? currentBookingId;
+  List<BookingModel> bookings = [];
 
   @override
   void initState() {
     super.initState();
     _fetchBookings();
+    _loadBookings();
   }
 
   Future<void> _fetchBookings() async {
@@ -69,8 +71,44 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
     });
   }
 
+  Future<void> _loadBookings() async {
+    try {
+      List<BookingModel> carOwnerBookings =
+      await BookingService().fetchBookings(user!.uid);
+      logger.i('BOOKINGS', carOwnerBookings);
+      setState(() {
+        bookings = carOwnerBookings;
+        isLoading = false;
+      });
+    } catch (e) {
+      logger.i('Error loading bookings: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+
   Future<void> markBookingAsDone(BookingModel booking) async {
     try {
+      final bookingDate = booking.bookingDate.trim();
+      final bookingTime =
+          booking.bookingTime.replaceAll(RegExp(r'\s+'), ' ').trim();
+
+      // Combine and parse bookingDate and bookingTime into a DateTime object
+      final dateTimeFormat = DateFormat("dd/MM/yyyy hh:mm a");
+      final bookingDateTime = dateTimeFormat.parse('$bookingDate $bookingTime');
+
+      // Get the current date and time
+      final currentDateTime = DateTime.now();
+
+      // Check if the current date and time align with the booking date and time
+      if (bookingDateTime.isAfter(currentDateTime)) {
+        Utils.showSnackBar(
+            'Cannot mark booking as done before the scheduled time.');
+        return;
+      }
+
       await _bookingService.updateBookingStatus(booking.bookingId!, 'done');
 
       logger.i('Booking marked as done: ${booking.bookingId}');
@@ -101,6 +139,62 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
       Utils.showSnackBar('Failed to update booking status. Try again.');
     }
   }
+
+  Future<void> cancelBooking(
+      String bookingId, String shopId, String date, String time) async {
+    try {
+      BookingService bookingsService = BookingService();
+
+      await bookingsService.deleteBooking(bookingId);
+
+      DocumentReference shopRef = FirebaseFirestore.instance
+          .collection('automotiveShops_profile')
+          .doc(shopId);
+
+      DocumentSnapshot snapshot = await shopRef.get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic> shopData = snapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> remainingSlots = shopData['remainingSlots'] ?? {};
+
+        if (remainingSlots.containsKey(date) &&
+            remainingSlots[date] is Map<String, dynamic>) {
+          Map<String, dynamic> timeSlots = remainingSlots[date];
+
+          if (timeSlots.containsKey(time)) {
+            int currentSlots = timeSlots[time] as int;
+            timeSlots[time] = currentSlots + 1; // Increment remaining slots
+
+            await shopRef.update({
+              'remainingSlots': remainingSlots,
+            });
+          }
+        }
+
+        setState(() {
+          bookings.removeWhere((b) => b.bookingId == bookingId);
+        });
+
+        // Show a confirmation message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Booking Cancelled Successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      // Handle errors, if any
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to cancel booking'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+
 
   Future<void> _handleDecline(BookingModel booking) async {
     setState(() {
@@ -151,7 +245,8 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
 
     try {
       // Update booking status
-      await _bookingService.updateBookingStatus(booking.bookingId!, 'confirmed');
+      await _bookingService.updateBookingStatus(
+          booking.bookingId!, 'confirmed');
       logger.i('Booking accepted: ${booking.bookingId}');
 
       setState(() {
@@ -165,7 +260,8 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
       );
 
       // Send the confirmation message
-      await _chatService.sendBookingConfirmationMessage(conversationId, booking);
+      await _chatService.sendBookingConfirmationMessage(
+          conversationId, booking);
       logger.i(conversationId);
 
       Navigator.pop(context);
@@ -320,76 +416,6 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                               ),
                             ],
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const SizedBox(width: 5),
-                              ElevatedButton.icon(
-                                onPressed: booking.latitude != null &&
-                                        booking.longitude != null
-                                    ? () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => const Center(
-                                            child: CircularProgressIndicator(
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                      Colors.orange),
-                                            ),
-                                          ),
-                                        );
-
-                                        Future.delayed(
-                                            const Duration(milliseconds: 500),
-                                            () {
-                                          Navigator.pop(context);
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MapViewScreen(
-                                                latitude: booking.latitude!,
-                                                longitude: booking.longitude!,
-                                              ),
-                                            ),
-                                          );
-                                        });
-                                      }
-                                    : null,
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 6, horizontal: 10),
-                                  backgroundColor: Colors.blue,
-                                  foregroundColor: Colors.white,
-                                  minimumSize: const Size(40, 30),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  elevation: 2,
-                                ),
-                                icon: const Icon(Icons.location_pin,
-                                    size: 16), // Smaller icon size
-                                label: const Text(
-                                  'View Location',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight:
-                                          FontWeight.w500), // Smaller font size
-                                ),
-                              ),
-                              // Add a fallback SnackBar outside of the button logic
-                              if (booking.latitude == null ||
-                                  booking.longitude == null)
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 8),
-                                  child: Text(
-                                    'Location data is not available for this booking.',
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 8),
-                                  ),
-                                ),
-                            ],
-                          ),
                           const SizedBox(height: 8),
                           if (isLoading == true &&
                               currentBookingId == booking.bookingId)
@@ -540,17 +566,15 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                             const Divider(),
                             // Booking Details
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       _buildDetailRow(
                                         icon: Icons.calendar_today,
-                                        text:
-                                            '${booking.bookingDate}, ${booking.bookingTime}',
+                                        text: '${booking.bookingDate}, ${booking.bookingTime}',
                                       ),
                                       const SizedBox(height: 8),
                                       _buildDetailRow(
@@ -566,8 +590,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                                       // Status
                                       Row(
                                         children: [
-                                          const Icon(Icons.info,
-                                              color: Colors.orange, size: 20),
+                                          const Icon(Icons.info, color: Colors.orange, size: 20),
                                           const SizedBox(width: 5),
                                           Text(
                                             booking.status?.toUpperCase() ?? '',
@@ -582,27 +605,109 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                                     ],
                                   ),
                                 ),
-                                // Action Button
-                                if (isMarkAsDoneEnabled)
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      await markBookingAsDone(booking);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green,
-                                      foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8.0, horizontal: 12.0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
+                                // Action Buttons
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    if (isMarkAsDoneEnabled || booking.status == 'declinec')
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          await markBookingAsDone(booking);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.green,
+                                          foregroundColor: Colors.white,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0, horizontal: 12.0),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'Mark as Done',
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ),
+                                    const SizedBox(height: 8), // Space between buttons
+                                    if (isMarkAsDoneEnabled)
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        bool? confirm = await showDialog<bool>(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                  'Confirm Removal'),
+                                              content: const Text(
+                                                'Are you sure you want to remove this booking?',
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(false); // Cancel
+                                                  },
+                                                  child: const Text(
+                                                    'No',
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(true);
+                                                  },
+                                                  child: const Text(
+                                                    'Yes',
+                                                    style: TextStyle(
+                                                        color: Colors.orange),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+
+                                        if (confirm == true) {
+                                          await cancelBooking(
+                                            booking.bookingId!,
+                                            booking.serviceProviderUid,
+                                            booking.bookingDate,
+                                            booking.bookingTime,
+                                          );
+                                          setState(() {
+                                            bookings.removeWhere((b) =>
+                                            b.bookingId == booking.bookingId);
+                                          });
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  'Booking Removed Successfully!'),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5.0, horizontal: 8.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(8.0),
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                      child: const Text(
+                                        'Remove Booking',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 12),
                                       ),
                                     ),
-                                    child: const Text(
-                                      'Mark Done',
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                  ),
+                                  ],
+                                ),
                               ],
                             ),
                           ],
@@ -681,8 +786,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                   lastDay: DateTime.utc(2030, 12, 31),
                   focusedDay: _selectedDate,
                   calendarFormat: CalendarFormat.month,
-                  selectedDayPredicate: (day) =>
-                      isSameDay(_selectedDate, day),
+                  selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
                   onDaySelected: (selectedDay, focusedDay) {
                     setState(() {
                       _selectedDate = _normalizeDate(selectedDay);
@@ -728,8 +832,8 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: Colors.orange.shade900,
-                      borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(16)),
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(16)),
                     ),
                   ),
                   calendarStyle: CalendarStyle(
@@ -757,8 +861,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     ),
                     defaultDecoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border:
-                          Border.all(color: Colors.grey.shade300, width: 1),
+                      border: Border.all(color: Colors.grey.shade300, width: 1),
                     ),
                     weekendDecoration: BoxDecoration(
                       color: Colors.grey.shade200,
@@ -799,19 +902,16 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   height: MediaQuery.of(context).size.height * 0.25,
-
                   child: ClipRRect(
-
                     child: Image.asset(
                       'assets/images/bookingBackground.png',
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-
               ],
             ),
             SingleChildScrollView(
@@ -845,6 +945,7 @@ class _AutomotiveBookingState extends State<AutomotiveBookingScreen> {
                         .toList(),
                     emptyMessage: 'No completed bookings',
                     color: Colors.green.shade900,
+                    isMarkAsDoneEnabled: false,
                   ),
                   const SizedBox(height: 16),
                   _buildBookingSection(
