@@ -483,7 +483,7 @@ class _AutomotiveEditProfileScreenState
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             GooglePlaceAutoCompleteTextField(
               textEditingController: _locationController,
-              googleAPIKey: dotenv.env['GOOGLE_MAPS_API_KEY']!,
+              googleAPIKey: 'AIzaSyCrbgW2yWOxrm932ZOoVV1_vw1ImfRLMDM',
               inputDecoration: InputDecoration(
                 hintText: 'Enter your location',
                 border: const OutlineInputBorder(),

@@ -377,8 +377,13 @@ class _AutomotiveCommissionState extends State<AutomotiveCommission> {
                           const SizedBox(
                               width: 4),
                           Text(
-                            commission.serviceName,
-                            style: const TextStyle(fontSize: 13),
+                            commission.serviceName.length > 50
+                                ? '${commission.serviceName.substring(0, 47)}...'
+                                : commission.serviceName,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              height: 1.2,
+                            ),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
                           ),
